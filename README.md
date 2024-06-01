@@ -42,6 +42,6 @@ The clinic management system is built using the following technologies:
 - Programming Language: C#
 - Framework: .NET Framework
 - Database: Ms SQL Server
-- Data Access: ADO.NET
-- User Interface: WinForms
+- Data Access: EF Core
+- User Interface: Razor Page
 - Integrated Development Environment: Visual Studio
