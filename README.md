@@ -28,13 +28,6 @@ The system manages appointments effectively. Each appointment is assigned a uniq
 
 The system maintains comprehensive medical records for patients. Each attended appointment is associated with a medical record. Each medical record is assigned a unique identifier and includes the patient, doctor, description of the visit, diagnosis, prescribed medication, and any additional notes.
 
-### 5. Prescription
-
-The system manages prescribed medications efficiently. For each medical record, there can be at most one prescription. Each prescription is assigned a unique identifier and includes the medical record, medication name, dosage, frequency, start date, end date, and any special instructions.
-
-### 6. Payments
-
-The system tracks payment information for appointments. Each payment is assigned a unique identifier and includes the patient, payment date, payment method, amount paid, and any additional notes. Payments are associated with individual appointments.
 
 ## Technology Used
 
