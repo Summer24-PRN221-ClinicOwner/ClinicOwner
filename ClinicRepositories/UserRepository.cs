@@ -12,7 +12,7 @@ namespace ClinicRepositories
     public class UserRepository : GenericRepository<User>, IUserRepository
     {
         private readonly Prn221Context _context;
-        public UserRepository(DbContext context) : base(context) 
+        public UserRepository(Prn221Context context) : base(context) 
         {
             _context = context;
         }

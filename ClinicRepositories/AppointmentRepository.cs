@@ -12,7 +12,7 @@ namespace ClinicRepositories
     public class AppointmentRepository : GenericRepository<Appointment>, IAppointmentRepository
     {
         private readonly Prn221Context _context;
-        public AppointmentRepository(DbContext context) : base(context) 
+        public AppointmentRepository(Prn221Context context) : base(context) 
         {
             _context = context;
         }

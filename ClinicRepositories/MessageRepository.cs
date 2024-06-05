@@ -12,7 +12,7 @@ namespace ClinicRepositories
     public class MessageRepository : GenericRepository<Message>, IMessageRepository
     {
         private readonly Prn221Context _context;
-        public MessageRepository(DbContext context) : base(context)
+        public MessageRepository(Prn221Context context) : base(context)
         {
             _context = context;
         }

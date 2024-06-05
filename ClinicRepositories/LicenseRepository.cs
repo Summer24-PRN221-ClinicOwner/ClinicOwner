@@ -11,7 +11,7 @@ namespace ClinicRepositories
     public class LicenseRepository : GenericRepository<License>, ILicenseRepository
     {
         private readonly Prn221Context _context;
-        public LicenseRepository(DbContext context) : base(context)
+        public LicenseRepository(Prn221Context context) : base(context)
         {
             _context = context;
         }

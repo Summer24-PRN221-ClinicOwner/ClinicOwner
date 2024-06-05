@@ -10,10 +10,10 @@ namespace ClinicRepositories
 {
     public class GenericRepository<T> : IGenericRepository<T> where T : class
     {
-        private readonly DbContext _context;
+        private readonly Prn221Context _context;
         private readonly DbSet<T> _dbSet;
 
-        public GenericRepository(DbContext context)
+        public GenericRepository(Prn221Context context)
         {
             _context = context;
             _dbSet = _context.Set<T>();

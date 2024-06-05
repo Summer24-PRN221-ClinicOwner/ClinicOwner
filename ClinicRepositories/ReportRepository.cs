@@ -12,7 +12,7 @@ namespace ClinicRepositories
     public class ReportRepository : GenericRepository<Report>, IReportRepository
     {
         private readonly Prn221Context _context;
-        public ReportRepository(DbContext context) : base(context)
+        public ReportRepository(Prn221Context context) : base(context)
         {
             _context = context;
         }
