@@ -7,11 +7,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Interfaces\" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\ClinicBusinessLayer\ClinicRepositories.csproj" />
+    <ProjectReference Include="..\BusinessObjects\BusinessObjects.csproj" />
+    <ProjectReference Include="..\ClinicRepositories\ClinicRepositories.csproj" />
   </ItemGroup>
 
 </Project>
