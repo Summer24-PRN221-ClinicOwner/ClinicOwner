@@ -2,7 +2,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace BusinessObjects;
+namespace BusinessObjects.Entities;
 
 public partial class Appointment
 {

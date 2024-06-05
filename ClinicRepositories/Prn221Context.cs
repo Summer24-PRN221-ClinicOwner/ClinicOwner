@@ -4,7 +4,7 @@ using BusinessObjects.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 
-namespace BusinessObjects;
+namespace ClinicRepositories;
 
 public partial class Prn221Context : DbContext
 {
