@@ -19,7 +19,7 @@ namespace ClinicPresentationLayer.Pages.Appointment
             _context = context;
         }
 
-        public IList<Appointment> Appointment { get;set; } = default!;
+        public IList<BusinessObjects.Entities.Appointment> Appointment { get;set; } = default!;
 
         public async Task OnGetAsync()
         {

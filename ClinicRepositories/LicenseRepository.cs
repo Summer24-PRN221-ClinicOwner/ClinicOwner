@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace ClinicRepositories
 {
-    public class LicenseRepository : GenericRepository<License>, ILicenseRepository
+    public class LicenseRepository : GenericRepository<BusinessObjects.Entities.License>, ILicenseRepository
     {
         private readonly Prn221Context _context;
         public LicenseRepository(Prn221Context context) : base(context)

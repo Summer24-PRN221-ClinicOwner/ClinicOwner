@@ -243,17 +243,17 @@ public partial class Prn221Context : DbContext
             entity.Property(e => e.Role).HasMaxLength(20);
             entity.Property(e => e.Username).HasMaxLength(50);
 
-            entity.HasOne(d => d.IdNavigation).WithOne(p => p.User)
+            entity.HasOne(d => d.Dentist).WithOne(p => p.User)
                 .HasForeignKey<User>(d => d.Id)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_User_Dentist");
 
-            entity.HasOne(d => d.Id1).WithOne(p => p.User)
+            entity.HasOne(d => d.ClinicOwner).WithOne(p => p.User)
                 .HasForeignKey<User>(d => d.Id)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_User_ClinicOwner");
 
-            entity.HasOne(d => d.Id2).WithOne(p => p.User)
+            entity.HasOne(d => d.Patient).WithOne(p => p.User)
                 .HasForeignKey<User>(d => d.Id)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_User_Patient");
