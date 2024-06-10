@@ -30,7 +30,7 @@ namespace ClinicPresentationLayer.Pages.Appointment
                 return NotFound();
             }
 
-            var appointment =  await _context.Appointments.FirstOrDefaultAsync(m => m.AppointmentId == id);
+            var appointment =  await _context.Appointments.FirstOrDefaultAsync(m => m.Id == id);
             if (appointment == null)
             {
                 return NotFound();
@@ -60,7 +60,7 @@ namespace ClinicPresentationLayer.Pages.Appointment
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!AppointmentExists(Appointment.AppointmentId))
+                if (!AppointmentExists(Appointment.Id))
                 {
                     return NotFound();
                 }
@@ -75,7 +75,7 @@ namespace ClinicPresentationLayer.Pages.Appointment
 
         private bool AppointmentExists(int id)
         {
-            return _context.Appointments.Any(e => e.AppointmentId == id);
+            return _context.Appointments.Any(e => e.Id == id);
         }
     }
 }

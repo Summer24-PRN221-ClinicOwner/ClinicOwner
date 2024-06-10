@@ -5,7 +5,7 @@ namespace BusinessObjects.Entities;
 
 public partial class DentistAvailability
 {
-    public int DentistAvailabilityId { get; set; }
+    public int Id { get; set; }
 
     public int? DentistId { get; set; }
 

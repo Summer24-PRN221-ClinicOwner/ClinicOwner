@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace ClinicRepositories.Migrations
 {
     /// <inheritdoc />
-    public partial class UpdateUser : Migration
+    public partial class InitialCreate : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -17,21 +17,21 @@ namespace ClinicRepositories.Migrations
                 {
                     OwnerID = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    FullName = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
+                    Name = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
                     Phone = table.Column<string>(type: "nvarchar(15)", maxLength: 15, nullable: true),
                     Email = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
                     Address = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK__ClinicOw__81938598F0068CE8", x => x.OwnerID);
+                    table.PrimaryKey("PK_ClinicOwner", x => x.OwnerID);
                 });
 
             migrationBuilder.CreateTable(
                 name: "License",
                 columns: table => new
                 {
-                    id = table.Column<int>(type: "int", nullable: false),
+                    ID = table.Column<int>(type: "int", nullable: false),
                     LicenceType = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
                     LicenseNumber = table.Column<string>(type: "nchar(10)", fixedLength: true, maxLength: 10, nullable: true),
                     IssueDate = table.Column<DateTime>(type: "datetime", nullable: true),
@@ -40,16 +40,16 @@ namespace ClinicRepositories.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_License", x => x.id);
+                    table.PrimaryKey("PK_License", x => x.ID);
                 });
 
             migrationBuilder.CreateTable(
                 name: "Patient",
                 columns: table => new
                 {
-                    PatientID = table.Column<int>(type: "int", nullable: false)
+                    ID = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    FullName = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
+                    Name = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
                     DateOfBirth = table.Column<DateOnly>(type: "date", nullable: true),
                     Gender = table.Column<string>(type: "char(1)", unicode: false, fixedLength: true, maxLength: 1, nullable: true),
                     Phone = table.Column<string>(type: "nvarchar(15)", maxLength: 15, nullable: true),
@@ -58,31 +58,31 @@ namespace ClinicRepositories.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK__Patient__970EC3462924A5B5", x => x.PatientID);
+                    table.PrimaryKey("PK_Patient", x => x.ID);
                 });
 
             migrationBuilder.CreateTable(
                 name: "Reports",
                 columns: table => new
                 {
-                    ReportID = table.Column<int>(type: "int", nullable: false)
+                    ID = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    ReportName = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
-                    ReportData = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Name = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
+                    Data = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     GeneratedDate = table.Column<DateTime>(type: "datetime", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK__Reports__D5BD48E5661F397D", x => x.ReportID);
+                    table.PrimaryKey("PK_Report", x => x.ID);
                 });
 
             migrationBuilder.CreateTable(
                 name: "Service",
                 columns: table => new
                 {
-                    ServiceID = table.Column<int>(type: "int", nullable: false)
+                    ID = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    ServiceName = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
+                    Name = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
                     Description = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: true),
                     Cost = table.Column<decimal>(type: "decimal(10,2)", nullable: true),
                     Duration = table.Column<int>(type: "int", nullable: true),
@@ -90,7 +90,7 @@ namespace ClinicRepositories.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK__Service__C51BB0EAB303B4CC", x => x.ServiceID);
+                    table.PrimaryKey("PK_Service", x => x.ID);
                 });
 
             migrationBuilder.CreateTable(
@@ -119,10 +119,9 @@ namespace ClinicRepositories.Migrations
                 {
                     DentistID = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    FirstName = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
-                    LastName = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
+                    Name = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
                     Specialization = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
-                    ContactNumber = table.Column<string>(type: "nvarchar(15)", maxLength: 15, nullable: true),
+                    Phone = table.Column<string>(type: "nvarchar(15)", maxLength: 15, nullable: true),
                     Email = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
                     LicenseId = table.Column<int>(type: "int", nullable: true),
                     Status = table.Column<int>(type: "int", nullable: true),
@@ -130,7 +129,7 @@ namespace ClinicRepositories.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK__Dentist__9157336F13F532B2", x => x.DentistID);
+                    table.PrimaryKey("PK_Dentist", x => x.DentistID);
                     table.ForeignKey(
                         name: "FK_Dentist_Clinic",
                         column: x => x.ClinicID,
@@ -140,7 +139,7 @@ namespace ClinicRepositories.Migrations
                         name: "FK_Dentist_License",
                         column: x => x.LicenseId,
                         principalTable: "License",
-                        principalColumn: "id");
+                        principalColumn: "ID");
                 });
 
             migrationBuilder.CreateTable(
@@ -159,34 +158,34 @@ namespace ClinicRepositories.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK__Appointm__8ECDFCA240D53A9D", x => x.AppointmentID);
+                    table.PrimaryKey("PK_Appointment", x => x.AppointmentID);
                     table.ForeignKey(
                         name: "FK_Appointment_Clinic",
                         column: x => x.ClinicID,
                         principalTable: "Clinic",
                         principalColumn: "ClinicID");
                     table.ForeignKey(
-                        name: "FK__Appointme__Denti__4316F928",
+                        name: "FK_Appointment_Dentist",
                         column: x => x.DentistID,
                         principalTable: "Dentist",
                         principalColumn: "DentistID");
                     table.ForeignKey(
-                        name: "FK__Appointme__Patie__4222D4EF",
+                        name: "FK_Appointment_Patient",
                         column: x => x.PatientID,
                         principalTable: "Patient",
-                        principalColumn: "PatientID");
+                        principalColumn: "ID");
                     table.ForeignKey(
-                        name: "FK__Appointme__Servi__440B1D61",
+                        name: "FK_Appointment_Service",
                         column: x => x.ServiceID,
                         principalTable: "Service",
-                        principalColumn: "ServiceID");
+                        principalColumn: "ID");
                 });
 
             migrationBuilder.CreateTable(
                 name: "DentistAvailability",
                 columns: table => new
                 {
-                    DentistAvailabilityID = table.Column<int>(type: "int", nullable: false)
+                    ID = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     DentistID = table.Column<int>(type: "int", nullable: true),
                     AvailableSlots = table.Column<string>(type: "char(10)", unicode: false, fixedLength: true, maxLength: 10, nullable: true),
@@ -194,9 +193,9 @@ namespace ClinicRepositories.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK__DentistA__9FD910EDC7F15BFB", x => x.DentistAvailabilityID);
+                    table.PrimaryKey("PK_DentistAvailability", x => x.ID);
                     table.ForeignKey(
-                        name: "FK__DentistAv__Denti__3D5E1FD2",
+                        name: "FK_DentistAvailability_Dentist",
                         column: x => x.DentistID,
                         principalTable: "Dentist",
                         principalColumn: "DentistID");
@@ -218,14 +217,14 @@ namespace ClinicRepositories.Migrations
                     table.PrimaryKey("PK_Message", x => x.MessageID);
                     table.ForeignKey(
                         name: "FK_Message_Dentist",
-                        column: x => x.PatientID,
+                        column: x => x.DentistID,
                         principalTable: "Dentist",
                         principalColumn: "DentistID");
                     table.ForeignKey(
                         name: "FK_Message_Patient",
                         column: x => x.PatientID,
                         principalTable: "Patient",
-                        principalColumn: "PatientID");
+                        principalColumn: "ID");
                 });
 
             migrationBuilder.CreateTable(
@@ -254,7 +253,7 @@ namespace ClinicRepositories.Migrations
                         name: "FK_User_Patient",
                         column: x => x.Id,
                         principalTable: "Patient",
-                        principalColumn: "PatientID");
+                        principalColumn: "ID");
                 });
 
             migrationBuilder.CreateIndex(
@@ -295,6 +294,11 @@ namespace ClinicRepositories.Migrations
             migrationBuilder.CreateIndex(
                 name: "IX_DentistAvailability_DentistID",
                 table: "DentistAvailability",
+                column: "DentistID");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Message_DentistID",
+                table: "Message",
                 column: "DentistID");
 
             migrationBuilder.CreateIndex(

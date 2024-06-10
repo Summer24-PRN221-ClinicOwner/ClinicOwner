@@ -50,21 +50,21 @@
                 @Html.DisplayFor(modelItem => item.EndSlot)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Clinic.ClinicId)
+                @Html.DisplayFor(modelItem => item.Clinic.Id)
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.Dentist.DentistId)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Patient.PatientId)
+                @Html.DisplayFor(modelItem => item.Patient.Id)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Service.ServiceId)
+                @Html.DisplayFor(modelItem => item.Service.Id)
             </td>
             <td>
-                <a asp-page="./Edit" asp-route-id="@item.AppointmentId">Edit</a> |
-                <a asp-page="./Details" asp-route-id="@item.AppointmentId">Details</a> |
-                <a asp-page="./Delete" asp-route-id="@item.AppointmentId">Delete</a>
+                <a asp-page="./Edit" asp-route-id="@item.Id">Edit</a> |
+                <a asp-page="./Details" asp-route-id="@item.Id">Details</a> |
+                <a asp-page="./Delete" asp-route-id="@item.Id">Delete</a>
             </td>
         </tr>
 }

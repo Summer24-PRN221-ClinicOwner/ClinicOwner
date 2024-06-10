@@ -29,7 +29,7 @@ namespace ClinicPresentationLayer.Pages.Appointment
                 return NotFound();
             }
 
-            var appointment = await _context.Appointments.FirstOrDefaultAsync(m => m.AppointmentId == id);
+            var appointment = await _context.Appointments.FirstOrDefaultAsync(m => m.Id == id);
 
             if (appointment == null)
             {

@@ -5,7 +5,7 @@ namespace BusinessObjects.Entities;
 
 public partial class Clinic
 {
-    public int ClinicId { get; set; }
+    public int Id { get; set; }
 
     public string? Name { get; set; }
 

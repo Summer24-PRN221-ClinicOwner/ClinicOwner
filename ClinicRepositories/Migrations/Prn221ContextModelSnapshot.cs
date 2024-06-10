@@ -24,12 +24,12 @@ namespace ClinicRepositories.Migrations
 
             modelBuilder.Entity("BusinessObjects.Entities.Appointment", b =>
                 {
-                    b.Property<int>("AppointmentId")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .HasColumnName("AppointmentID");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("AppointmentId"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<int>("ClinicId")
                         .HasColumnType("int")
@@ -56,8 +56,8 @@ namespace ClinicRepositories.Migrations
                     b.Property<int?>("Status")
                         .HasColumnType("int");
 
-                    b.HasKey("AppointmentId")
-                        .HasName("PK__Appointm__8ECDFCA240D53A9D");
+                    b.HasKey("Id")
+                        .HasName("PK_Appointment");
 
                     b.HasIndex("ClinicId");
 
@@ -72,7 +72,7 @@ namespace ClinicRepositories.Migrations
 
             modelBuilder.Entity("BusinessObjects.Entities.Clinic", b =>
                 {
-                    b.Property<int>("ClinicId")
+                    b.Property<int>("Id")
                         .HasColumnType("int")
                         .HasColumnName("ClinicID");
 
@@ -93,7 +93,7 @@ namespace ClinicRepositories.Migrations
                         .IsUnicode(false)
                         .HasColumnType("varchar(15)");
 
-                    b.HasKey("ClinicId");
+                    b.HasKey("Id");
 
                     b.HasIndex("OwnerId");
 
@@ -102,12 +102,12 @@ namespace ClinicRepositories.Migrations
 
             modelBuilder.Entity("BusinessObjects.Entities.ClinicOwner", b =>
                 {
-                    b.Property<int>("OwnerId")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .HasColumnName("OwnerID");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("OwnerId"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("Address")
                         .HasMaxLength(200)
@@ -117,7 +117,7 @@ namespace ClinicRepositories.Migrations
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
-                    b.Property<string>("FullName")
+                    b.Property<string>("Name")
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 
@@ -125,8 +125,8 @@ namespace ClinicRepositories.Migrations
                         .HasMaxLength(15)
                         .HasColumnType("nvarchar(15)");
 
-                    b.HasKey("OwnerId")
-                        .HasName("PK__ClinicOw__81938598F0068CE8");
+                    b.HasKey("Id")
+                        .HasName("PK_ClinicOwner");
 
                     b.ToTable("ClinicOwner", (string)null);
                 });
@@ -144,24 +144,20 @@ namespace ClinicRepositories.Migrations
                         .HasColumnType("int")
                         .HasColumnName("ClinicID");
 
-                    b.Property<string>("ContactNumber")
-                        .HasMaxLength(15)
-                        .HasColumnType("nvarchar(15)");
-
                     b.Property<string>("Email")
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
-                    b.Property<string>("FirstName")
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
-
-                    b.Property<string>("LastName")
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
-
                     b.Property<int?>("LicenseId")
                         .HasColumnType("int");
+
+                    b.Property<string>("Name")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<string>("Phone")
+                        .HasMaxLength(15)
+                        .HasColumnType("nvarchar(15)");
 
                     b.Property<string>("Specialization")
                         .HasMaxLength(100)
@@ -171,7 +167,7 @@ namespace ClinicRepositories.Migrations
                         .HasColumnType("int");
 
                     b.HasKey("DentistId")
-                        .HasName("PK__Dentist__9157336F13F532B2");
+                        .HasName("PK_Dentist");
 
                     b.HasIndex("ClinicId");
 
@@ -182,12 +178,12 @@ namespace ClinicRepositories.Migrations
 
             modelBuilder.Entity("BusinessObjects.Entities.DentistAvailability", b =>
                 {
-                    b.Property<int>("DentistAvailabilityId")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
-                        .HasColumnName("DentistAvailabilityID");
+                        .HasColumnName("ID");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("DentistAvailabilityId"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("AvailableSlots")
                         .HasMaxLength(10)
@@ -202,8 +198,8 @@ namespace ClinicRepositories.Migrations
                         .HasColumnType("int")
                         .HasColumnName("DentistID");
 
-                    b.HasKey("DentistAvailabilityId")
-                        .HasName("PK__DentistA__9FD910EDC7F15BFB");
+                    b.HasKey("Id")
+                        .HasName("PK_DentistAvailability");
 
                     b.HasIndex("DentistId");
 
@@ -214,7 +210,7 @@ namespace ClinicRepositories.Migrations
                 {
                     b.Property<int>("Id")
                         .HasColumnType("int")
-                        .HasColumnName("id");
+                        .HasColumnName("ID");
 
                     b.Property<DateTime?>("ExpireDate")
                         .HasColumnType("datetime");
@@ -264,6 +260,8 @@ namespace ClinicRepositories.Migrations
 
                     b.HasKey("MessageId");
 
+                    b.HasIndex("DentistId");
+
                     b.HasIndex("PatientId");
 
                     b.ToTable("Message", (string)null);
@@ -271,12 +269,12 @@ namespace ClinicRepositories.Migrations
 
             modelBuilder.Entity("BusinessObjects.Entities.Patient", b =>
                 {
-                    b.Property<int>("PatientId")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
-                        .HasColumnName("PatientID");
+                        .HasColumnName("ID");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("PatientId"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("Address")
                         .HasMaxLength(200)
@@ -289,59 +287,59 @@ namespace ClinicRepositories.Migrations
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
-                    b.Property<string>("FullName")
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
-
                     b.Property<string>("Gender")
                         .HasMaxLength(1)
                         .IsUnicode(false)
                         .HasColumnType("char(1)")
                         .IsFixedLength();
 
+                    b.Property<string>("Name")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
                     b.Property<string>("Phone")
                         .HasMaxLength(15)
                         .HasColumnType("nvarchar(15)");
 
-                    b.HasKey("PatientId")
-                        .HasName("PK__Patient__970EC3462924A5B5");
+                    b.HasKey("Id")
+                        .HasName("PK_Patient");
 
                     b.ToTable("Patient", (string)null);
                 });
 
             modelBuilder.Entity("BusinessObjects.Entities.Report", b =>
                 {
-                    b.Property<int>("ReportId")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
-                        .HasColumnName("ReportID");
+                        .HasColumnName("ID");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ReportId"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Data")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime?>("GeneratedDate")
                         .HasColumnType("datetime");
 
-                    b.Property<string>("ReportData")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("ReportName")
+                    b.Property<string>("Name")
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
-                    b.HasKey("ReportId")
-                        .HasName("PK__Reports__D5BD48E5661F397D");
+                    b.HasKey("Id")
+                        .HasName("PK_Report");
 
                     b.ToTable("Reports");
                 });
 
             modelBuilder.Entity("BusinessObjects.Entities.Service", b =>
                 {
-                    b.Property<int>("ServiceId")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
-                        .HasColumnName("ServiceID");
+                        .HasColumnName("ID");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ServiceId"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<decimal?>("Cost")
                         .HasColumnType("decimal(10, 2)");
@@ -353,15 +351,15 @@ namespace ClinicRepositories.Migrations
                     b.Property<int?>("Duration")
                         .HasColumnType("int");
 
-                    b.Property<int?>("Rank")
-                        .HasColumnType("int");
-
-                    b.Property<string>("ServiceName")
+                    b.Property<string>("Name")
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
-                    b.HasKey("ServiceId")
-                        .HasName("PK__Service__C51BB0EAB303B4CC");
+                    b.Property<int?>("Rank")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id")
+                        .HasName("PK_Service");
 
                     b.ToTable("Service", (string)null);
                 });
@@ -399,17 +397,17 @@ namespace ClinicRepositories.Migrations
                     b.HasOne("BusinessObjects.Entities.Dentist", "Dentist")
                         .WithMany("Appointments")
                         .HasForeignKey("DentistId")
-                        .HasConstraintName("FK__Appointme__Denti__4316F928");
+                        .HasConstraintName("FK_Appointment_Dentist");
 
                     b.HasOne("BusinessObjects.Entities.Patient", "Patient")
                         .WithMany("Appointments")
                         .HasForeignKey("PatientId")
-                        .HasConstraintName("FK__Appointme__Patie__4222D4EF");
+                        .HasConstraintName("FK_Appointment_Patient");
 
                     b.HasOne("BusinessObjects.Entities.Service", "Service")
                         .WithMany("Appointments")
                         .HasForeignKey("ServiceId")
-                        .HasConstraintName("FK__Appointme__Servi__440B1D61");
+                        .HasConstraintName("FK_Appointment_Service");
 
                     b.Navigation("Clinic");
 
@@ -454,26 +452,26 @@ namespace ClinicRepositories.Migrations
                     b.HasOne("BusinessObjects.Entities.Dentist", "Dentist")
                         .WithMany("DentistAvailabilities")
                         .HasForeignKey("DentistId")
-                        .HasConstraintName("FK__DentistAv__Denti__3D5E1FD2");
+                        .HasConstraintName("FK_DentistAvailability_Dentist");
 
                     b.Navigation("Dentist");
                 });
 
             modelBuilder.Entity("BusinessObjects.Entities.Message", b =>
                 {
-                    b.HasOne("BusinessObjects.Entities.Dentist", "Patient")
+                    b.HasOne("BusinessObjects.Entities.Dentist", "Dentist")
                         .WithMany("Messages")
-                        .HasForeignKey("PatientId")
+                        .HasForeignKey("DentistId")
                         .HasConstraintName("FK_Message_Dentist");
 
-                    b.HasOne("BusinessObjects.Entities.Patient", "PatientNavigation")
+                    b.HasOne("BusinessObjects.Entities.Patient", "Patient")
                         .WithMany("Messages")
                         .HasForeignKey("PatientId")
                         .HasConstraintName("FK_Message_Patient");
 
-                    b.Navigation("Patient");
+                    b.Navigation("Dentist");
 
-                    b.Navigation("PatientNavigation");
+                    b.Navigation("Patient");
                 });
 
             modelBuilder.Entity("BusinessObjects.Entities.User", b =>

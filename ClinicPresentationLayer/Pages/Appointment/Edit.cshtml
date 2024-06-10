@@ -13,7 +13,7 @@
     <div class="col-md-4">
         <form method="post">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <input type="hidden" asp-for="Appointment.AppointmentId" />
+            <input type="hidden" asp-for="Appointment.Id" />
             <div class="form-group">
                 <label asp-for="Appointment.PatientId" class="control-label"></label>
                 <select asp-for="Appointment.PatientId" class="form-control" asp-items="ViewBag.PatientId"></select>
