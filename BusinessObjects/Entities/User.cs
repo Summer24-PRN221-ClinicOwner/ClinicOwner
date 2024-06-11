@@ -13,9 +13,10 @@ public partial class User
 
     public string? Role { get; set; }
 
-    public virtual ClinicOwner Id1 { get; set; } = null!;
+    // Navigation properties
+    public virtual ClinicOwner? ClinicOwner { get; set; }
 
-    public virtual Patient Id2 { get; set; } = null!;
+    public virtual Patient? Patient { get; set; }
 
-    public virtual Dentist IdNavigation { get; set; } = null!;
+    public virtual Dentist? Dentist { get; set; }
 }

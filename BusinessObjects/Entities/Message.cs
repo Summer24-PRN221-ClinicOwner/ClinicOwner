@@ -17,7 +17,7 @@ public partial class Message
 
     public DateTime? DateSeen { get; set; }
 
-    public virtual Dentist? Patient { get; set; }
+    public virtual Dentist? Dentist { get; set; }
 
-    public virtual Patient? PatientNavigation { get; set; }
+    public virtual Patient? Patient { get; set; }
 }
