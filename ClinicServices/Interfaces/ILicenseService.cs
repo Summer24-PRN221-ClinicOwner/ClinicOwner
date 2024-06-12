@@ -1,14 +1,14 @@
 ﻿using BusinessObjects.Entities;
+using ClinicRepositories.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ClinicRepositories.Interfaces
+namespace ClinicServices.Interfaces
 {
-    public interface IAppointmentRepository : IGenericRepository<Appointment>
-    {
-
-    }
+	public interface ILicenseService : IGenericService<License>
+	{
+	}
 }
