@@ -16,6 +16,8 @@ public partial class Appointment
 
     public int? ServiceId { get; set; }
 
+    public int? RoomId { get; set; }
+
     public int? Status { get; set; }
 
     public int? EndSlot { get; set; }
@@ -29,4 +31,6 @@ public partial class Appointment
     public virtual Patient? Patient { get; set; }
 
     public virtual Service? Service { get; set; }
+
+    public virtual Room? Room { get; set; }
 }

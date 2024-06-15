@@ -13,9 +13,9 @@ namespace ClinicPresentationLayer.Pages.Appointment
 {
     public class EditModel : PageModel
     {
-        private readonly ClinicRepositories.Prn221Context _context;
+        private readonly ClinicRepositories.ClinicContext _context;
 
-        public EditModel(ClinicRepositories.Prn221Context context)
+        public EditModel(ClinicRepositories.ClinicContext context)
         {
             _context = context;
         }

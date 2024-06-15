@@ -12,9 +12,9 @@ namespace ClinicPresentationLayer.Pages.Appointment
 {
     public class DeleteModel : PageModel
     {
-        private readonly ClinicRepositories.Prn221Context _context;
+        private readonly ClinicRepositories.ClinicContext _context;
 
-        public DeleteModel(ClinicRepositories.Prn221Context context)
+        public DeleteModel(ClinicRepositories.ClinicContext context)
         {
             _context = context;
         }

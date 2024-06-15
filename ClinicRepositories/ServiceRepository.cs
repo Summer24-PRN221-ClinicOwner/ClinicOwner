@@ -11,8 +11,8 @@ namespace ClinicRepositories
 {
     public class ServiceRepository : GenericRepository<Service>, IServiceRepository
     {
-        private readonly Prn221Context _context;
-        public ServiceRepository(Prn221Context context) : base(context)
+        private readonly ClinicContext _context;
+        public ServiceRepository(ClinicContext context) : base(context)
         {
             _context = context;
         }
