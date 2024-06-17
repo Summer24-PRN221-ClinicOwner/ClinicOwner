@@ -54,6 +54,7 @@ public partial class Prn221Context : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        List<User> users = new List<User>();
         modelBuilder.Entity<Appointment>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("PK_Appointment");
