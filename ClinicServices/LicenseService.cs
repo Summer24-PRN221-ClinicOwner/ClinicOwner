@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace ClinicServices
 {
-	public class LicenseService : ILicenseService, IGenericService<License>
+	public class LicenseService : ILicenseService
 	{
 		private readonly ILicenseRepository _repository;
 		public LicenseService (ILicenseRepository repository)
