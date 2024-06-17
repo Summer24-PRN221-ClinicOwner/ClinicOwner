@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace ClinicServices
 {
-	public class UserService : IUserService, IGenericService<User>
+	public class UserService : IUserService
 	{
 		private readonly IUserRepository _repository;
 		public UserService(IUserRepository repository)

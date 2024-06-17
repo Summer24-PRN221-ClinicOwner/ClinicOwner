@@ -8,7 +8,12 @@ using System.Threading.Tasks;
 
 namespace ClinicServices.Interfaces
 {
-	public interface IDentistAvailabilityService : IGenericService<DentistAvailability>
+	public interface IDentistAvailabilityService
 	{
-	}
+        Task<IEnumerable<DentistAvailability>> GetAllAsync();
+        Task<DentistAvailability> GetByIdAsync(int id);
+        Task<DentistAvailability> AddAsync(DentistAvailability entity);
+        Task UpdateAsync(DentistAvailability entity);
+        Task DeleteAsync(int id);
+    }
 }

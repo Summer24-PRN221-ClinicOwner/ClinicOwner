@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace ClinicServices
 {
-	public class AppointmentService : IGenericService<Appointment>, IAppointmentService
+	public class AppointmentService: IAppointmentService
 	{
 		private readonly IAppointmentRepository _appointmentRepository;
 		public AppointmentService(IAppointmentRepository iAppointmentRepository)

@@ -8,7 +8,12 @@ using System.Threading.Tasks;
 
 namespace ClinicServices.Interfaces
 {
-	public interface IMessageService : IGenericService<Message>
+	public interface IMessageService
 	{
-	}
+        Task<IEnumerable<Message>> GetAllAsync();
+        Task<Message> GetByIdAsync(int id);
+        Task<Message> AddAsync(Message entity);
+        Task UpdateAsync(Message entity);
+        Task DeleteAsync(int id);
+    }
 }

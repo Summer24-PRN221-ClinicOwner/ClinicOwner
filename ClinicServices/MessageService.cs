@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace ClinicServices
 {
-	public class MessageService : IMessageService, IGenericService<Message>
+	public class MessageService : IMessageService
 	{
 		private readonly IMessageRepository _repository;
 		public MessageService(IMessageRepository repository) 

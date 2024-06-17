@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace ClinicServices
 {
-	public class DentistService : IGenericService<Dentist>, IDentistService
+	public class DentistService : IDentistService
 	{
 		private readonly IDentistRepository _repository;
 		public DentistService(IDentistRepository repository)
