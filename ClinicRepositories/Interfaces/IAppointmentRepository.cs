@@ -9,5 +9,6 @@ namespace ClinicRepositories.Interfaces
 {
     public interface IAppointmentRepository : IGenericRepository<Appointment>
     {
+
     }
 }
