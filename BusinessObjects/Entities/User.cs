@@ -13,5 +13,7 @@ public partial class User
 
     public string? Role { get; set; }
 
+    public int Status {  get; set; }
+
     public  virtual ICollection<Notification> Notifications { get; set; }
 }
