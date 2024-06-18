@@ -12,9 +12,9 @@ namespace ClinicPresentationLayer.Pages.Appointment
 {
     public class CreateModel : PageModel
     {
-        private readonly ClinicRepositories.Prn221Context _context;
+        private readonly ClinicRepositories.ClinicContext _context;
 
-        public CreateModel(ClinicRepositories.Prn221Context context)
+        public CreateModel(ClinicRepositories.ClinicContext context)
         {
             _context = context;
         }

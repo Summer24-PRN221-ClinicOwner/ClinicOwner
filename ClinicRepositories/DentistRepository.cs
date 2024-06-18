@@ -11,8 +11,8 @@ namespace ClinicRepositories
 {
     public class DentistRepository : GenericRepository<Dentist>, IDentistRepository
     {
-        private readonly Prn221Context _context;
-        public DentistRepository(Prn221Context context) : base(context)
+        private readonly ClinicContext _context;
+        public DentistRepository(ClinicContext context) : base(context)
         {
             _context = context;
         }

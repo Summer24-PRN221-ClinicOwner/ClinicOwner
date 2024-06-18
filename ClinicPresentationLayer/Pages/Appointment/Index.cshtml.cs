@@ -12,9 +12,9 @@ namespace ClinicPresentationLayer.Pages.Appointment
 {
     public class IndexModel : PageModel
     {
-        private readonly ClinicRepositories.Prn221Context _context;
+        private readonly ClinicRepositories.ClinicContext _context;
 
-        public IndexModel(ClinicRepositories.Prn221Context context)
+        public IndexModel(ClinicRepositories.ClinicContext context)
         {
             _context = context;
         }

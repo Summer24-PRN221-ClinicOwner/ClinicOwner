@@ -11,8 +11,8 @@ namespace ClinicRepositories
 {
     public class AppointmentRepository : GenericRepository<Appointment>, IAppointmentRepository
     {
-        private readonly Prn221Context _context;
-        public AppointmentRepository(Prn221Context context) : base(context) 
+        private readonly ClinicContext _context;
+        public AppointmentRepository(ClinicContext context) : base(context) 
         {
             _context = context;
         }

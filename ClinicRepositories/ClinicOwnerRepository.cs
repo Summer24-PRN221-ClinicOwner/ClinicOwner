@@ -11,8 +11,8 @@ namespace ClinicRepositories
 {
     public class ClinicOwnerRepository : GenericRepository<ClinicOwner>, IClinicOwnerRepository
     {
-        private readonly Prn221Context _context;
-        public ClinicOwnerRepository(Prn221Context context) : base(context)
+        private readonly ClinicContext _context;
+        public ClinicOwnerRepository(ClinicContext context) : base(context)
         {
             _context = context;
         }

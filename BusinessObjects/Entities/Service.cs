@@ -11,6 +11,8 @@ public partial class Service
 
     public string? Description { get; set; }
 
+    public int Status { get; set; }
+
     public decimal? Cost { get; set; }
 
     public int? Duration { get; set; }

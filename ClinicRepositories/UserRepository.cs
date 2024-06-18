@@ -11,8 +11,8 @@ namespace ClinicRepositories
 {
     public class UserRepository : GenericRepository<User>, IUserRepository
     {
-        private readonly Prn221Context _context;
-        public UserRepository(Prn221Context context) : base(context) 
+        private readonly ClinicContext _context;
+        public UserRepository(ClinicContext context) : base(context) 
         {
             _context = context;
         }

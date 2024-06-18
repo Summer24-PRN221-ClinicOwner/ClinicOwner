@@ -4,16 +4,19 @@ using ClinicRepositories;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
 
 namespace ClinicRepositories.Migrations
 {
-    [DbContext(typeof(Prn221Context))]
-    partial class Prn221ContextModelSnapshot : ModelSnapshot
+    [DbContext(typeof(ClinicContext))]
+    [Migration("20240615092401_AddsenderinMessageTable4")]
+    partial class AddsenderinMessageTable4
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -27,7 +30,7 @@ namespace ClinicRepositories.Migrations
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
-                        .HasColumnName("AppointmentID");
+                        .HasColumnName("ID");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
@@ -45,6 +48,10 @@ namespace ClinicRepositories.Migrations
                     b.Property<int?>("PatientId")
                         .HasColumnType("int")
                         .HasColumnName("PatientID");
+
+                    b.Property<int?>("RoomId")
+                        .HasColumnType("int")
+                        .HasColumnName("RoomID");
 
                     b.Property<int?>("ServiceId")
                         .HasColumnType("int")
@@ -65,6 +72,8 @@ namespace ClinicRepositories.Migrations
 
                     b.HasIndex("PatientId");
 
+                    b.HasIndex("RoomId");
+
                     b.HasIndex("ServiceId");
 
                     b.ToTable("Appointment", (string)null);
@@ -73,8 +82,11 @@ namespace ClinicRepositories.Migrations
             modelBuilder.Entity("BusinessObjects.Entities.Clinic", b =>
                 {
                     b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("int")
-                        .HasColumnName("ClinicID");
+                        .HasColumnName("ID");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("Address")
                         .HasMaxLength(150)
@@ -103,11 +115,8 @@ namespace ClinicRepositories.Migrations
             modelBuilder.Entity("BusinessObjects.Entities.ClinicOwner", b =>
                 {
                     b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("int")
-                        .HasColumnName("OwnerID");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                        .HasColumnName("ID");
 
                     b.Property<string>("Address")
                         .HasMaxLength(200)
@@ -133,12 +142,9 @@ namespace ClinicRepositories.Migrations
 
             modelBuilder.Entity("BusinessObjects.Entities.Dentist", b =>
                 {
-                    b.Property<int>("DentistId")
-                        .ValueGeneratedOnAdd()
+                    b.Property<int>("Id")
                         .HasColumnType("int")
-                        .HasColumnName("DentistID");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("DentistId"));
+                        .HasColumnName("ID");
 
                     b.Property<int>("ClinicId")
                         .HasColumnType("int")
@@ -166,7 +172,7 @@ namespace ClinicRepositories.Migrations
                     b.Property<int?>("Status")
                         .HasColumnType("int");
 
-                    b.HasKey("DentistId")
+                    b.HasKey("Id")
                         .HasName("PK_Dentist");
 
                     b.HasIndex("ClinicId");
@@ -209,8 +215,11 @@ namespace ClinicRepositories.Migrations
             modelBuilder.Entity("BusinessObjects.Entities.License", b =>
                 {
                     b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .HasColumnName("ID");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<DateTime?>("ExpireDate")
                         .HasColumnType("datetime");
@@ -238,8 +247,11 @@ namespace ClinicRepositories.Migrations
             modelBuilder.Entity("BusinessObjects.Entities.Message", b =>
                 {
                     b.Property<int>("MessageId")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("int")
-                        .HasColumnName("MessageID");
+                        .HasColumnName("ID");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("MessageId"));
 
                     b.Property<string>("Content")
                         .HasColumnType("nvarchar(max)");
@@ -258,6 +270,10 @@ namespace ClinicRepositories.Migrations
                         .HasColumnType("int")
                         .HasColumnName("PatientID");
 
+                    b.Property<string>("Sender")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.HasKey("MessageId");
 
                     b.HasIndex("DentistId");
@@ -267,7 +283,7 @@ namespace ClinicRepositories.Migrations
                     b.ToTable("Message", (string)null);
                 });
 
-            modelBuilder.Entity("BusinessObjects.Entities.Patient", b =>
+            modelBuilder.Entity("BusinessObjects.Entities.Notification", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -275,6 +291,37 @@ namespace ClinicRepositories.Migrations
                         .HasColumnName("ID");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("CreateDate")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime")
+                        .HasDefaultValueSql("(getdate())");
+
+                    b.Property<bool>("IsRead")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(false);
+
+                    b.Property<string>("Message")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("int")
+                        .HasColumnName("UserID");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Notification", (string)null);
+                });
+
+            modelBuilder.Entity("BusinessObjects.Entities.Patient", b =>
+                {
+                    b.Property<int>("Id")
+                        .HasColumnType("int")
+                        .HasColumnName("ID");
 
                     b.Property<string>("Address")
                         .HasMaxLength(200)
@@ -290,16 +337,14 @@ namespace ClinicRepositories.Migrations
                     b.Property<string>("Gender")
                         .HasMaxLength(1)
                         .IsUnicode(false)
-                        .HasColumnType("char(1)")
-                        .IsFixedLength();
+                        .HasColumnType("varchar(1)");
 
                     b.Property<string>("Name")
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 
                     b.Property<string>("Phone")
-                        .HasMaxLength(15)
-                        .HasColumnType("nvarchar(15)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id")
                         .HasName("PK_Patient");
@@ -317,19 +362,76 @@ namespace ClinicRepositories.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("Data")
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
 
                     b.Property<DateTime?>("GeneratedDate")
                         .HasColumnType("datetime");
 
                     b.Property<string>("Name")
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.HasKey("Id")
                         .HasName("PK_Report");
 
-                    b.ToTable("Reports");
+                    b.ToTable("Report", (string)null);
+                });
+
+            modelBuilder.Entity("BusinessObjects.Entities.Room", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasColumnName("ID");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int?>("ClinicId")
+                        .HasColumnType("int")
+                        .HasColumnName("ClinicID");
+
+                    b.Property<string>("RoomNumber")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<string>("Type")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id")
+                        .HasName("PK_Room");
+
+                    b.HasIndex("ClinicId");
+
+                    b.ToTable("Room", (string)null);
+                });
+
+            modelBuilder.Entity("BusinessObjects.Entities.RoomAvailability", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasColumnName("ID");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("AvailableSlots")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("Day")
+                        .HasColumnType("datetime");
+
+                    b.Property<int>("RoomId")
+                        .HasColumnType("int")
+                        .HasColumnName("RoomID");
+
+                    b.HasKey("Id")
+                        .HasName("PK_RoomAvailability");
+
+                    b.HasIndex("RoomId");
+
+                    b.ToTable("RoomAvailability", (string)null);
                 });
 
             modelBuilder.Entity("BusinessObjects.Entities.Service", b =>
@@ -342,7 +444,7 @@ namespace ClinicRepositories.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<decimal?>("Cost")
-                        .HasColumnType("decimal(10, 2)");
+                        .HasColumnType("decimal(18, 2)");
 
                     b.Property<string>("Description")
                         .HasMaxLength(500)
@@ -367,15 +469,19 @@ namespace ClinicRepositories.Migrations
             modelBuilder.Entity("BusinessObjects.Entities.User", b =>
                 {
                     b.Property<int>("Id")
-                        .HasColumnType("int");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasColumnName("ID");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("Password")
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 
                     b.Property<string>("Role")
-                        .HasMaxLength(20)
-                        .HasColumnType("nvarchar(20)");
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.Property<string>("Username")
                         .HasMaxLength(50)
@@ -404,6 +510,11 @@ namespace ClinicRepositories.Migrations
                         .HasForeignKey("PatientId")
                         .HasConstraintName("FK_Appointment_Patient");
 
+                    b.HasOne("BusinessObjects.Entities.Room", "Room")
+                        .WithMany("Appointments")
+                        .HasForeignKey("RoomId")
+                        .HasConstraintName("FK_Appointment_Room");
+
                     b.HasOne("BusinessObjects.Entities.Service", "Service")
                         .WithMany("Appointments")
                         .HasForeignKey("ServiceId")
@@ -414,6 +525,8 @@ namespace ClinicRepositories.Migrations
                     b.Navigation("Dentist");
 
                     b.Navigation("Patient");
+
+                    b.Navigation("Room");
 
                     b.Navigation("Service");
                 });
@@ -429,6 +542,18 @@ namespace ClinicRepositories.Migrations
                     b.Navigation("Owner");
                 });
 
+            modelBuilder.Entity("BusinessObjects.Entities.ClinicOwner", b =>
+                {
+                    b.HasOne("BusinessObjects.Entities.User", "User")
+                        .WithOne()
+                        .HasForeignKey("BusinessObjects.Entities.ClinicOwner", "Id")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("FK_ClinicOwner_User");
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("BusinessObjects.Entities.Dentist", b =>
                 {
                     b.HasOne("BusinessObjects.Entities.Clinic", "Clinic")
@@ -436,6 +561,13 @@ namespace ClinicRepositories.Migrations
                         .HasForeignKey("ClinicId")
                         .IsRequired()
                         .HasConstraintName("FK_Dentist_Clinic");
+
+                    b.HasOne("BusinessObjects.Entities.User", "User")
+                        .WithOne()
+                        .HasForeignKey("BusinessObjects.Entities.Dentist", "Id")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("FK_Dentist_User");
 
                     b.HasOne("BusinessObjects.Entities.License", "License")
                         .WithMany("Dentists")
@@ -445,6 +577,8 @@ namespace ClinicRepositories.Migrations
                     b.Navigation("Clinic");
 
                     b.Navigation("License");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("BusinessObjects.Entities.DentistAvailability", b =>
@@ -474,31 +608,48 @@ namespace ClinicRepositories.Migrations
                     b.Navigation("Patient");
                 });
 
-            modelBuilder.Entity("BusinessObjects.Entities.User", b =>
+            modelBuilder.Entity("BusinessObjects.Entities.Notification", b =>
                 {
-                    b.HasOne("BusinessObjects.Entities.Dentist", "Dentist")
-                        .WithOne("User")
-                        .HasForeignKey("BusinessObjects.Entities.User", "Id")
+                    b.HasOne("BusinessObjects.Entities.User", "User")
+                        .WithMany("Notifications")
+                        .HasForeignKey("UserId")
                         .IsRequired()
-                        .HasConstraintName("FK_User_Dentist");
+                        .HasConstraintName("FK_Notification_User");
 
-                    b.HasOne("BusinessObjects.Entities.ClinicOwner", "ClinicOwner")
-                        .WithOne("User")
-                        .HasForeignKey("BusinessObjects.Entities.User", "Id")
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("BusinessObjects.Entities.Patient", b =>
+                {
+                    b.HasOne("BusinessObjects.Entities.User", "User")
+                        .WithOne()
+                        .HasForeignKey("BusinessObjects.Entities.Patient", "Id")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
-                        .HasConstraintName("FK_User_ClinicOwner");
+                        .HasConstraintName("FK_Patient_User");
 
-                    b.HasOne("BusinessObjects.Entities.Patient", "Patient")
-                        .WithOne("User")
-                        .HasForeignKey("BusinessObjects.Entities.User", "Id")
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("BusinessObjects.Entities.Room", b =>
+                {
+                    b.HasOne("BusinessObjects.Entities.Clinic", "Clinic")
+                        .WithMany("Rooms")
+                        .HasForeignKey("ClinicId")
+                        .HasConstraintName("FK_Room_Clinic");
+
+                    b.Navigation("Clinic");
+                });
+
+            modelBuilder.Entity("BusinessObjects.Entities.RoomAvailability", b =>
+                {
+                    b.HasOne("BusinessObjects.Entities.Room", "Room")
+                        .WithMany("RoomAvailabilities")
+                        .HasForeignKey("RoomId")
                         .IsRequired()
-                        .HasConstraintName("FK_User_Patient");
+                        .HasConstraintName("FK_RoomAvailability_Room");
 
-                    b.Navigation("ClinicOwner");
-
-                    b.Navigation("Dentist");
-
-                    b.Navigation("Patient");
+                    b.Navigation("Room");
                 });
 
             modelBuilder.Entity("BusinessObjects.Entities.Clinic", b =>
@@ -506,13 +657,13 @@ namespace ClinicRepositories.Migrations
                     b.Navigation("Appointments");
 
                     b.Navigation("Dentists");
+
+                    b.Navigation("Rooms");
                 });
 
             modelBuilder.Entity("BusinessObjects.Entities.ClinicOwner", b =>
                 {
                     b.Navigation("Clinics");
-
-                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("BusinessObjects.Entities.Dentist", b =>
@@ -522,8 +673,6 @@ namespace ClinicRepositories.Migrations
                     b.Navigation("DentistAvailabilities");
 
                     b.Navigation("Messages");
-
-                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("BusinessObjects.Entities.License", b =>
@@ -536,13 +685,23 @@ namespace ClinicRepositories.Migrations
                     b.Navigation("Appointments");
 
                     b.Navigation("Messages");
+                });
 
-                    b.Navigation("User");
+            modelBuilder.Entity("BusinessObjects.Entities.Room", b =>
+                {
+                    b.Navigation("Appointments");
+
+                    b.Navigation("RoomAvailabilities");
                 });
 
             modelBuilder.Entity("BusinessObjects.Entities.Service", b =>
                 {
                     b.Navigation("Appointments");
+                });
+
+            modelBuilder.Entity("BusinessObjects.Entities.User", b =>
+                {
+                    b.Navigation("Notifications");
                 });
 #pragma warning restore 612, 618
         }
