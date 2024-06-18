@@ -1,10 +1,5 @@
 ﻿using ClinicRepositories.Interfaces;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ClinicRepositories
 {
@@ -13,9 +8,9 @@ namespace ClinicRepositories
         private readonly ClinicContext _context;
         private readonly DbSet<T> _dbSet;
 
-        public GenericRepository(ClinicContext context)
+        public GenericRepository()
         {
-            _context = context;
+            _context = new();
             _dbSet = _context.Set<T>();
         }
 
