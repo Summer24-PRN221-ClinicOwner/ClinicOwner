@@ -21,10 +21,11 @@ public partial class Appointment
     public int? Status { get; set; }
 
     public int? EndSlot { get; set; }
+    public DateTime CreateDate { get; set; }
 
-    public int ClinicId { get; set; }
+    public DateTime ModifyDate { get; set; }
 
-    public virtual Clinic Clinic { get; set; } = null!;
+    public DateTime AppointDate { get; set; }
 
     public virtual Dentist? Dentist { get; set; }
 

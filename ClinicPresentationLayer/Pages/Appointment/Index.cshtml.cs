@@ -24,7 +24,6 @@ namespace ClinicPresentationLayer.Pages.Appointment
         public async Task OnGetAsync()
         {
             Appointment = await _context.Appointments
-                .Include(a => a.Clinic)
                 .Include(a => a.Dentist)
                 .Include(a => a.Patient)
                 .Include(a => a.Service).ToListAsync();
