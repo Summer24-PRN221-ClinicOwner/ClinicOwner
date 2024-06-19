@@ -1,7 +1,9 @@
 using ClinicRepositories;
 using ClinicRepositories.Interfaces;
 using ClinicServices;
+using ClinicServices.EmailService;
 using ClinicServices.Interfaces;
+using System.Configuration;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -29,6 +31,16 @@ builder.Services.AddScoped<IServiceService, ServiceService>();
 builder.Services.AddScoped<IServiceRepository, ServiceRepository>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
+
+builder.Services.AddScoped<IEmailSender, EmailSender>();
+
+IConfiguration configuration = new ConfigurationBuilder()
+                .SetBasePath(Directory.GetCurrentDirectory())
+                .AddJsonFile("appsettings.json", true, true)
+                .Build();
+var emailConfig = configuration.GetSection("EmailConfiguration")
+    .Get<EmailConfiguration>();
+builder.Services.AddSingleton(emailConfig);
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

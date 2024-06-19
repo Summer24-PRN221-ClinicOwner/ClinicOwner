@@ -10,7 +10,7 @@ namespace ClinicServices.Interfaces
 {
 	public interface IClinicOwnerService 
 	{
-        Task<IEnumerable<ClinicOwner>> GetAllAsync();
+        Task<List<ClinicOwner>> GetAllAsync();
         Task<ClinicOwner> GetByIdAsync(int id);
         Task<ClinicOwner> AddAsync(ClinicOwner entity);
         Task UpdateAsync(ClinicOwner entity);

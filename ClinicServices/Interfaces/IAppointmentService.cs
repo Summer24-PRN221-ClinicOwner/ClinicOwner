@@ -10,7 +10,7 @@ namespace ClinicServices.Interfaces
 {
 	public interface IAppointmentService
 	{
-        Task<IEnumerable<Appointment>> GetAllAsync();
+        Task<List<Appointment>> GetAllAsync();
         Task<Appointment> GetByIdAsync(int id);
         Task<Appointment> AddAsync(Appointment entity);
         Task UpdateAsync(Appointment entity);

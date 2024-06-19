@@ -9,7 +9,7 @@ namespace ClinicServices.Interfaces
 {
 	public interface IUserService
 	{
-        Task<IEnumerable<User>> GetAllAsync();
+        Task<List<User>> GetAllAsync();
         Task<User> GetByIdAsync(int id);
         Task<User> AddAsync(User entity);
         Task UpdateAsync(User entity);

@@ -23,7 +23,7 @@ namespace ClinicServices
             await _repository.DeleteAsync(id);
         }
 
-        public async Task<IEnumerable<Message>> GetAllAsync()
+        public async Task<List<Message>> GetAllAsync()
         {
             return await _repository.GetAllAsync();
         }
