@@ -1,45 +1,43 @@
 ﻿using BusinessObjects.Entities;
 using ClinicRepositories.Interfaces;
 using ClinicServices.Interfaces;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ClinicServices
 {
-	public class DentistService : IDentistService
-	{
-		private readonly IDentistRepository _repository;
-		public DentistService(IDentistRepository repository)
-		{
-			_repository = repository;
-		}
+    public class DentistService : IDentistService
+    {
+        private readonly IDentistRepository _repository;
+        public readonly IUserService _userService;
 
-		public Task<Dentist> AddAsync(Dentist entity)
-		{
-			return _repository.AddAsync(entity);
-		}
+        public DentistService(IDentistRepository repository, IUserService userService)
+        {
+            _repository = repository;
+            _userService = userService;
+        }
 
-		public Task DeleteAsync(int id)
-		{
-			return _repository.DeleteAsync(id);
-		}
+        public async Task<Dentist> AddAsync(Dentist entity)
+        {
+            return await _repository.AddAsync(entity);
+        }
 
-		public Task<IEnumerable<Dentist>> GetAllAsync()
-		{
-			return _repository.GetAllAsync();
-		}
+        public async Task DeleteAsync(int id)
+        {
+            await _repository.DeleteAsync(id);
+        }
 
-		public Task<Dentist> GetByIdAsync(int id)
-		{
-			return _repository.GetByIdAsync(id);
-		}
+        public async Task<IEnumerable<Dentist>> GetAllAsync()
+        {
+            return await _repository.GetAllAsync();
+        }
 
-		public Task UpdateAsync(Dentist entity)
-		{
-			return _repository.UpdateAsync(entity);
-		}
-	}
+        public async Task<Dentist> GetByIdAsync(int id)
+        {
+            return await _repository.GetByIdAsync(id);
+        }
+
+        public async Task UpdateAsync(Dentist entity)
+        {
+            await _repository.UpdateAsync(entity);
+        }
+    }
 }

@@ -1,41 +1,44 @@
 ﻿using BusinessObjects.Entities;
 using ClinicRepositories.Interfaces;
 using ClinicServices.Interfaces;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ClinicServices
 {
-	public class ReportService : IReportService
-	{
-		private readonly IReportRepository _repository;
-		public ReportService(IReportRepository repository) { _repository = repository; }
-		public Task<Report> AddAsync(Report entity)
-		{
-			return _repository.AddAsync(entity);
-		}
+    public class ReportService : IReportService
+    {
+        private readonly IReportRepository _repository;
 
-		public Task DeleteAsync(int id)
-		{
-			return _repository.DeleteAsync(id);
-		}
+        public ReportService(IReportRepository repository)
+        {
+            _repository = repository;
+        }
 
-		public Task<IEnumerable<Report>> GetAllAsync()
-		{
-			return _repository.GetAllAsync();
-		}
+        public async Task<Report> AddAsync(Report entity)
+        {
+            return await _repository.AddAsync(entity);
+        }
 
-		public Task<Report> GetByIdAsync(int id)
-		{
-			return _repository.GetByIdAsync(id);
-		}
+        public async Task DeleteAsync(int id)
+        {
+            await _repository.DeleteAsync(id);
+        }
 
-		public Task UpdateAsync(Report entity)
-		{
-			return _repository.GetAllAsync();
-		}
-	}
+        public async Task<IEnumerable<Report>> GetAllAsync()
+        {
+            return await _repository.GetAllAsync();
+        }
+
+        public async Task<Report> GetByIdAsync(int id)
+        {
+            return await _repository.GetByIdAsync(id);
+        }
+
+        public async Task UpdateAsync(Report entity)
+        {
+            // Corrected the return type to match the repository method
+            await _repository.UpdateAsync(entity);
+            // UpdateAsync doesn't typically return anything, 
+            // so we don't need to return a value here.
+        }
+    }
 }

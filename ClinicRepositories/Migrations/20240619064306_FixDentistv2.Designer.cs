@@ -4,6 +4,7 @@ using ClinicRepositories;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ClinicRepositories.Migrations
 {
     [DbContext(typeof(ClinicContext))]
-    partial class ClinicContextModelSnapshot : ModelSnapshot
+    [Migration("20240619064306_FixDentistv2")]
+    partial class FixDentistv2
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -31,11 +34,9 @@ namespace ClinicRepositories.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<DateTime>("AppointDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime>("CreateDate")
-                        .HasColumnType("datetime2");
+                    b.Property<int>("ClinicId")
+                        .HasColumnType("int")
+                        .HasColumnName("ClinicID");
 
                     b.Property<int?>("DentistId")
                         .HasColumnType("int")
@@ -43,9 +44,6 @@ namespace ClinicRepositories.Migrations
 
                     b.Property<int?>("EndSlot")
                         .HasColumnType("int");
-
-                    b.Property<DateTime>("ModifyDate")
-                        .HasColumnType("datetime2");
 
                     b.Property<int?>("PatientId")
                         .HasColumnType("int")
@@ -67,6 +65,8 @@ namespace ClinicRepositories.Migrations
 
                     b.HasKey("Id")
                         .HasName("PK_Appointment");
+
+                    b.HasIndex("ClinicId");
 
                     b.HasIndex("DentistId");
 
@@ -161,6 +161,9 @@ namespace ClinicRepositories.Migrations
                     b.Property<string>("Phone")
                         .HasMaxLength(15)
                         .HasColumnType("nvarchar(15)");
+
+                    b.Property<int?>("Status")
+                        .HasColumnType("int");
 
                     b.HasKey("Id")
                         .HasName("PK_Dentist");
@@ -400,6 +403,10 @@ namespace ClinicRepositories.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 
+                    b.Property<string>("Type")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.HasKey("Id")
                         .HasName("PK_Room");
 
@@ -501,6 +508,12 @@ namespace ClinicRepositories.Migrations
 
             modelBuilder.Entity("BusinessObjects.Entities.Appointment", b =>
                 {
+                    b.HasOne("BusinessObjects.Entities.Clinic", "Clinic")
+                        .WithMany("Appointments")
+                        .HasForeignKey("ClinicId")
+                        .IsRequired()
+                        .HasConstraintName("FK_Appointment_Clinic");
+
                     b.HasOne("BusinessObjects.Entities.Dentist", "Dentist")
                         .WithMany("Appointments")
                         .HasForeignKey("DentistId")
@@ -520,6 +533,8 @@ namespace ClinicRepositories.Migrations
                         .WithMany("Appointments")
                         .HasForeignKey("ServiceId")
                         .HasConstraintName("FK_Appointment_Service");
+
+                    b.Navigation("Clinic");
 
                     b.Navigation("Dentist");
 
@@ -677,6 +692,8 @@ namespace ClinicRepositories.Migrations
 
             modelBuilder.Entity("BusinessObjects.Entities.Clinic", b =>
                 {
+                    b.Navigation("Appointments");
+
                     b.Navigation("Dentists");
 
                     b.Navigation("Rooms");

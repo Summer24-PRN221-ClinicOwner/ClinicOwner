@@ -1,44 +1,43 @@
 ﻿using BusinessObjects.Entities;
 using ClinicRepositories.Interfaces;
 using ClinicServices.Interfaces;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ClinicServices
 {
-	public class ClinicOwnerService : IClinicOwnerService
-	{
-		private readonly IClinicOwnerRepository _clinicOwnerRepository;
-		public ClinicOwnerService(IClinicOwnerRepository iClinicOwnerRepository)
-		{
-			_clinicOwnerRepository = iClinicOwnerRepository;
-		}
-		public Task<ClinicOwner> AddAsync(ClinicOwner entity)
-		{
-			return _clinicOwnerRepository.AddAsync(entity);
-		}
+    public class ClinicOwnerService : IClinicOwnerService
+    {
+        private readonly IClinicOwnerRepository _clinicOwnerRepository;
+        public readonly IUserService _userService;
 
-		public Task DeleteAsync(int id)
-		{
-			return _clinicOwnerRepository.DeleteAsync(id);
-		}
+        public ClinicOwnerService(IClinicOwnerRepository iClinicOwnerRepository, IUserService userService)
+        {
+            _clinicOwnerRepository = iClinicOwnerRepository;
+            _userService = userService;
+        }
 
-		public Task<IEnumerable<ClinicOwner>> GetAllAsync()
-		{
-			return _clinicOwnerRepository.GetAllAsync();
-		}
+        public async Task<ClinicOwner> AddAsync(ClinicOwner entity)
+        {
+            return await _clinicOwnerRepository.AddAsync(entity);
+        }
 
-		public Task<ClinicOwner> GetByIdAsync(int id)
-		{
-			return _clinicOwnerRepository.GetByIdAsync(id);
-		}
+        public async Task DeleteAsync(int id)
+        {
+            await _userService.DeleteAsync(id);
+        }
 
-		public Task UpdateAsync(ClinicOwner entity)
-		{
-			return _clinicOwnerRepository.UpdateAsync(entity);
-		}
-	}
+        public async Task<IEnumerable<ClinicOwner>> GetAllAsync()
+        {
+            return await _clinicOwnerRepository.GetAllAsync();
+        }
+
+        public async Task<ClinicOwner> GetByIdAsync(int id)
+        {
+            return await _clinicOwnerRepository.GetByIdAsync(id);
+        }
+
+        public async Task UpdateAsync(ClinicOwner entity)
+        {
+            await _clinicOwnerRepository.UpdateAsync(entity);
+        }
+    }
 }
