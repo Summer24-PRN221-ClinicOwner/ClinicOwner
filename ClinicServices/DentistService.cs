@@ -25,7 +25,7 @@ namespace ClinicServices
             await _repository.DeleteAsync(id);
         }
 
-        public async Task<IEnumerable<Dentist>> GetAllAsync()
+        public async Task<List<Dentist>> GetAllAsync()
         {
             return await _repository.GetAllAsync();
         }

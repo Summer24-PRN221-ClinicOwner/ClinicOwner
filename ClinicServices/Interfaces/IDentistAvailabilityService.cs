@@ -10,7 +10,7 @@ namespace ClinicServices.Interfaces
 {
 	public interface IDentistAvailabilityService
 	{
-        Task<IEnumerable<DentistAvailability>> GetAllAsync();
+        Task<List<DentistAvailability>> GetAllAsync();
         Task<DentistAvailability> GetByIdAsync(int id);
         Task<DentistAvailability> AddAsync(DentistAvailability entity);
         Task UpdateAsync(DentistAvailability entity);

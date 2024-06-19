@@ -25,7 +25,7 @@ namespace ClinicServices
             await _repository.UpdateAsync(item);
         }
 
-        public async Task<IEnumerable<User>> GetAllAsync()
+        public async Task<List<User>> GetAllAsync()
         {
             return await _repository.GetAllAsync();
         }

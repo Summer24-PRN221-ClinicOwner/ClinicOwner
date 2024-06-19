@@ -10,7 +10,7 @@ namespace ClinicServices.Interfaces
 {
 	public interface ILicenseService
 	{
-        Task<IEnumerable<License>> GetAllAsync();
+        Task<List<License>> GetAllAsync();
         Task<License> GetByIdAsync(int id);
         Task<License> AddAsync(License entity);
         Task UpdateAsync(License entity);

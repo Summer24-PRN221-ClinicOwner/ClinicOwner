@@ -23,7 +23,7 @@ namespace ClinicServices
             await _iDentistAvailabilityRepository.DeleteAsync(id);
         }
 
-        public async Task<IEnumerable<DentistAvailability>> GetAllAsync()
+        public async Task<List<DentistAvailability>> GetAllAsync()
         {
             return await _iDentistAvailabilityRepository.GetAllAsync();
         }

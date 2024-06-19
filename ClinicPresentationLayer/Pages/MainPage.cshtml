@@ -182,35 +182,26 @@
         <table class="table table-striped">
             <thead>
                 <tr>
-                    <th>Id</th>
                     <th>Name</th>
                     <th>Description</th>
-                    <th>Status</th>
                     <th>Cost</th>
-                    <th>Duration (mins)</th>
+                    <th>Duration (slot)</th>
+                    <th>Action</th>
                 </tr>
             </thead>
             <tbody>
-               @*  @foreach (var service in model)
+                 @foreach (var service in Model.Services)
                 {
                     <tr>
-                        <td>@service.Id</td>
                         <td>@service.Name</td>
                         <td>@service.Description</td>
-                        <td>
-                            @if (service.Status == 1)
-                            {
-                                <span class="text-success">Active</span>
-                            }
-                            else
-                            {
-                                <span class="text-danger">Inactive</span>
-                            }
-                        </td>
                         <td>@service.Cost?.ToString("C")</td>
                         <td>@service.Duration</td>
+                        <td>
+                            <a asp-page="./Appointment/Create" asp-route-id="@service.Id">Book Appointment</a>
+                        </td>
                     </tr>
-                } *@
+                } 
             </tbody>
         </table>
     </div>
