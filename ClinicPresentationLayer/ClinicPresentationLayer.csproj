@@ -7,6 +7,13 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Pages\MainPage\**" />
+    <Content Remove="Pages\MainPage\**" />
+    <EmbeddedResource Remove="Pages\MainPage\**" />
+    <None Remove="Pages\MainPage\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Content Remove="wwwroot\js\apex-custom.js" />
     <Content Remove="wwwroot\js\charts-custom.js" />
     <Content Remove="wwwroot\js\init-tdatatable.js" />
@@ -207,10 +214,6 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="8.0.2" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Pages\MainPage\" />
   </ItemGroup>
 
 </Project>

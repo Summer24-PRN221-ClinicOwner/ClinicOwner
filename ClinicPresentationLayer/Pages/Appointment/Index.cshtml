@@ -23,6 +23,9 @@
                 @Html.DisplayNameFor(model => model.Appointment[0].EndSlot)
             </th>
             <th>
+                @Html.DisplayNameFor(model => model.Appointment[0].Room)
+            </th>
+            <th>
                 @Html.DisplayNameFor(model => model.Appointment[0].Dentist)
             </th>
             <th>
@@ -35,32 +38,36 @@
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model.Appointment) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.StartSlot)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Status)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.EndSlot)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Dentist.Id)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Patient.Id)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Service.Id)
-            </td>
-            <td>
-                <a asp-page="./Edit" asp-route-id="@item.Id">Edit</a> |
-                <a asp-page="./Details" asp-route-id="@item.Id">Details</a> |
-                <a asp-page="./Delete" asp-route-id="@item.Id">Delete</a>
-            </td>
-        </tr>
-}
+        @foreach (var item in Model.Appointment)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.StartSlot)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Status)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.EndSlot)
+                </td>
+                <td>
+                     @Html.DisplayFor(modelItem => item.Room.Id) 
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Dentist.Id)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Patient.Id)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Service.Id)
+                </td>
+                <td>
+                    <a asp-page="./Edit" asp-route-id="@item.Id">Edit</a> |
+                    <a asp-page="./Details" asp-route-id="@item.Id">Details</a> |
+                    <a asp-page="./Delete" asp-route-id="@item.Id">Delete</a>
+                </td>
+            </tr>
+        }
     </tbody>
 </table>

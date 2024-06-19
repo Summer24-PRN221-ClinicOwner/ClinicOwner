@@ -5,7 +5,7 @@ namespace BusinessObjects.Entities;
 
 public partial class Message
 {
-    public int MessageId { get; set; }
+    public int Id { get; set; }
 
     public int? DentistId { get; set; }
 
@@ -13,11 +13,11 @@ public partial class Message
 
     public string? Content { get; set; }
 
-    public string Sender {  get; set; }
-
     public DateTime? DateSend { get; set; }
 
     public DateTime? DateSeen { get; set; }
+
+    public string Sender { get; set; } = null!;
 
     public virtual Dentist? Dentist { get; set; }
 

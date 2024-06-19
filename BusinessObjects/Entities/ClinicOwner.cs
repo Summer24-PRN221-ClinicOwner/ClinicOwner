@@ -17,5 +17,5 @@ public partial class ClinicOwner
 
     public virtual ICollection<Clinic> Clinics { get; set; } = new List<Clinic>();
 
-    public virtual User? User { get; set; }
+    public virtual User IdNavigation { get; set; } = null!;
 }
