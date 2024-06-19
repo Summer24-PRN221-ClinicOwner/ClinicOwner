@@ -19,11 +19,12 @@ namespace ClinicPresentationLayer.Pages.Appointment
             _context = context;
         }
 
-        public IList<BusinessObjects.Entities.Appointment> Appointment { get;set; } = default!;
+        public IList<BusinessObjects.Entities.Appointment> Appointment { get; set; } = default!;
 
         public async Task OnGetAsync()
         {
             Appointment = await _context.Appointments
+                .Include(a => a.Room)
                 .Include(a => a.Dentist)
                 .Include(a => a.Patient)
                 .Include(a => a.Service).ToListAsync();

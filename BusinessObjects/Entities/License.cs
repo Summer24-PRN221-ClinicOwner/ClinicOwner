@@ -6,7 +6,6 @@ namespace BusinessObjects.Entities;
 public partial class License
 {
     public int Id { get; set; }
-    public int DentistId { get; set; }
 
     public string? LicenceType { get; set; }
 
@@ -16,5 +15,7 @@ public partial class License
 
     public DateTime? ExpireDate { get; set; }
 
-    public virtual Dentist Dentist { get; set; } 
+    public int DentistId { get; set; }
+
+    public virtual Dentist Dentist { get; set; } = null!;
 }
