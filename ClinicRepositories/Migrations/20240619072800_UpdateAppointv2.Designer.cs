@@ -4,6 +4,7 @@ using ClinicRepositories;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ClinicRepositories.Migrations
 {
     [DbContext(typeof(ClinicContext))]
-    partial class ClinicContextModelSnapshot : ModelSnapshot
+    [Migration("20240619072800_UpdateAppointv2")]
+    partial class UpdateAppointv2
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -33,6 +36,9 @@ namespace ClinicRepositories.Migrations
 
                     b.Property<DateTime>("AppointDate")
                         .HasColumnType("datetime2");
+
+                    b.Property<int?>("ClinicId")
+                        .HasColumnType("int");
 
                     b.Property<DateTime>("CreateDate")
                         .HasColumnType("datetime2");
@@ -67,6 +73,8 @@ namespace ClinicRepositories.Migrations
 
                     b.HasKey("Id")
                         .HasName("PK_Appointment");
+
+                    b.HasIndex("ClinicId");
 
                     b.HasIndex("DentistId");
 
@@ -501,6 +509,10 @@ namespace ClinicRepositories.Migrations
 
             modelBuilder.Entity("BusinessObjects.Entities.Appointment", b =>
                 {
+                    b.HasOne("BusinessObjects.Entities.Clinic", null)
+                        .WithMany("Appointments")
+                        .HasForeignKey("ClinicId");
+
                     b.HasOne("BusinessObjects.Entities.Dentist", "Dentist")
                         .WithMany("Appointments")
                         .HasForeignKey("DentistId")
@@ -677,6 +689,8 @@ namespace ClinicRepositories.Migrations
 
             modelBuilder.Entity("BusinessObjects.Entities.Clinic", b =>
                 {
+                    b.Navigation("Appointments");
+
                     b.Navigation("Dentists");
 
                     b.Navigation("Rooms");

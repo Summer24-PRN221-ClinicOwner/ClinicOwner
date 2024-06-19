@@ -12,8 +12,6 @@ namespace BusinessObjects.Entities
 
         public string? RoomNumber { get; set; }
 
-        public string Type {  get; set; }
-
         public int? ClinicId { get; set; }
 
         public virtual Clinic? Clinic { get; set; }

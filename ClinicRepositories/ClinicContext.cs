@@ -81,16 +81,11 @@ namespace ClinicRepositories
                 entity.HasKey(e => e.Id).HasName("PK_Appointment");
                 entity.ToTable("Appointment");
                 entity.Property(e => e.Id).HasColumnName("ID").ValueGeneratedOnAdd();
-                entity.Property(e => e.ClinicId).HasColumnName("ClinicID");
                 entity.Property(e => e.DentistId).HasColumnName("DentistID");
                 entity.Property(e => e.PatientId).HasColumnName("PatientID");
                 entity.Property(e => e.ServiceId).HasColumnName("ServiceID");
                 entity.Property(e => e.RoomId).HasColumnName("RoomID");
 
-                entity.HasOne(d => d.Clinic).WithMany(p => p.Appointments)
-                    .HasForeignKey(d => d.ClinicId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_Appointment_Clinic");
 
                 entity.HasOne(d => d.Dentist).WithMany(p => p.Appointments)
                     .HasForeignKey(d => d.DentistId)
@@ -282,7 +277,6 @@ namespace ClinicRepositories
                 entity.Property(e => e.Phone).HasMaxLength(15);
                 entity.Property(e => e.Email).HasMaxLength(100);
                 entity.Property(e => e.Name).HasMaxLength(50);
-                entity.Property(e => e.Specialization).HasMaxLength(100);
 
                 entity.HasOne(d => d.User)
                     .WithOne()
@@ -293,9 +287,27 @@ namespace ClinicRepositories
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_Dentist_Clinic");
 
-                entity.HasOne(d => d.License).WithMany(p => p.Dentists)
-                    .HasForeignKey(d => d.LicenseId)
-                    .HasConstraintName("FK_Dentist_License");
+                entity.HasMany(d => d.Licenses)
+                    .WithOne(l => l.Dentist)
+                    .HasForeignKey(l => l.DentistId)
+                    .HasConstraintName("FK_License_Dentist");
+            });
+            modelBuilder.Entity<DentistService>(entity =>
+            {
+                entity.HasKey(e => new { e.DentistId, e.ServiceId });
+                entity.ToTable("DentistService");
+
+                entity.HasOne(ds => ds.Dentist)
+                    .WithMany(d => d.DentistServices)
+                    .HasForeignKey(ds => ds.DentistId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_DentistService_Dentist");
+
+                entity.HasOne(ds => ds.Service)
+                    .WithMany(s => s.DentistServices)
+                    .HasForeignKey(ds => ds.ServiceId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_DentistService_Service");
             });
             OnModelCreatingPartial(modelBuilder);
         }
