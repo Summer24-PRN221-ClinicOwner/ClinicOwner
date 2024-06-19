@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace BusinessObjects.Entities;
 
@@ -19,6 +20,8 @@ public partial class Dentist
     public virtual Clinic Clinic { get; set; } = null!;
 
     public virtual ICollection<DentistAvailability> DentistAvailabilities { get; set; } = new List<DentistAvailability>();
+
+    public virtual User IdNavigation { get; set; } = null!;
 
     public virtual ICollection<License> Licenses { get; set; } = new List<License>();
 

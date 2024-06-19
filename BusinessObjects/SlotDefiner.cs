@@ -12,16 +12,17 @@ namespace BusinessObjects
 
     public static class SlotDefiner
     {
-        public static readonly Slot slot_1 = new() { Key = 1, DisplayTime = "7h00" };
-        public static readonly Slot slot_2 = new() { Key = 2, DisplayTime = "8h00" };
-        public static readonly Slot slot_3 = new() { Key = 3, DisplayTime = "9h00" };
-        public static readonly Slot slot_4 = new() { Key = 4, DisplayTime = "10h00" };
-        public static readonly Slot slot_5 = new() { Key = 5, DisplayTime = "11h00" };
-        public static readonly Slot slot_6 = new() { Key = 6, DisplayTime = "1h00" };
-        public static readonly Slot slot_7 = new() { Key = 7, DisplayTime = "2h00" };
-        public static readonly Slot slot_8 = new() { Key = 8, DisplayTime = "3h00" };
-        public static readonly Slot slot_9 = new() { Key = 9, DisplayTime = "4h00" };
-        public static readonly Slot slot_10 = new() { Key = 10, DisplayTime = "5h00" };
+        public static readonly Slot slot_1 = new() { Key = 1, DisplayTime = "Slot 1 : 7h00 - 8h00" };
+        public static readonly Slot slot_2 = new() { Key = 2, DisplayTime = "Slot 2 : 8h00 - 9h00" };
+        public static readonly Slot slot_3 = new() { Key = 3, DisplayTime = "Slot 3 : 9h00 - 10h00" };
+        public static readonly Slot slot_4 = new() { Key = 4, DisplayTime = "Slot 4 : 10h00 - 11h00" };
+        public static readonly Slot slot_5 = new() { Key = 5, DisplayTime = "Slot 5 : 11h00 - 12h00" };
+        public static readonly Slot slot_6 = new() { Key = 6, DisplayTime = "Slot 6 : 13h00 - 14h00" };
+        public static readonly Slot slot_7 = new() { Key = 7, DisplayTime = "Slot 7 : 14h00 - 15h00" };
+        public static readonly Slot slot_8 = new() { Key = 8, DisplayTime = "Slot 8 : 15h00 - 16h00" };
+        public static readonly Slot slot_9 = new() { Key = 9, DisplayTime = "Slot 9 : 16h00 - 17h00" };
+        public static readonly Slot slot_10 = new() { Key = 10, DisplayTime = "Slot 10 : 17h00 - 18h00" };
+
         public static readonly List<Slot> slots = [slot_1, slot_2, slot_3, slot_4, slot_5, slot_6, slot_7, slot_8, slot_9, slot_10];
         public static List<Slot> ConvertFromString(string input)
         {

@@ -20,9 +20,10 @@ public partial class Appointment
     public int? Status { get; set; }
 
     public int? EndSlot { get; set; }
-    public DateTime CreateDate { get; set; }
 
     public DateTime AppointDate { get; set; }
+
+    public DateTime CreateDate { get; set; }
 
     public DateTime ModifyDate { get; set; }
 
