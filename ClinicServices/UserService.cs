@@ -1,45 +1,43 @@
 ﻿using BusinessObjects.Entities;
 using ClinicRepositories.Interfaces;
 using ClinicServices.Interfaces;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ClinicServices
 {
-	public class UserService : IUserService
-	{
-		private readonly IUserRepository _repository;
-		public UserService(IUserRepository repository)
-		{
-			_repository = repository;
-		}
+    public class UserService : IUserService
+    {
+        private readonly IUserRepository _repository;
 
-		public Task<User> AddAsync(User entity)
-		{
-			return _repository.AddAsync(entity);
-		}
+        public UserService(IUserRepository repository)
+        {
+            _repository = repository;
+        }
 
-		public Task DeleteAsync(int id)
-		{
-			return _repository.DeleteAsync(id);
-		}
+        public async Task<User> AddAsync(User entity)
+        {
+            return await _repository.AddAsync(entity);
+        }
 
-		public Task<IEnumerable<User>> GetAllAsync()
-		{
-			return _repository.GetAllAsync();
-		}
+        public async Task DeleteAsync(int id)
+        {
+            var item = await _repository.GetByIdAsync(id);
+            item.Status = 0;
+            await _repository.UpdateAsync(item);
+        }
 
-		public Task<User> GetByIdAsync(int id)
-		{
-			return _repository.GetByIdAsync(id);
-		}
+        public async Task<IEnumerable<User>> GetAllAsync()
+        {
+            return await _repository.GetAllAsync();
+        }
 
-		public Task UpdateAsync(User entity)
-		{
-			return _repository.UpdateAsync(entity);
-		}
-	}
+        public async Task<User> GetByIdAsync(int id)
+        {
+            return await _repository.GetByIdAsync(id);
+        }
+
+        public async Task UpdateAsync(User entity)
+        {
+            await _repository.UpdateAsync(entity);
+        }
+    }
 }

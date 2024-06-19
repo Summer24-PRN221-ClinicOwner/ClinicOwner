@@ -1,44 +1,41 @@
 ﻿using BusinessObjects.Entities;
 using ClinicRepositories.Interfaces;
 using ClinicServices.Interfaces;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ClinicServices
 {
-	public class MessageService : IMessageService
-	{
-		private readonly IMessageRepository _repository;
-		public MessageService(IMessageRepository repository) 
-		{
-			_repository = repository;	
-		}
-		public Task<Message> AddAsync(Message entity)
-		{
-			return _repository.AddAsync(entity);
-		}
+    public class MessageService : IMessageService
+    {
+        private readonly IMessageRepository _repository;
 
-		public Task DeleteAsync(int id)
-		{
-			return _repository.DeleteAsync(id);
-		}
+        public MessageService(IMessageRepository repository)
+        {
+            _repository = repository;
+        }
 
-		public Task<IEnumerable<Message>> GetAllAsync()
-		{
-			return _repository.GetAllAsync();
-		}
+        public async Task<Message> AddAsync(Message entity)
+        {
+            return await _repository.AddAsync(entity);
+        }
 
-		public Task<Message> GetByIdAsync(int id)
-		{
-			return _repository.GetByIdAsync(id);
-		}
+        public async Task DeleteAsync(int id)
+        {
+            await _repository.DeleteAsync(id);
+        }
 
-		public Task UpdateAsync(Message entity)
-		{
-			return _repository.UpdateAsync(entity);	
-		}
-	}
+        public async Task<IEnumerable<Message>> GetAllAsync()
+        {
+            return await _repository.GetAllAsync();
+        }
+
+        public async Task<Message> GetByIdAsync(int id)
+        {
+            return await _repository.GetByIdAsync(id);
+        }
+
+        public async Task UpdateAsync(Message entity)
+        {
+            await _repository.UpdateAsync(entity);
+        }
+    }
 }

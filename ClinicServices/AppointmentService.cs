@@ -1,47 +1,41 @@
 ﻿using BusinessObjects.Entities;
-using ClinicRepositories;
 using ClinicRepositories.Interfaces;
 using ClinicServices.Interfaces;
-using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ClinicServices
 {
-	public class AppointmentService: IAppointmentService
-	{
-		private readonly IAppointmentRepository _appointmentRepository;
-		public AppointmentService(IAppointmentRepository iAppointmentRepository)
-		{
-			_appointmentRepository =  iAppointmentRepository;
-		}
+    public class AppointmentService : IAppointmentService
+    {
+        private readonly IAppointmentRepository _appointmentRepository;
 
-		public Task<Appointment> AddAsync(Appointment entity)
-		{
-			return _appointmentRepository.AddAsync(entity);
-		}
+        public AppointmentService(IAppointmentRepository iAppointmentRepository)
+        {
+            _appointmentRepository = iAppointmentRepository;
+        }
 
-		public Task DeleteAsync(int id)
-		{
-			return _appointmentRepository.DeleteAsync(id);
-		}
+        public async Task<Appointment> AddAsync(Appointment entity)
+        {
+            return await _appointmentRepository.AddAsync(entity);
+        }
 
-		public Task<IEnumerable<Appointment>> GetAllAsync()
-		{
-			return _appointmentRepository.GetAllAsync();
-		}
+        public async Task DeleteAsync(int id)
+        {
+            await _appointmentRepository.DeleteAsync(id);
+        }
 
-		public Task<Appointment> GetByIdAsync(int id)
-		{
-			return _appointmentRepository.GetByIdAsync(id);
-		}
+        public async Task<IEnumerable<Appointment>> GetAllAsync()
+        {
+            return await _appointmentRepository.GetAllAsync();
+        }
 
-		public Task UpdateAsync(Appointment entity)
-		{
-			return _appointmentRepository.UpdateAsync(entity);
-		}
-	}
+        public async Task<Appointment> GetByIdAsync(int id)
+        {
+            return await _appointmentRepository.GetByIdAsync(id);
+        }
+
+        public async Task UpdateAsync(Appointment entity)
+        {
+            await _appointmentRepository.UpdateAsync(entity);
+        }
+    }
 }
