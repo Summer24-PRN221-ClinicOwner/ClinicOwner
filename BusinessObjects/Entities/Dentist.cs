@@ -9,15 +9,9 @@ public partial class Dentist
 
     public string? Name { get; set; }
 
-    public string? Specialization { get; set; }
-
     public string? Phone { get; set; }
 
     public string? Email { get; set; }
-
-    public int? LicenseId { get; set; }
-
-    public int? Status { get; set; }
 
     public int ClinicId { get; set; }
 
@@ -27,9 +21,11 @@ public partial class Dentist
 
     public virtual ICollection<DentistAvailability> DentistAvailabilities { get; set; } = new List<DentistAvailability>();
 
-    public virtual License? License { get; set; }
+    public virtual User IdNavigation { get; set; } = null!;
+
+    public virtual ICollection<License> Licenses { get; set; } = new List<License>();
 
     public virtual ICollection<Message> Messages { get; set; } = new List<Message>();
 
-    public virtual User? User { get; set; }
+    public virtual ICollection<Service> Services { get; set; } = new List<Service>();
 }

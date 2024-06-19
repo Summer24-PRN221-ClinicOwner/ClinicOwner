@@ -2,17 +2,16 @@
 using System.Collections.Generic;
 using BusinessObjects.Entities;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
 
 namespace ClinicRepositories;
 
-public partial class ClinicScheduleContext : DbContext
+public partial class ClinicContext : DbContext
 {
-    public ClinicScheduleContext()
+    public ClinicContext()
     {
     }
 
-    public ClinicScheduleContext(DbContextOptions<ClinicScheduleContext> options)
+    public ClinicContext(DbContextOptions<ClinicContext> options)
         : base(options)
     {
     }
@@ -47,14 +46,7 @@ public partial class ClinicScheduleContext : DbContext
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see https://go.microsoft.com/fwlink/?LinkId=723263.
-        => optionsBuilder.UseSqlServer(GetConnectionString());
-    private string GetConnectionString()
-    {
-        IConfiguration configuration = new ConfigurationBuilder()
-                .SetBasePath(Directory.GetCurrentDirectory())
-                .AddJsonFile("appsettings.json", true, true).Build();
-        return configuration["ConnectionStrings:MyClinicDB"];
-    }
+        => optionsBuilder.UseSqlServer("Server=(local);uid=sa;pwd=12345;database=ClinicSchedule; TrustServerCertificate = true;");
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

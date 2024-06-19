@@ -15,10 +15,9 @@ public partial class Clinic
 
     public int OwnerId { get; set; }
 
-    public virtual ICollection<Appointment> Appointments { get; set; } = new List<Appointment>();
-
     public virtual ICollection<Dentist> Dentists { get; set; } = new List<Dentist>();
-    public virtual ICollection<Room> Rooms { get; set; } = new List<Room>();
 
     public virtual ClinicOwner Owner { get; set; } = null!;
+
+    public virtual ICollection<Room> Rooms { get; set; } = new List<Room>();
 }

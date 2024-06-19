@@ -1,5 +1,4 @@
-﻿using BusinessObjects.Entities;
-using System;
+﻿using System;
 using System.Collections.Generic;
 
 namespace BusinessObjects.Entities;
@@ -22,15 +21,17 @@ public partial class Appointment
 
     public int? EndSlot { get; set; }
 
-    public int ClinicId { get; set; }
+    public DateTime AppointDate { get; set; }
 
-    public virtual Clinic Clinic { get; set; } = null!;
+    public DateTime CreateDate { get; set; }
+
+    public DateTime ModifyDate { get; set; }
 
     public virtual Dentist? Dentist { get; set; }
 
     public virtual Patient? Patient { get; set; }
 
-    public virtual Service? Service { get; set; }
-
     public virtual Room? Room { get; set; }
+
+    public virtual Service? Service { get; set; }
 }
