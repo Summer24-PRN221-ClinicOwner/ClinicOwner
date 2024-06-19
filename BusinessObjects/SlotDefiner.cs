@@ -1,7 +1,7 @@
 ﻿using System.Data;
 using System.Text.RegularExpressions;
 
-namespace BusinessObjects.Entities
+namespace BusinessObjects
 {
     public class Slot
     {
