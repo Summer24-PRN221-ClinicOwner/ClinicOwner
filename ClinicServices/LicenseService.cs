@@ -1,44 +1,41 @@
 ﻿using BusinessObjects.Entities;
 using ClinicRepositories.Interfaces;
 using ClinicServices.Interfaces;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ClinicServices
 {
-	public class LicenseService : ILicenseService
-	{
-		private readonly ILicenseRepository _repository;
-		public LicenseService (ILicenseRepository repository)
-		{
-			_repository = repository;
-		}
-		public Task<License> AddAsync(License entity)
-		{
-			return _repository.AddAsync(entity);
-		}
+    public class LicenseService : ILicenseService
+    {
+        private readonly ILicenseRepository _repository;
 
-		public Task DeleteAsync(int id)
-		{
-			return _repository.DeleteAsync(id);
-		}
+        public LicenseService(ILicenseRepository repository)
+        {
+            _repository = repository;
+        }
 
-		public Task<IEnumerable<License>> GetAllAsync()
-		{
-			return _repository.GetAllAsync();
-		}
+        public async Task<License> AddAsync(License entity)
+        {
+            return await _repository.AddAsync(entity);
+        }
 
-		public Task<License> GetByIdAsync(int id)
-		{
-			return _repository.GetByIdAsync(id);	
-		}
+        public async Task DeleteAsync(int id)
+        {
+            await _repository.DeleteAsync(id);
+        }
 
-		public Task UpdateAsync(License entity)
-		{
-			return _repository.UpdateAsync(entity);
-		}
-	}
+        public async Task<IEnumerable<License>> GetAllAsync()
+        {
+            return await _repository.GetAllAsync();
+        }
+
+        public async Task<License> GetByIdAsync(int id)
+        {
+            return await _repository.GetByIdAsync(id);
+        }
+
+        public async Task UpdateAsync(License entity)
+        {
+            await _repository.UpdateAsync(entity);
+        }
+    }
 }

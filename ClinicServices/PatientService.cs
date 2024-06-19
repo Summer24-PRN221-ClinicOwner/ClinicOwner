@@ -1,45 +1,43 @@
 ﻿using BusinessObjects.Entities;
 using ClinicRepositories.Interfaces;
 using ClinicServices.Interfaces;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ClinicServices
 {
-	public class PatientService : IPatientService
-	{
-		private readonly IPatientRepository _repository;	
-		public PatientService(IPatientRepository repository)
-		{
-			_repository = repository;
-		}
+    public class PatientService : IPatientService
+    {
+        private readonly IPatientRepository _repository;
+        public readonly IUserService _userService;
 
-		public Task<Patient> AddAsync(Patient entity)
-		{
-			return _repository.AddAsync(entity);
-		}
+        public PatientService(IPatientRepository repository, IUserService userService)
+        {
+            _repository = repository;
+            _userService = userService;
+        }
 
-		public Task DeleteAsync(int id)
-		{
-			return _repository.DeleteAsync(id);
-		}
+        public async Task<Patient> AddAsync(Patient entity)
+        {
+            return await _repository.AddAsync(entity);
+        }
 
-		public Task<IEnumerable<Patient>> GetAllAsync()
-		{
-			return _repository.GetAllAsync();
-		}
+        public async Task DeleteAsync(int id)
+        {
+            await _userService.DeleteAsync(id);
+        }
 
-		public Task<Patient> GetByIdAsync(int id)
-		{
-			return _repository.GetByIdAsync(id);
-		}
+        public Task<IEnumerable<Patient>> GetAllAsync()
+        {
+            return _repository.GetAllAsync();
+        }
 
-		public Task UpdateAsync(Patient entity)
-		{
-			return _repository.UpdateAsync(entity);
-		}
-	}
+        public Task<Patient> GetByIdAsync(int id)
+        {
+            return _repository.GetByIdAsync(id);
+        }
+
+        public Task UpdateAsync(Patient entity)
+        {
+            return _repository.UpdateAsync(entity);
+        }
+    }
 }
