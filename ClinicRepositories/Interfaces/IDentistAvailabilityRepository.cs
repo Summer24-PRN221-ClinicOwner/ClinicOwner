@@ -4,6 +4,6 @@ namespace ClinicRepositories.Interfaces
 {
     public interface IDentistAvailabilityRepository : IGenericRepository<DentistAvailability>
     {
-        public Task<List<Dentist>> GetDentistAvailabilityAsync(DateTime date, int slotRequired);
+        public Task<List<Dentist>> GetDentistAvailabilityAsync(DateTime date, int slotRequired, int serviceId);
     }
 }

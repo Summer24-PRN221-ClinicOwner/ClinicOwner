@@ -9,6 +9,6 @@ namespace ClinicServices.Interfaces
         Task<DentistAvailability> AddAsync(DentistAvailability entity);
         Task UpdateAsync(DentistAvailability entity);
         Task DeleteAsync(int id);
-        Task<List<Dentist>> GetAvailableDentist(DateTime date, int slotRequired);
+        Task<List<Dentist>> GetAvailableDentist(DateTime date, int slotRequired, int serviceId);
     }
 }
