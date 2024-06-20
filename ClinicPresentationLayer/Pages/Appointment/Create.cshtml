@@ -25,10 +25,10 @@
         <div class="row">
             <form method="post">
                 <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-
                 <div class="form-group">
-                    <label asp-for="Appointment.DentistId" class="control-label"></label>
-                    <select asp-for="Appointment.DentistId" class="form-control" asp-items="ViewBag.DentistId"></select>
+                    <label asp-for="Appointment.AppointDate" class="control-label"></label>
+                    <input type="date" asp-for="Appointment.AppointDate" class="form-control" />
+                    <span asp-validation-for="Appointment.AppointDate" class="text-danger"></span>
                 </div>
                 <div class="form-group">
                     <label asp-for="Appointment.StartSlot" class="control-label"></label>
@@ -37,22 +37,25 @@
                 </div>
                 <div class="form-group">
                     <label asp-for="Appointment.ServiceId" class="control-label"></label>
-                    <select asp-for="Appointment.ServiceId" class="form-control" asp-items="ViewBag.ServiceId"></select>
+                    <select asp-for="Appointment.ServiceId" class="form-control" asp-items="ViewBag.ServiceId" disabled="@Model.IsServiceIdDisabled"></select>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Appointment.DentistId" class="control-label"></label>
+                    <select asp-for="Appointment.DentistId" class="form-control" asp-items="ViewBag.DentistId"></select>
                 </div>
                 @* <div class="form-group">
-                <label asp-for="Appointment.Status" class="control-label"></label>
-                <input asp-for="Appointment.Status" class="form-control" />
-                <span asp-validation-for="Appointment.Status" class="text-danger"></span>
-                </div>
+                    <label asp-for="Appointment.RoomId" class="control-label"></label>
+                    <select asp-for="Appointment.RoomId" class="form-control" asp-items="ViewBag.RoomId"></select>
+                </div> *@
+               
+                
+                @* 
                 <div class="form-group">
                 <label asp-for="Appointment.EndSlot" class="control-label"></label>
                 <input asp-for="Appointment.EndSlot" class="form-control" />
                 <span asp-validation-for="Appointment.EndSlot" class="text-danger"></span>
                 </div> *@
-                <div class="form-group">
-                    <label asp-for="Appointment.RoomId" class="control-label"></label>
-                    <select asp-for="Appointment.RoomId" class="form-control" asp-items="ViewBag.RoomId"></select>
-                </div>
+                
                 <div class="form-group">
                     <input type="submit" value="Create" class="btn btn-primary" />
                 </div>
@@ -63,34 +66,6 @@
     </div>
 
     </div>
-
-    <script src="~/lib/jquery/dist/jquery.min.js"></script>
-    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="~/js/site.js" asp-append-version="true"></script>
-    <!-- JQuery v3.5.1 -->
-    <script src="~/plugins/jquery/jquery.min.js"></script>
-
-    <!-- popper js -->
-    <script src="~/plugins/popper/popper.min.js"></script>
-
-    <!-- Bootstrap -->
-    <script src="~/plugins/bootstrap/js/bootstrap.min.js"></script>
-
-    <!-- Moment -->
-    <script src="~/plugins/moment/moment.min.js"></script>
-
-    <!-- Date Range Picker -->
-    <script src="~/plugins/daterangepicker/daterangepicker.min.js"></script>
-
-    <!-- Datatable -->
-    <script src="~/plugins/datatables/jquery.dataTables.min.js"></script>
-    <script src="~/js/init-tdatatable.js"></script>
-
-    <!-- Main Custom JQuery -->
-    <script src="~/js/toggleFullScreen.js"></script>
-    <script src="~/js/main.js"></script>
-    <script src="~/js/option-themes.js"></script>
-
 </body>
 
 </html>
