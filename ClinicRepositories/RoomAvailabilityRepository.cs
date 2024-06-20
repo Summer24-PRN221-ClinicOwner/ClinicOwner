@@ -24,12 +24,19 @@ namespace ClinicRepositories
             //Querry list of available room
             List<RoomAvailability> list = await GetAllAsync();
             list.Where(
-                    item => item.Day == date.Date && item.AvailableSlots != "0000000000" && SlotDefiner.CheckSlotRequired(item.AvailableSlots, slotRequired) != -1
+                    item => item.Day == date.Date && item.AvailableSlots != "0000000000" 
                 );
-
+            List<RoomAvailability> tmplist = new List<RoomAvailability>();
+            foreach (var item in list)
+            {
+                if (SlotDefiner.CheckSlotRequired(item.AvailableSlots, slotRequired) != -1)
+                {
+                    tmplist.Add(item);
+                }
+            }
             //Convert to available slots 
             List<Slot> slots = SlotDefiner.ConvertFromString("0000000000");
-            foreach (var room in list)
+            foreach (var room in tmplist)
             {
                 int availableSlot = SlotDefiner.CheckSlotRequired(room.AvailableSlots, slotRequired);
                 while (availableSlot != -1)
@@ -53,8 +60,19 @@ namespace ClinicRepositories
 
         public async Task<Room> GetAvailableRoomAsync(DateTime date, int slotRequired)
         {
-            var item = await _context.RoomAvailabilities.Include(item => item.Room).FirstOrDefaultAsync(item => item.Day == date.Date && item.AvailableSlots != "0000000000" && SlotDefiner.CheckSlotRequired(item.AvailableSlots, slotRequired) != -1);
-            return item.Room;
+            var checklist = _context.RoomAvailabilities.ToList();
+            List<RoomAvailability> item =  _context.RoomAvailabilities.Include(item => item.Room).
+                Where(item => item.Day.Date == date.Date && item.AvailableSlots != "0000000000" ).ToList();
+            foreach (var room in item) {
+
+                int check = SlotDefiner.CheckSlotRequired(room.AvailableSlots, slotRequired);
+                if( check != -1)
+                {
+                    return room.Room;
+                }
+            }
+
+            return null;
         }
 
     }

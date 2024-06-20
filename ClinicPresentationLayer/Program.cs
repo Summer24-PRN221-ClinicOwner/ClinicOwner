@@ -1,3 +1,4 @@
+using BusinessObjects.Entities;
 using ClinicRepositories;
 using ClinicRepositories.Interfaces;
 using ClinicServices;
@@ -33,7 +34,10 @@ builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 
 builder.Services.AddScoped<IEmailSender, EmailSender>();
-
+builder.Services.AddScoped<User>();
+builder.Services.AddSession();
+builder.Services.AddHttpContextAccessor();
+builder.Services.AddDistributedMemoryCache();
 IConfiguration configuration = new ConfigurationBuilder()
                 .SetBasePath(Directory.GetCurrentDirectory())
                 .AddJsonFile("appsettings.json", true, true)
@@ -57,6 +61,8 @@ app.UseStaticFiles();
 app.UseRouting();
 
 app.UseAuthorization();
+
+app.UseSession();
 
 app.MapRazorPages();
 

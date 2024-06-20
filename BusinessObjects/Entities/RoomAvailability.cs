@@ -11,7 +11,7 @@ public partial class RoomAvailability
 
     public string? AvailableSlots { get; set; }
 
-    public DateTime? Day { get; set; }
+    public DateTime Day { get; set; }
 
     public virtual Room Room { get; set; } = null!;
 }

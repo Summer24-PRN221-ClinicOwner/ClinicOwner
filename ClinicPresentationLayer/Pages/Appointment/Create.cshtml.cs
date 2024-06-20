@@ -8,36 +8,41 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using BusinessObjects.Entities;
 using ClinicRepositories;
 using BusinessObjects;
+using ClinicServices.Interfaces;
+using ClinicPresentationLayer.Extension;
 
 namespace ClinicPresentationLayer.Pages.Appointment
 {
     public class CreateModel : PageModel
     {
-        private readonly ClinicRepositories.ClinicContext _context;
+        private readonly IAppointmentService _appointmentService;
+        private readonly IServiceService _serviceService;
+        private readonly IDentistAvailabilityService _dentistAvailService;
 
-        public CreateModel(ClinicRepositories.ClinicContext context)
+        public CreateModel(IAppointmentService appointmentService, IServiceService serviceService, IDentistAvailabilityService dentistService)
         {
-            _context = context;
+            _appointmentService = appointmentService;
+            _serviceService = serviceService;
+            _dentistAvailService = dentistService;
         }
         public bool IsServiceIdDisabled { get; set; }
 
-        public IActionResult OnGet(int? id)
+        public async Task<IActionResult> OnGet(int id)
         {
-            var rooms = _context.Rooms.ToList();
-            rooms.Insert(0, new Room { Id = 0, RoomNumber = "Please select a room" }); 
-            ViewData["RoomId"] = new SelectList(rooms, "Id", "RoomNumber");
-        
-            var dentists = _context.Dentists.ToList();
-            dentists.Insert(0, new Dentist { Id = 0, Name = "Please select a dentist" }); 
-            ViewData["DentistId"] = new SelectList(dentists, "Id", "Name");
+            User currentAcc = HttpContext.Session.GetObject<User>("UserAccount");
+            Service services = await _serviceService.GetByIdAsync(id);
+            List<Service> services1 = new List<Service>();
+            services1.Add(services);
+            //List<Dentist> dentists =  await _dentistAvailService.GetAvailableDentist(Appointment.AppointDate, services.Duration);
 
-            var services = _context.Services.ToList();
-            services.Insert(0, new Service { Id = 0, Name = "Please select a service" }); 
-            ViewData["ServiceId"] = new SelectList(services, "Id", "Name", id);
-
+            //dentists.Insert(0, new Dentist { Id = 0, Name = "Please select a dentist" }); 
+            //ViewData["DentistId"] = new SelectList(dentists, "Id", "Name");
+            ViewData["ServiceId"] = new SelectList(services1, "Id", "Name");
             ViewData["StartSlot"] = new SelectList(SlotDefiner.slots, "Key", "DisplayTime");
-
-            IsServiceIdDisabled = id.HasValue;
+            if (id != null)
+            {
+                IsServiceIdDisabled = true;
+            }
             return Page();
         }
 
@@ -48,15 +53,25 @@ namespace ClinicPresentationLayer.Pages.Appointment
         // To protect from overposting attacks, see https://aka.ms/RazorPagesCRUD
         public async Task<IActionResult> OnPostAsync()
         {
+            Service services = await _serviceService.GetByIdAsync(Appointment.ServiceId);
+            User currentAcc = HttpContext.Session.GetObject<User>("UserAccount");
             if (!ModelState.IsValid)
             {
                 return Page();
             }
-
-            _context.Appointments.Add(Appointment);
-            await _context.SaveChangesAsync();
-
-            return RedirectToPage("./Index");
+            
+            Appointment.PatientId = currentAcc.Id;
+            var availRoom = await _appointmentService.GetRoomAvailable(Appointment.AppointDate, services.Duration);
+            Appointment.RoomId= availRoom.Id;
+            Appointment.Status = (int)AppointmentStatus.Waiting;
+            Appointment.CreateDate = Appointment.ModifyDate = DateTime.UtcNow.AddHours(7);
+            var result = await _appointmentService.AddAsync(Appointment);
+            if(result != null)
+            {
+                return RedirectToPage("./Index");
+            }
+            return Page();
+            
         }
     }
 }
