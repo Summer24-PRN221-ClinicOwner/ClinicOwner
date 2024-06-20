@@ -3,13 +3,12 @@ using ClinicRepositories.Interfaces;
 using ClinicServices;
 using ClinicServices.EmailService;
 using ClinicServices.Interfaces;
-using System.Configuration;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddRazorPages();
-builder.Services.AddDbContext<ClinicContext>();
+builder.Services.AddScoped<IRoomAvailabilityRepository, RoomAvailabilityRepository>();
 builder.Services.AddScoped<IAppointmentService, AppointmentService>();
 builder.Services.AddScoped<IAppointmentRepository, AppointmentRepository>();
 builder.Services.AddScoped<IClinicOwnerService, ClinicOwnerService>();

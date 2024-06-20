@@ -17,6 +17,7 @@ namespace BusinessObjects
         public static readonly Slot slot_3 = new() { Key = 3, DisplayTime = "Slot 3 : 9h00 - 10h00" };
         public static readonly Slot slot_4 = new() { Key = 4, DisplayTime = "Slot 4 : 10h00 - 11h00" };
         public static readonly Slot slot_5 = new() { Key = 5, DisplayTime = "Slot 5 : 11h00 - 12h00" };
+        //Break
         public static readonly Slot slot_6 = new() { Key = 6, DisplayTime = "Slot 6 : 13h00 - 14h00" };
         public static readonly Slot slot_7 = new() { Key = 7, DisplayTime = "Slot 7 : 14h00 - 15h00" };
         public static readonly Slot slot_8 = new() { Key = 8, DisplayTime = "Slot 8 : 15h00 - 16h00" };
@@ -33,7 +34,7 @@ namespace BusinessObjects
             {
                 result.Add(new() { Key = i + 1, DisplayTime = slots.ElementAt(i).DisplayTime, IsAvailable = input.ElementAt(i) != 0 });
             }
-            return result;
+            return result.OrderBy(item => item.Key).ToList();
         }
         public static string ConvertToString(List<Slot> input)
         {
@@ -60,5 +61,47 @@ namespace BusinessObjects
         }
 
         public static Slot NewSlot(int key) => new() { Key = key, DisplayTime = slots.FirstOrDefault(item => item.Key == key).DisplayTime, IsAvailable = true };
+        public static int CheckSlotRequired(string slotString, int slotRequired)
+        {
+
+            List<Slot> listSlot = ConvertFromString(slotString);
+            int checkedSlot = 0;
+            foreach (Slot slot in listSlot)
+            {
+                if (slot.IsAvailable && slot.Key != 6)
+                {
+                    checkedSlot++;
+                    if (checkedSlot == slotRequired)
+                    {
+                        return slot.Key + 1 - slotRequired;
+                    }
+                }
+                else
+                {
+                    checkedSlot = 0;
+                }
+            }
+            return -1;
+        }
+        public static int CheckSlotRequired(List<Slot> listSlot, int slotRequired)
+        {
+            int checkedSlot = 0;
+            foreach (Slot slot in listSlot)
+            {
+                if (slot.IsAvailable && slot.Key != 6)
+                {
+                    checkedSlot++;
+                    if (checkedSlot == slotRequired)
+                    {
+                        return slot.Key + 1 - slotRequired;
+                    }
+                }
+                else
+                {
+                    checkedSlot = 0;
+                }
+            }
+            return -1;
+        }
     }
 }

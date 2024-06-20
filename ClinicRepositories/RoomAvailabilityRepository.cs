@@ -2,11 +2,6 @@
 using BusinessObjects.Entities;
 using ClinicRepositories.Interfaces;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ClinicRepositories
 {
@@ -17,44 +12,50 @@ namespace ClinicRepositories
         }
 
 
-        
+        /* Example
+             Actual     11111 11111
+             Clone      00011 11111
+             Require    3
+             Availale   11100 11100
+                
+             */
         public async Task<List<Slot>> GetRoomsAvailabilityAsync(DateTime date, int slotRequired)
         {
+            //Querry list of available room
             List<RoomAvailability> list = await GetAllAsync();
             list.Where(
-                    item => item.Day == date.Date && item.AvailableSlots != "0000000000"  && checkSlotRequired(item, slotRequired) != -1             
+                    item => item.Day == date.Date && item.AvailableSlots != "0000000000" && SlotDefiner.CheckSlotRequired(item.AvailableSlots, slotRequired) != -1
                 );
-            List<Slot> slots = SlotDefiner.ConvertFromString("0000000000");
-            
-            foreach (var room in list) {
-                // Set available string 
-                slots.FirstOrDefault(item => item.Key == checkSlotRequired(room, slotRequired))
-                 .IsAvailable = true;
-                List<Slot> tempSlot = SlotDefiner.ConvertFromString(room.AvailableSlots);
-                tempSlot.FirstOrDefault(item => item.Key == checkSlotRequired(room, slotRequired))
-                    .IsAvailable = false;
-                room.AvailableSlots = SlotDefiner.ConvertToString(tempSlot);
-            }
-        }
 
-        public int checkSlotRequired(RoomAvailability roomAvailability, int slotRequired)
-        {
-            List<Slot> listSlot = SlotDefiner.ConvertFromString(roomAvailability.AvailableSlots);
-            int checkedSlot = 0;
-            foreach (Slot slot in listSlot)
+            //Convert to available slots 
+            List<Slot> slots = SlotDefiner.ConvertFromString("0000000000");
+            foreach (var room in list)
             {
-                if (slot.IsAvailable)
+                int availableSlot = SlotDefiner.CheckSlotRequired(room.AvailableSlots, slotRequired);
+                while (availableSlot != -1)
                 {
-                    checkedSlot++;
-                    if (checkedSlot == slotRequired)
-                    {
-                        return slot.Key + 1 - slotRequired;
-                    }
-                }else {
-                    checkedSlot = 0;
+                    // Set available string 
+                    slots.FirstOrDefault(item => item.Key == availableSlot).IsAvailable = true;
+
+                    // Inactive slot 
+                    List<Slot> tempSlot = SlotDefiner.ConvertFromString(room.AvailableSlots);
+                    tempSlot.FirstOrDefault(item => item.Key == availableSlot).IsAvailable = false;
+                    room.AvailableSlots = SlotDefiner.ConvertToString(tempSlot);
+
+                    // Continue
+                    availableSlot = SlotDefiner.CheckSlotRequired(room.AvailableSlots, slotRequired);
                 }
             }
-            return -1;
+            return slots;
+
+
         }
+
+        public async Task<Room> GetAvailableRoomAsync(DateTime date, int slotRequired)
+        {
+            var item = await _context.RoomAvailabilities.Include(item => item.Room).FirstOrDefaultAsync(item => item.Day == date.Date && item.AvailableSlots != "0000000000" && SlotDefiner.CheckSlotRequired(item.AvailableSlots, slotRequired) != -1);
+            return item.Room;
+        }
+
     }
 }
