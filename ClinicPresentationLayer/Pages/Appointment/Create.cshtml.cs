@@ -19,8 +19,9 @@ namespace ClinicPresentationLayer.Pages.Appointment
         {
             _context = context;
         }
+        public bool IsServiceIdDisabled { get; set; }
 
-        public IActionResult OnGet()
+        public IActionResult OnGet(int? id)
         {
             var rooms = _context.Rooms.ToList();
             rooms.Insert(0, new Room { Id = 0, RoomNumber = "Please select a room" }); 
@@ -32,26 +33,17 @@ namespace ClinicPresentationLayer.Pages.Appointment
 
             var services = _context.Services.ToList();
             services.Insert(0, new Service { Id = 0, Name = "Please select a service" }); 
-            ViewData["ServiceId"] = new SelectList(services, "Id", "Name");
+            ViewData["ServiceId"] = new SelectList(services, "Id", "Name", id);
 
-            //var startSlots = new List<SelectListItem>
-            //{
-            //    new SelectListItem { Value = "", Text = "" },
-            //    new SelectListItem { Value = "1", Text = "9h" },
-            //    new SelectListItem { Value = "2", Text = "10h" },
-            //    new SelectListItem { Value = "3", Text = "11h" },
-            //    new SelectListItem { Value = "4", Text = "13h" },
-            //    new SelectListItem { Value = "5", Text = "14h" },
-            //    new SelectListItem { Value = "6", Text = "15h" },
-            //    new SelectListItem { Value = "7", Text = "16h" },
-            //    new SelectListItem { Value = "8", Text = "17h" }
-            //};
             ViewData["StartSlot"] = new SelectList(SlotDefiner.slots, "Key", "DisplayTime");
+
+            IsServiceIdDisabled = id.HasValue;
             return Page();
         }
 
         [BindProperty]
         public BusinessObjects.Entities.Appointment Appointment { get; set; } = default!;
+
 
         // To protect from overposting attacks, see https://aka.ms/RazorPagesCRUD
         public async Task<IActionResult> OnPostAsync()
