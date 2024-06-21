@@ -50,18 +50,6 @@
             @if(Model.ShowDentistForm)
             {
                 <form id="form2" method="post" asp-page-handler="SubmitComplete">
-                    <div class="form-group">
-                        <label asp-for="Appointment.AppointDate" class="control-label"></label>
-                        <input type="date" asp-for="Appointment.AppointDate" class="form-control" readonly />
-                    </div>
-                    <div class="form-group">
-                        <label asp-for="Appointment.StartSlot" class="control-label"></label>
-                        <select asp-for="Appointment.StartSlot" class="form-control" asp-items="ViewBag.StartSlot" disabled></select>
-                    </div>
-                    <div class="form-group">
-                        <label asp-for="Appointment.ServiceId" class="control-label"></label>
-                        <select asp-for="Appointment.ServiceId" class="form-control" asp-items="ViewBag.ServiceId" disabled></select>
-                    </div>
                     <input type="hidden" asp-for="Appointment.AppointDate" />
                     <input type="hidden" asp-for="Appointment.StartSlot" />
                     <input type="hidden" asp-for="Appointment.ServiceId" />

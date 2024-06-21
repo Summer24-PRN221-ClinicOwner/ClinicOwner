@@ -4,6 +4,7 @@ using ClinicRepositories.Interfaces;
 using ClinicServices;
 using ClinicServices.EmailService;
 using ClinicServices.Interfaces;
+using Microsoft.AspNetCore.Mvc.RazorPages;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -44,13 +45,19 @@ builder.Services.AddScoped<IServiceRepository, ServiceRepository>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 
+builder.Services.AddScoped<IRoomRepository, RoomRepository>();
+
+
 builder.Services.AddScoped<IEmailSender, EmailSender>();
 builder.Services.AddScoped<User>();
 
 builder.Services.AddSession();
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddDistributedMemoryCache();
-
+builder.Services.Configure<RazorPagesOptions>(options =>
+{
+    options.Conventions.AddPageRoute("/MainPage", "");
+});
 IConfiguration configuration = new ConfigurationBuilder()
                 .SetBasePath(Directory.GetCurrentDirectory())
                 .AddJsonFile("appsettings.json", true, true)

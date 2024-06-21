@@ -29,7 +29,7 @@ namespace ClinicServices.EmailService
             emailMessage.From.Add(address: new MailboxAddress(_config.UserName, _config.From));
             emailMessage.To.AddRange(message.To); 
             emailMessage.Subject = message.Subject;
-            var bodyBuilder = new BodyBuilder { HtmlBody = string.Format("<h2 style= 'color:red'> (0) </h2>", message.Content) };
+            var bodyBuilder = new BodyBuilder { HtmlBody = message.Content };
 
             if(message.Attachments != null && message.Attachments.Any())
             {
@@ -78,10 +78,8 @@ namespace ClinicServices.EmailService
             {
                 try
                 {
-                    await client.ConnectAsync(_config.SmtpServer, _config.Port, true);
-                    client.AuthenticationMechanisms.Remove("XOAUTH2");
-                    await client.AuthenticateAsync(_config.UserName, _config.Password);
-
+                    await client.ConnectAsync(_config.SmtpServer, _config.Port, MailKit.Security.SecureSocketOptions.StartTls);
+                    await client.AuthenticateAsync(_config.From, _config.Password);
                     await client.SendAsync(mailMessage);
                 }
                 catch (Exception ex)

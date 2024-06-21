@@ -1,4 +1,5 @@
 using BusinessObjects.Entities;
+using ClinicPresentationLayer.Extension;
 using ClinicServices.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
@@ -15,9 +16,10 @@ namespace ClinicPresentationLayer.Pages
         }
 
         public List<Service> Services { get; set; } = default!;
-        public async Task OnGet()
+        public async Task<IActionResult> OnGet()
         {
-           Services = await _service.GetAllAsync();
+            Services = await _service.GetAllAsync();
+            return Page();
         }
     }
 }

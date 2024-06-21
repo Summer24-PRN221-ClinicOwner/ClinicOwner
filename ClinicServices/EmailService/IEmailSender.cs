@@ -10,5 +10,6 @@ namespace ClinicServices.EmailService
     {
         void SendEmail(Message message);
         Task SendEmailAsync(Message message);
+
     }
 }

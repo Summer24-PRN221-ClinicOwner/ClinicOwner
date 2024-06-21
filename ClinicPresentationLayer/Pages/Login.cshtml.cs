@@ -38,12 +38,14 @@ namespace ClinicPresentationLayer.Pages
             }
             User check = await _userService.LoginAsync(Username, Password);
             if (check != null)
+            {
                 HttpContext.Session.SetObject("UserAccount", check);
-            // Authentication logic here
-            // If successful, redirect to another page
-            // Otherwise, show an error message
-
-            return RedirectToPage("Index"); // Redirect to the index page on successful login
+                return RedirectToPage("/MainPage");
+            }
+            else
+            {
+                return Page();
+            }
         }
     }
 }
