@@ -38,7 +38,15 @@ namespace ClinicPresentationLayer.Pages
             }
             User check = await _userService.LoginAsync(Username, Password);
             if (check != null)
+            {
                 HttpContext.Session.SetObject("UserAccount", check);
+                return RedirectToPage("Index"); // Redirect to the index page on successful login
+            }
+            else
+            {
+                ModelState.AddModelError(string.Empty, "Invalid username or password");
+                return Page();
+            }
             // Authentication logic here
             // If successful, redirect to another page
             // Otherwise, show an error message
