@@ -1,12 +1,6 @@
 ﻿<!DOCTYPE html>
 <html lang="en">
 <head>
-@*     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - ClinicPresentationLayer</title>
-    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
-    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/ClinicPresentationLayer.styles.css" asp-append-version="true" /> *@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -170,6 +164,7 @@
             </div>
         </aside>
         <!-- End section sidebar -->
+
         <!-- start section header -->
         <div class="header">
             <header class="top-head container-fluid">
@@ -193,136 +188,37 @@
                         </ul>
                     </div>
                 </div>
-                <div class="header-right">
-                    <div class="fullscreen notification_dropdown widget-5">
-                        <div class="full">
-                            <a class="text-dark" href="#!" onclick="javascript:toggleFullScreen()">
-                                <i class="fas fa-expand"></i>
-                            </a>
+
+                <div className="header-right">
+                    <div className="fullscreen notification_dropdown widget-5 mt-3">
+                        <div className="d-flex">
+                            <span className="text-lg">Welcome,</span>
+                            <span className="text-red-500 ml-2 text-lg">{userName}</span>
+                            <form method="post" asp-controller="Account" asp-action="Logout" style="display:inline;">
+                                <button type="submit" class="btn btn-danger">Logout</button>
+                            </form>
                         </div>
                     </div>
-                    <div class="widget-6">
-                        <div class="cart-wrapper">
-                            <div class="cart-icon">
-                                <a class="cart-control" href="#">
-                                    <i class="fas fa-bell"></i>
-                                    <div class="pulse-css"></div>
+                    <div className="my-account-wrapper widget-7">
+                        <div className="account-wrapper">
+                            <div className="account-control">
+                                <a className="login header-profile" href="#" title="Sign in">
+                                    <div className="header-info">
+                                    </div>
                                 </a>
-                            </div>
-                            <div class="cart-dropdown-form dropdown-container">
-                                <div class="form-content">
-                                    <div class="widget-media main-scroll nicescroll-box">
-                                        <ul class="timeline">
-                                            <li>
-                                                <h6 class="mb-0">Notitications</h6>
-                                            </li>
-                                            <li>
-                                                <div class="timeline-panel">
-                                                    <div class="media mr-2">
-                                                        <img alt="image"
-                                                             src="https://via.placeholder.com/150/f8f8f8/2b2b2b">
-                                                    </div>
-                                                    <div class="media-body">
-                                                        <h6 class="mb-1 ">Incoming Message</h6>
-                                                        <small class="d-block">29 July 2020 - 02:26 PM</small>
-                                                    </div>
-                                                </div>
-                                            </li>
-                                            <li>
-                                                <div class="timeline-panel">
-                                                    <div class="media mr-2 media-info">
-                                                        <img alt="image"
-                                                             src="https://via.placeholder.com/150/f8f8f8/2b2b2b">
-                                                    </div>
-                                                    <div class="media-body">
-                                                        <h6 class="mb-1">You got a new email</h6>
-                                                        <small class="d-block">29 July 2020 - 02:26 PM</small>
-                                                    </div>
-                                                </div>
-                                            </li>
-                                            <li>
-                                                <div class="timeline-panel">
-                                                    <div class="media mr-2 media-success">
-                                                        <img alt="image"
-                                                             src="https://via.placeholder.com/150/f8f8f8/2b2b2b">
-                                                    </div>
-                                                    <div class="media-body">
-                                                        <h6 class="mb-1">Hello world!</h6>
-                                                        <small class="d-block">29 July 2020 - 02:26 PM</small>
-                                                    </div>
-                                                </div>
-                                            </li>
-                                            <li>
-                                                <div class="timeline-panel">
-                                                    <div class="media mr-2">
-                                                        <img alt="image"
-                                                             src="https://via.placeholder.com/150/f8f8f8/2b2b2b">
-                                                    </div>
-                                                    <div class="media-body">
-                                                        <h6 class="mb-1">Beep Boop. Beee...</h6>
-                                                        <small class="d-block">29 July 2020 - 02:26 PM</small>
-                                                    </div>
-                                                </div>
-                                            </li>
-                                            <li>
-                                                <div class="timeline-panel">
-                                                    <div class="media mr-2 media-danger">
-                                                        <img alt="image"
-                                                             src="https://via.placeholder.com/150/f8f8f8/2b2b2b">
-                                                    </div>
-                                                    <div class="media-body">
-                                                        <h6 class="mb-1">Hello world!</h6>
-                                                        <small class="d-block">29 July 2020 - 02:26 PM</small>
-                                                    </div>
-                                                </div>
-                                            </li>
-                                            <li>
-                                                <div class="timeline-panel">
-                                                    <div class="media mr-2 media-primary">
-                                                        <img alt="image"
-                                                             src="https://via.placeholder.com/150/f8f8f8/2b2b2b">
-                                                    </div>
-                                                    <div class="media-body">
-                                                        <h6 class="mb-1">Incoming Message</h6>
-                                                        <small class="d-block">29 July 2020 - 02:26 PM</small>
-                                                    </div>
-                                                </div>
-                                            </li>
-                                        </ul>
-                                    </div>
-                                    <a class="all-notification btn btn-primary" href="#">
-                                        See all notifications
-                                    </a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="my-account-wrapper widget-7">
-                        <div class="account-wrapper">
-                            <div class="account-control">
-                                <a class="login header-profile" href="#" title="Sign in">
-                                    <div class="header-info">
-                                        <span>Dr Roberts</span>
-                                        <small>Admin</small>
-                                    </div>
-                                    <img src="https://via.placeholder.com/150/f8f8f8/2b2b2b" alt="people">
-                                </a>
-                                <div class="account-dropdown-form dropdown-container">
-                                    <div class="form-content">
-                                        <a href="doctor-settings.html">
-                                            <i class="far fa-user"></i>
-                                            <span class="ml-2">Profile</span>
-                                        </a>
-                                        <a href="#">
-                                            <i class="far fa-envelope"></i>
-                                            <span class="ml-2">Inbox</span>
-                                        </a>
-                                        <a href="page-login.html">
-                                            <i class="fas fa-sign-in-alt"></i>
-                                            <span class="ml-2">Logout </span>
+                                
+                               @*  <div className="account-dropdown-form dropdown-container">
+                                    <div className="form-content">
+                                        <Link href={`/staff/1`}>
+                                        <i className="far fa-user" />
+                                        <span className="ml-2">Hồ sơ</span>
+                                        </Link>
+                                        <a href="/sign-in">
+                                            <i className="fas fa-sign-in-alt" />
+                                            <span className="ml-2">Logout</span>
                                         </a>
                                     </div>
-                                </div>
+                                </div> *@
                             </div>
                         </div>
                     </div>
@@ -330,6 +226,8 @@
             </header>
         </div>
         <!-- End section header -->
+
+
         <!-- start section content -->
         <div class="content-body">
             <div class="warper container-fluid">
@@ -338,17 +236,6 @@
                 </div>
             </div>
         </div>
-        <!-- End section content -->
-        <!-- start section footer -->
-        @* <div class="footer">
-            <div class="copyright">
-                <p class="mb-0">
-                    Copyright © Designed &amp; Developed by <a href="uxign.com" target="_blank">Uxign</a>
-                    2022
-                </p>
-            </div>
-        </div> *@
-        <!-- End section footer -->
     
     </div>
     <div class="footer">

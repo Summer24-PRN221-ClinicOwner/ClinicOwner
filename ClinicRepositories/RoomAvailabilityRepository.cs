@@ -18,24 +18,26 @@ namespace ClinicRepositories
 
 
         
-        public async Task<List<Slot>> GetRoomsAvailabilityAsync(DateTime date, int slotRequired)
-        {
-            List<RoomAvailability> list = await GetAllAsync();
-            list.Where(
-                    item => item.Day == date.Date && item.AvailableSlots != "0000000000"  && checkSlotRequired(item, slotRequired) != -1             
-                );
-            List<Slot> slots = SlotDefiner.ConvertFromString("0000000000");
+        //public async Task<List<Slot>> GetRoomsAvailabilityAsync(DateTime date, int slotRequired)
+        //{
+        //    List<RoomAvailability> list = await GetAllAsync();
+        //    list.Where(
+        //            item => item.Day == date.Date && item.AvailableSlots != "0000000000"  && checkSlotRequired(item, slotRequired) != -1             
+        //        );
+        //    List<Slot> slots = SlotDefiner.ConvertFromString("0000000000");
             
-            foreach (var room in list) {
-                // Set available string 
-                slots.FirstOrDefault(item => item.Key == checkSlotRequired(room, slotRequired))
-                 .IsAvailable = true;
-                List<Slot> tempSlot = SlotDefiner.ConvertFromString(room.AvailableSlots);
-                tempSlot.FirstOrDefault(item => item.Key == checkSlotRequired(room, slotRequired))
-                    .IsAvailable = false;
-                room.AvailableSlots = SlotDefiner.ConvertToString(tempSlot);
-            }
-        }
+        //    foreach (var room in list) {
+        //        // Set available string 
+        //        slots.FirstOrDefault(item => item.Key == checkSlotRequired(room, slotRequired))
+        //         .IsAvailable = true;
+        //        // Get available slot of room
+        //        List<Slot> tempSlot = SlotDefiner.ConvertFromString(room.AvailableSlots);
+        //        // update status in code
+        //        tempSlot.FirstOrDefault(item => item.Key == checkSlotRequired(room, slotRequired))
+        //            .IsAvailable = false;
+        //        room.AvailableSlots = SlotDefiner.ConvertToString(tempSlot);
+        //    }
+        //}
 
         public int checkSlotRequired(RoomAvailability roomAvailability, int slotRequired)
         {
