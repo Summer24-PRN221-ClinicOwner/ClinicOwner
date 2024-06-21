@@ -5,8 +5,8 @@ namespace ClinicRepositories
 {
     public class GenericRepository<T> : IGenericRepository<T> where T : class
     {
-        private readonly ClinicContext _context;
-        private readonly DbSet<T> _dbSet;
+        protected readonly ClinicContext _context;
+        protected readonly DbSet<T> _dbSet;
 
         public GenericRepository()
         {

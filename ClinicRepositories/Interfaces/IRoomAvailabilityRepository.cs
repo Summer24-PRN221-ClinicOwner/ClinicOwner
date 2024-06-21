@@ -1,15 +1,11 @@
-﻿using BusinessObjects.Entities;
-using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using BusinessObjects;
+using BusinessObjects.Entities;
 
 namespace ClinicRepositories.Interfaces
 {
     public interface IRoomAvailabilityRepository : IGenericRepository<RoomAvailability>
     {
-        
+        public Task<List<Slot>> GetRoomsAvailabilityAsync(DateTime date, int slotRequired);
+        public Task<Room> GetAvailableRoomAsync(DateTime date, int slotRequired);
     }
 }
