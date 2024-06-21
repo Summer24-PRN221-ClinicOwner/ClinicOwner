@@ -11,7 +11,7 @@ public partial class Appointment
 
     public int? DentistId { get; set; }
 
-    public int? StartSlot { get; set; }
+    public int StartSlot { get; set; }
 
     public int ServiceId { get; set; }
 
