@@ -11,7 +11,7 @@ public partial class DentistAvailability
 
     public string? AvailableSlots { get; set; }
 
-    public DateTime? Day { get; set; }
+    public DateTime Day { get; set; }
 
     public virtual Dentist? Dentist { get; set; }
 }

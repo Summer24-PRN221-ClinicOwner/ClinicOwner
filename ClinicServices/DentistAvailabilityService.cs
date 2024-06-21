@@ -40,9 +40,9 @@ namespace ClinicServices
         {
             await _dentistAvailabilityRepository.UpdateAsync(entity);
         }
-        public async Task<List<Dentist>> GetAvailableDentist(DateTime date, int slotRequired, int serviceId)
+        public async Task<List<Dentist>> GetAvailableDentist(DateTime date,int startSlot, int slotRequired, int serviceId)
         {
-            return await _dentistAvailabilityRepository.GetDentistAvailabilityAsync(date, slotRequired, serviceId);
+            return await _dentistAvailabilityRepository.GetDentistAvailabilityAsync(date, startSlot, slotRequired, serviceId);
         }
 
     }

@@ -11,13 +11,13 @@ public partial class Appointment
 
     public int? DentistId { get; set; }
 
-    public int? StartSlot { get; set; }
+    public int StartSlot { get; set; }
 
-    public int? ServiceId { get; set; }
+    public int ServiceId { get; set; }
 
     public int? RoomId { get; set; }
 
-    public int? Status { get; set; }
+    public int Status { get; set; }
 
     public int? EndSlot { get; set; }
 

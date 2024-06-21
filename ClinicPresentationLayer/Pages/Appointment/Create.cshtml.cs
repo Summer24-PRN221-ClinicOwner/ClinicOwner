@@ -8,36 +8,43 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using BusinessObjects.Entities;
 using ClinicRepositories;
 using BusinessObjects;
+using ClinicServices.Interfaces;
+using ClinicPresentationLayer.Extension;
+using System.Globalization;
+using ClinicServices.EmailService;
 
 namespace ClinicPresentationLayer.Pages.Appointment
 {
     public class CreateModel : PageModel
     {
-        private readonly ClinicRepositories.ClinicContext _context;
-
-        public CreateModel(ClinicRepositories.ClinicContext context)
+        private readonly IAppointmentService _appointmentService;
+        private readonly IServiceService _serviceService;
+        private readonly IDentistAvailabilityService _dentistAvailService;
+        private readonly IEmailSender _emailSender;
+        private static Service service;
+        public CreateModel(IAppointmentService appointmentService, IServiceService serviceService, IDentistAvailabilityService dentistService, IEmailSender emailSender)
         {
-            _context = context;
+            _appointmentService = appointmentService;
+            _serviceService = serviceService;
+            _dentistAvailService = dentistService;
+            _emailSender = emailSender;
         }
         public bool IsServiceIdDisabled { get; set; }
-
-        public IActionResult OnGet(int? id)
+        public bool ShowDentistForm { get; set; } = false;
+        public async Task<IActionResult> OnGet(int id)
         {
-            var rooms = _context.Rooms.ToList();
-            rooms.Insert(0, new Room { Id = 0, RoomNumber = "Please select a room" }); 
-            ViewData["RoomId"] = new SelectList(rooms, "Id", "RoomNumber");
-        
-            var dentists = _context.Dentists.ToList();
-            dentists.Insert(0, new Dentist { Id = 0, Name = "Please select a dentist" }); 
-            ViewData["DentistId"] = new SelectList(dentists, "Id", "Name");
+ 
+            User currentAcc = HttpContext.Session.GetObject<User>("UserAccount");
+             service = await _serviceService.GetByIdAsync(id);
+            List<Service> services1 = new List<Service>();
+            services1.Add(service);
 
-            var services = _context.Services.ToList();
-            services.Insert(0, new Service { Id = 0, Name = "Please select a service" }); 
-            ViewData["ServiceId"] = new SelectList(services, "Id", "Name", id);
-
+            ViewData["ServiceId"] = new SelectList(services1, "Id", "Name");
             ViewData["StartSlot"] = new SelectList(SlotDefiner.slots, "Key", "DisplayTime");
-
-            IsServiceIdDisabled = id.HasValue;
+            if (id != null)
+            {
+                IsServiceIdDisabled = true;
+            }
             return Page();
         }
 
@@ -46,17 +53,48 @@ namespace ClinicPresentationLayer.Pages.Appointment
 
 
         // To protect from overposting attacks, see https://aka.ms/RazorPagesCRUD
-        public async Task<IActionResult> OnPostAsync()
+        public async Task<IActionResult> OnPostSubmitBasicAsync()
         {
             if (!ModelState.IsValid)
             {
                 return Page();
             }
+            List<Dentist> dentists = await _dentistAvailService.GetAvailableDentist(Appointment.AppointDate, Appointment.StartSlot, service.Duration, Appointment.ServiceId);
+            dentists.Insert(0, new Dentist { Id = 0, Name = "Please select a dentist" });
 
-            _context.Appointments.Add(Appointment);
-            await _context.SaveChangesAsync();
+            // Set ViewData for DentistId dropdown in Form 2
+            ViewData["DentistId"] = new SelectList(dentists, "Id", "Name");
+            // Proceed to form2 by redirecting with TempData or ViewData
+            TempData["AppointmentDate"] = Appointment.AppointDate;
+            TempData["StartSlot"] = Appointment.StartSlot;
+            TempData["ServiceId"] = Appointment.ServiceId;
+            ShowDentistForm = true;
+            return Page();
+        }
 
-            return RedirectToPage("./Index");
+        public async Task<IActionResult> OnPostSubmitCompleteAsync()
+        {
+            User currentAcc = HttpContext.Session.GetObject<User>("UserAccount");
+
+            // Retrieve data from TempData or ViewData set in OnPostSubmitBasicAsync
+            Appointment.AppointDate = (DateTime)TempData["AppointmentDate"];
+            Appointment.StartSlot = (int)TempData["StartSlot"];
+            Appointment.ServiceId = (int)TempData["ServiceId"];
+
+            Appointment.PatientId = currentAcc.Id;
+            var availRoom = await _appointmentService.GetRoomAvailable(Appointment.AppointDate, service.Duration);
+            Appointment.RoomId = availRoom.Id;
+            Appointment.Status = (int)AppointmentStatus.Waiting;
+            Appointment.CreateDate = Appointment.ModifyDate = DateTime.UtcNow.AddHours(7);
+
+            var result = await _appointmentService.AddAsync(Appointment);
+
+            if (result != null)
+            {
+                return RedirectToPage("./Index");
+            }
+
+            return Page();
         }
     }
 }

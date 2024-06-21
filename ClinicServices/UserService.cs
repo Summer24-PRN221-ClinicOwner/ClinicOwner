@@ -39,5 +39,9 @@ namespace ClinicServices
         {
             await _repository.UpdateAsync(entity);
         }
+        public async Task<User?> LoginAsync(string username, string password)
+        {
+           return await _repository.GetUserByUsernamePass(username, password);
+        }
     }
 }

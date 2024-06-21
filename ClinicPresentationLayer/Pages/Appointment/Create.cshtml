@@ -14,6 +14,7 @@
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/ClinicPresentationLayer.styles.css" asp-append-version="true" />
+    <script src="~/lib/jquery/dist/jquery.js"></script>
 </head>
 
 <body>
@@ -23,7 +24,8 @@
         <h4>Appointment</h4>
         <hr />
         <div class="row">
-            <form method="post">
+            <!-- Form 1: Basic Appointment Details -->
+            <form id="form1" method="post" asp-page-handler="SubmitBasic">
                 <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                 <div class="form-group">
                     <label asp-for="Appointment.AppointDate" class="control-label"></label>
@@ -37,37 +39,44 @@
                 </div>
                 <div class="form-group">
                     <label asp-for="Appointment.ServiceId" class="control-label"></label>
-                    <select asp-for="Appointment.ServiceId" class="form-control" asp-items="ViewBag.ServiceId" disabled="@Model.IsServiceIdDisabled"></select>
+                    <select asp-for="Appointment.ServiceId" class="form-control" asp-items="ViewBag.ServiceId"></select>
                 </div>
                 <div class="form-group">
-                    <label asp-for="Appointment.DentistId" class="control-label"></label>
-                    <select asp-for="Appointment.DentistId" class="form-control" asp-items="ViewBag.DentistId"></select>
-                </div>
-                @* <div class="form-group">
-                    <label asp-for="Appointment.RoomId" class="control-label"></label>
-                    <select asp-for="Appointment.RoomId" class="form-control" asp-items="ViewBag.RoomId"></select>
-                </div> *@
-               
-                
-                @* 
-                <div class="form-group">
-                <label asp-for="Appointment.EndSlot" class="control-label"></label>
-                <input asp-for="Appointment.EndSlot" class="form-control" />
-                <span asp-validation-for="Appointment.EndSlot" class="text-danger"></span>
-                </div> *@
-                
-                <div class="form-group">
-                    <input type="submit" value="Create" class="btn btn-primary" />
+                    <button type="submit" class="btn btn-primary">Next</button>
                 </div>
             </form>
+
+            <!-- Form 2: Complete Appointment Details -->
+            @if(Model.ShowDentistForm)
+            {
+                <form id="form2" method="post" asp-page-handler="SubmitComplete">
+                    <div class="form-group">
+                        <label asp-for="Appointment.AppointDate" class="control-label"></label>
+                        <input type="date" asp-for="Appointment.AppointDate" class="form-control" readonly />
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="Appointment.StartSlot" class="control-label"></label>
+                        <select asp-for="Appointment.StartSlot" class="form-control" asp-items="ViewBag.StartSlot" disabled></select>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="Appointment.ServiceId" class="control-label"></label>
+                        <select asp-for="Appointment.ServiceId" class="form-control" asp-items="ViewBag.ServiceId" disabled></select>
+                    </div>
+                    <input type="hidden" asp-for="Appointment.AppointDate" />
+                    <input type="hidden" asp-for="Appointment.StartSlot" />
+                    <input type="hidden" asp-for="Appointment.ServiceId" />
+                    <div class="form-group">
+                        <label asp-for="Appointment.DentistId" class="control-label"></label>
+                        <select asp-for="Appointment.DentistId" class="form-control" asp-items="ViewBag.DentistId"></select>
+                    </div>
+                    <div class="form-group">
+                        <button type="submit" class="btn btn-primary">Submit Appointment</button>
+                    </div>
+                </form>
+            }
         </div>
     </div>
-    </div>
-    </div>
-
-    </div>
 </body>
-
 </html>
 
 @section Scripts {
@@ -75,3 +84,5 @@
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
 }
+
+

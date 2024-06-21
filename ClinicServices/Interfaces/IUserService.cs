@@ -10,7 +10,8 @@ namespace ClinicServices.Interfaces
 	public interface IUserService
 	{
         Task<List<User>> GetAllAsync();
-        Task<User> GetByIdAsync(int id);
+        Task<User> GetByIdAsync(int id); 
+        Task<User?> LoginAsync(string userEmail, string password);
         Task<User> AddAsync(User entity);
         Task UpdateAsync(User entity);
         Task DeleteAsync(int id);

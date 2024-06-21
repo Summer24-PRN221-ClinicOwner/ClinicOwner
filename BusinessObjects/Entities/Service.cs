@@ -13,7 +13,7 @@ public partial class Service
 
     public decimal? Cost { get; set; }
 
-    public int? Duration { get; set; }
+    public int Duration { get; set; }
 
     public int? Rank { get; set; }
 
