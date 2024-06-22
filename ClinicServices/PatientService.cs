@@ -15,8 +15,11 @@ namespace ClinicServices
             _userService = userService;
         }
 
-        public async Task<Patient> AddAsync(Patient entity)
+        public async Task<Patient> AddAsync(Patient entity, User userAccount)
         {
+            userAccount.Status = 1;
+            var newAccount = await _userService.AddAsync(userAccount);
+            entity.Id = newAccount.Id;
             return await _repository.AddAsync(entity);
         }
 
@@ -39,5 +42,6 @@ namespace ClinicServices
         {
             return _repository.UpdateAsync(entity);
         }
+
     }
 }

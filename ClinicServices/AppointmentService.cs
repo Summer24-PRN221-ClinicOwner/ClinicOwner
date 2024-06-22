@@ -14,16 +14,18 @@ namespace ClinicServices
         private readonly IPatientRepository _patientRepository;
         private readonly IDentistRepository _dentistRepository;
         private readonly IRoomRepository _roomRepository;
+        private readonly IServiceRepository _serviceRepository;
         private readonly IEmailSender _emailSender;
 
-        public AppointmentService(IAppointmentRepository iAppointmentRepository, IRoomAvailabilityRepository roomAvailabilityRepository,
-            IDentistAvailabilityRepository dentistAvailabilityRepository, IPatientRepository patientRepository,
-            IDentistRepository dentistRepository, IRoomRepository roomRepository, IEmailSender emailSender)
+        public AppointmentService(IAppointmentRepository iAppointmentRepository, IRoomAvailabilityRepository roomAvailabilityRepository, 
+            IDentistAvailabilityRepository dentistAvailabilityRepository, IPatientRepository patientRepository, 
+            IDentistRepository dentistRepository,IServiceRepository serviceRepository, IRoomRepository roomRepository, IEmailSender emailSender)
         {
             _appointmentRepository = iAppointmentRepository;
             _roomAvailabilityRepository = roomAvailabilityRepository;
             _dentistAvailabilityRepository = dentistAvailabilityRepository;
             _patientRepository = patientRepository;
+            _serviceRepository = serviceRepository;
             _dentistRepository = dentistRepository;
             _roomRepository = roomRepository;
             _emailSender = emailSender;
@@ -61,7 +63,7 @@ namespace ClinicServices
 
         public async Task<List<Slot>> GetAvailableSlotAsync(DateTime date, int slotRequired)
         {
-            return await _roomAvailabilityRepository.GetRoomsAvailabilityAsync(date, slotRequired);
+            return await _roomAvailabilityRepository.GetSlotsAvailabilityAsync(date, slotRequired);
         }
 
         public async Task<Appointment> GetByIdAsync(int id)
@@ -83,11 +85,13 @@ namespace ClinicServices
             Patient patient = await _patientRepository.GetByIdAsync(patientId);
             Dentist dentist = await _dentistRepository.GetByIdAsync(details.DentistId);
             Room room = await _roomRepository.GetByIdAsync(details.RoomId);
+            Service serv =  await _serviceRepository.GetByIdAsync(details.ServiceId);
             Slot startSlot = SlotDefiner.NewSlot(details.StartSlot);
             var subject = "Your Appointment Details";
             var content = $"Dear {patient.Name},<br/><br/>" +
                           $"Here are the details of your upcoming appointment:<br/>" +
                           $"<b>Appointment Date:</b> {details.AppointDate.Date}<br/>" +
+                          $"<b>Service name:</b> {serv.Name}<br/>" +
                           $"<b>Dentist name:</b> {dentist.Name}<br/>" +
                           $"<b>Start Slot:</b> {startSlot.DisplayTime}<br/>" +
                           $"<b>Room ID:</b> {room.RoomNumber}<br/>" +

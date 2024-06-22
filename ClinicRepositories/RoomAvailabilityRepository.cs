@@ -19,14 +19,14 @@ namespace ClinicRepositories
              Availale   11100 11100
                 
              */
-        public async Task<List<Slot>> GetRoomsAvailabilityAsync(DateTime date, int slotRequired)
+        public async Task<List<Slot>> GetSlotsAvailabilityAsync(DateTime date, int slotRequired)
         {
             //Querry list of available room
             List<RoomAvailability> list = await GetAllAsync();
-            list.Where(
-                    item => item.Day == date.Date && item.AvailableSlots != "0000000000"
-                );
-            List<RoomAvailability> tmplist = [];
+            list = list.Where(
+                    item => item.Day.Date == date.Date && item.AvailableSlots != "0000000000" 
+                ).ToList();
+            List<RoomAvailability> tmplist = new List<RoomAvailability>();
             foreach (var item in list)
             {
                 if (SlotDefiner.CheckSlotRequired(item.AvailableSlots, slotRequired) != -1)

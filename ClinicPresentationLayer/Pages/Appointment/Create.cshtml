@@ -1,6 +1,7 @@
 ﻿@page
+@using BusinessObjects
 @model ClinicPresentationLayer.Pages.Appointment.CreateModel
-
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
 @{
     // ViewData["Title"] = "Create";
 }
@@ -28,19 +29,25 @@
             <form id="form1" method="post" asp-page-handler="SubmitBasic">
                 <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                 <div class="form-group">
-                    <label asp-for="Appointment.AppointDate" class="control-label"></label>
-                    <input type="date" asp-for="Appointment.AppointDate" class="form-control" />
-                    <span asp-validation-for="Appointment.AppointDate" class="text-danger"></span>
-                </div>
-                <div class="form-group">
-                    <label asp-for="Appointment.StartSlot" class="control-label"></label>
-                    <select asp-for="Appointment.StartSlot" class="form-control" asp-items="ViewBag.StartSlot"></select>
-                    <span asp-validation-for="Appointment.StartSlot" class="text-danger"></span>
-                </div>
-                <div class="form-group">
                     <label asp-for="Appointment.ServiceId" class="control-label"></label>
                     <select asp-for="Appointment.ServiceId" class="form-control" asp-items="ViewBag.ServiceId"></select>
                 </div>
+                <div class="form-group">
+                    <label asp-for="Appointment.AppointDate" class="control-label"></label>
+                    <input type="date" asp-for="Appointment.AppointDate" class="form-control" id="Appointment_AppointDate" onclick="console.log('me-here')" onchange="updateAvailableSlots();" />
+                    <span asp-validation-for="Appointment.AppointDate" class="text-danger"></span>
+                </div>
+                <div>
+                    <div class="form-group">
+                        <label asp-for="Appointment.StartSlot" class="control-label"></label>
+                        <select id="appointment-slots-partial" asp-for="Appointment.StartSlot" class="form-control">
+                            @await Html.PartialAsync("_SlotPartial", new List<Slot>())
+                           </select>
+                        <span asp-validation-for="Appointment.StartSlot" class="text-danger"></span>
+                    </div>
+                </div>
+                
+
                 <div class="form-group">
                     <button type="submit" class="btn btn-primary">Next</button>
                 </div>
@@ -64,6 +71,25 @@
             }
         </div>
     </div>
+    <script>
+        function updateAvailableSlots() {
+            var appointmentDate = $('#Appointment_AppointDate').val();
+            var serviceDuration = @Model.Service.Duration;
+
+            $.ajax({
+                url: '@Url.Page("./Create", new { handler = "AvailableSlotsPartial" })',
+                type: 'GET',
+                data: { appointmentDate: appointmentDate, serviceDuration: serviceDuration },
+                success: function (data) {
+                    $('#appointment-slots-partial').html(data);
+                    console.log(data);
+                },
+                error: function (xhr, status, error) {
+                    console.error('Error updating available slots:', error);
+                }
+            });
+        }
+    </script>
 </body>
 </html>
 
@@ -72,5 +98,6 @@
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
 }
+
 
 

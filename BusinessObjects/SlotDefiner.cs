@@ -32,7 +32,8 @@ namespace BusinessObjects
             var result = new List<Slot>();
             for (int i = 0; i < slots.Count; i++)
             {
-                result.Add(new() { Key = i + 1, DisplayTime = slots.ElementAt(i).DisplayTime, IsAvailable = input.ElementAt(i) != 0 });
+                result.Add(NewSlot(i+1));
+                result.ElementAt(i).IsAvailable = input.ElementAt(i) != '0';
             }
             return result.OrderBy(item => item.Key).ToList();
         }
@@ -60,7 +61,7 @@ namespace BusinessObjects
             return result;
         }
 
-        public static Slot NewSlot(int key) => new() { Key = key, DisplayTime = slots.FirstOrDefault(item => item.Key == key).DisplayTime, IsAvailable = true };
+        public static Slot NewSlot(int key) => new() { Key = key, DisplayTime = slots.ElementAt(key-1).DisplayTime, IsAvailable = true };
         public static int CheckSlotRequired(string slotString, int slotRequired)
         {
 
