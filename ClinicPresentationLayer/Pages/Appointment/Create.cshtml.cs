@@ -47,6 +47,7 @@ namespace ClinicPresentationLayer.Pages.Appointment
 
             ViewData["ServiceId"] = new SelectList(services1, "Id", "Name");
             ViewData["StartSlot"] = new SelectList(SlotDefiner.slots, "Key", "DisplayTime");
+            //ViewData["StartSlot"] = new SelectList(await _appointmentService.GetAvailableSlotAsync((DateTime)TempData["AppointmentDate"]), "Key", "DisplayTime");
             if (id != null)
             {
                 IsServiceIdDisabled = true;

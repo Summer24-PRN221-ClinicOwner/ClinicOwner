@@ -19,7 +19,7 @@ namespace ClinicRepositories
              Availale   11100 11100
                 
              */
-        public async Task<List<Slot>> GetRoomsAvailabilityAsync(DateTime date, int slotRequired)
+        public async Task<List<Slot>> GetSlotsAvailabilityAsync(DateTime date, int slotRequired)
         {
             //Querry list of available room
             List<RoomAvailability> list = await GetAllAsync();
