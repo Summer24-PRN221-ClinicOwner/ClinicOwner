@@ -1,17 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using BusinessObjects;
+using BusinessObjects.Entities;
+using ClinicPresentationLayer.Extension;
+using ClinicServices.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using BusinessObjects.Entities;
-using ClinicRepositories;
-using BusinessObjects;
-using ClinicServices.Interfaces;
-using ClinicPresentationLayer.Extension;
-using System.Globalization;
-using ClinicServices.EmailService;
 
 namespace ClinicPresentationLayer.Pages.Appointment
 {
@@ -81,14 +74,14 @@ namespace ClinicPresentationLayer.Pages.Appointment
         public async Task<IActionResult> OnPostSubmitCompleteAsync()
         {
             User currentAcc = HttpContext.Session.GetObject<User>("UserAccount");
-            
+
             // Retrieve data from TempData or ViewData set in OnPostSubmitBasicAsync
             Appointment.AppointDate = (DateTime)TempData["AppointmentDate"];
             Appointment.StartSlot = (int)TempData["StartSlot"];
             Appointment.ServiceId = (int)TempData["ServiceId"];
 
             Appointment.PatientId = currentAcc.Id;
-            var availRoom = await _appointmentService.GetRoomAvailable(Appointment.AppointDate, service.Duration);
+            var availRoom = _appointmentService.GetRoomAvailable(Appointment.AppointDate, service.Duration);
             Appointment.RoomId = availRoom.Id;
             Appointment.Status = (int)AppointmentStatus.Waiting;
             Appointment.CreateDate = Appointment.ModifyDate = DateTime.UtcNow.AddHours(7);
@@ -102,7 +95,7 @@ namespace ClinicPresentationLayer.Pages.Appointment
                     return RedirectToPage("./Index");
                 }
             }
-            catch (Exception ex) 
+            catch (Exception ex)
             {
 
             }
