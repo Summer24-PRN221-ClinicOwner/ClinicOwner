@@ -3,8 +3,6 @@ using BusinessObjects.Entities;
 using ClinicRepositories.Interfaces;
 using ClinicServices.EmailService;
 using ClinicServices.Interfaces;
-using Microsoft.EntityFrameworkCore;
-using static Org.BouncyCastle.Crypto.Engines.SM2Engine;
 
 namespace ClinicServices
 {
@@ -25,7 +23,7 @@ namespace ClinicServices
         {
             _appointmentRepository = iAppointmentRepository;
             _roomAvailabilityRepository = roomAvailabilityRepository;
-            _dentistAvailabilityRepository = dentistAvailabilityRepository; 
+            _dentistAvailabilityRepository = dentistAvailabilityRepository;
             _patientRepository = patientRepository;
             _serviceRepository = serviceRepository;
             _dentistRepository = dentistRepository;
@@ -35,20 +33,22 @@ namespace ClinicServices
 
         public async Task<Appointment> AddAsync(Appointment entity)
         {
-            if(await _appointmentRepository.AddAsync(entity) != null)
+
+            //update dentist available
+            var updateDentist = await _dentistAvailabilityRepository.UpdateAvaialeString(entity.DentistId, entity.AppointDate.Date, entity.StartSlot, entity.EndSlot - entity.StartSlot + 1);
+            //update room available
+            var updateRoom = await _roomAvailabilityRepository.UpdateAvaialeString(entity.RoomId, entity.AppointDate, entity.StartSlot, entity.EndSlot - entity.StartSlot + 1);
+            var updateAppointment = await _appointmentRepository.AddAppointmentAsync(entity);
+            //send email about the appointment to the patient
+            if (updateDentist && updateRoom && updateAppointment)
             {
-                //update dentist available
-                UpdateDentistAvailabilityAsync(entity.DentistId, entity.AppointDate, entity.StartSlot, entity.EndSlot);
-                //update room available
-                UpdateRoomAvailabilityAsync(entity.RoomId, entity.AppointDate, entity.StartSlot, entity.EndSlot);
-                //send email about the appointment to the patient
                 SendEmailToPatient(entity.PatientId, entity);
             }
             else
             {
                 throw new Exception("Fail to add new appointment");
             }
-            return await _appointmentRepository.AddAsync(entity);
+            return entity;
         }
 
         public async Task DeleteAsync(int id)
@@ -71,80 +71,18 @@ namespace ClinicServices
             return await _appointmentRepository.GetByIdAsync(id);
         }
 
-        public async Task<Room> GetRoomAvailable(DateTime date, int slotRequired)
+        public Room GetRoomAvailable(DateTime date, int slotRequired)
         {
-            return await _roomAvailabilityRepository.GetAvailableRoomAsync(date, slotRequired);
+            return _roomAvailabilityRepository.GetAvailableRoomAsync(date, slotRequired);
         }
 
         public async Task UpdateAsync(Appointment entity)
         {
             await _appointmentRepository.UpdateAsync(entity);
         }
-        public async Task UpdateDentistAvailabilityAsync(int dentistId, DateTime date, int startSlot, int endSlot)
-        {
-            // Fetch the dentist's availability for the specified date
-            var availList = await _dentistAvailabilityRepository.GetAllAsync();
-
-            var dentistAvailability = availList.FirstOrDefault(da => da.DentistId == dentistId && da.Day.Date == date.Date);
-
-            if (dentistAvailability == null)
-            {
-                throw new Exception("Dentist availability not found for the specified date.");
-            }
-
-            // Convert the AvailableSlots string to a char array for easier manipulation
-            var slots = dentistAvailability.AvailableSlots.ToCharArray();
-
-            // Mark the slots as unavailable
-            for (int i = startSlot; i <= endSlot ; i++)
-            {
-                if (i >= slots.Length || slots[i - 1] == '0') // Ensure slot is within bounds and currently available
-                {
-                    throw new Exception("One or more slots are already unavailable.");
-                }
-                slots[i-1] = '0';
-            }
-
-            // Convert the char array back to a string and update the availability
-            dentistAvailability.AvailableSlots = new string(slots);
-
-            // Save the changes
-            await _dentistAvailabilityRepository.UpdateAsync(dentistAvailability);
-        }
-        public async Task UpdateRoomAvailabilityAsync(int roomId, DateTime date, int startSlot, int endSlot)
-        {
-            // Fetch the dentist's availability for the specified date
-            var availList = await _roomAvailabilityRepository.GetAllAsync();
-
-            var roomAvailability = availList.FirstOrDefault(da => da.RoomId == roomId && da.Day.Date == date.Date);
-
-            if (roomAvailability == null)
-            {
-                throw new Exception("Dentist availability not found for the specified date.");
-            }
-
-            // Convert the AvailableSlots string to a char array for easier manipulation
-            var slots = roomAvailability.AvailableSlots.ToCharArray();
-
-            // Mark the slots as unavailable
-            for (int i = startSlot; i <= endSlot; i++)
-            {
-                if (i >= slots.Length || slots[i - 1] == '0') // Ensure slot is within bounds and currently available
-                {
-                    throw new Exception("One or more slots are already unavailable.");
-                }
-                slots[i-1] = '0';
-            }
-
-            // Convert the char array back to a string and update the availability
-            roomAvailability.AvailableSlots = new string(slots);
-
-            // Save the changes
-            await _roomAvailabilityRepository.UpdateAsync(roomAvailability);
-        }
         public async Task SendEmailToPatient(int patientId, Appointment details)
         {
-            Patient patient =  await _patientRepository.GetByIdAsync(patientId);
+            Patient patient = await _patientRepository.GetByIdAsync(patientId);
             Dentist dentist = await _dentistRepository.GetByIdAsync(details.DentistId);
             Room room = await _roomRepository.GetByIdAsync(details.RoomId);
             Service serv =  await _serviceRepository.GetByIdAsync(details.ServiceId);
@@ -158,8 +96,9 @@ namespace ClinicServices
                           $"<b>Start Slot:</b> {startSlot.DisplayTime}<br/>" +
                           $"<b>Room ID:</b> {room.RoomNumber}<br/>" +
                           $"Thank you,<br/>";
-            EmailAddress patientEmail = new EmailAddress{ Email = patient.Email, DisplayName = patient.Name };
-            EmailService.Message message = new EmailService.Message(new List<EmailAddress> { patientEmail }, subject, content);
+            EmailAddress emailAddress = new() { Email = patient.Email, DisplayName = patient.Name };
+            EmailAddress patientEmail = emailAddress;
+            EmailService.Message message = new([patientEmail], subject, content);
             await _emailSender.SendEmailAsync(message);
         }
     }
