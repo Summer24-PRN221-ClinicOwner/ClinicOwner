@@ -23,9 +23,9 @@ namespace ClinicRepositories
         {
             //Querry list of available room
             List<RoomAvailability> list = await GetAllAsync();
-            list.Where(
-                    item => item.Day == date.Date && item.AvailableSlots != "0000000000" 
-                );
+            list = list.Where(
+                    item => item.Day.Date == date.Date && item.AvailableSlots != "0000000000" 
+                ).ToList();
             List<RoomAvailability> tmplist = new List<RoomAvailability>();
             foreach (var item in list)
             {
