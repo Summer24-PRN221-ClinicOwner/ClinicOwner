@@ -5,7 +5,8 @@ namespace ClinicRepositories.Interfaces
 {
     public interface IRoomAvailabilityRepository : IGenericRepository<RoomAvailability>
     {
-        public Task<List<Slot>> GetSlotsAvailabilityAsync(DateTime date, int slotRequired);
-        public Task<Room> GetAvailableRoomAsync(DateTime date, int slotRequired);
+        public Task<List<Slot>> GetRoomsAvailabilityAsync(DateTime date, int slotRequired);
+        public Room GetAvailableRoomAsync(DateTime date, int slotRequired);
+        public Task<bool> UpdateAvaialeString(int roomId, DateTime date, int startSlot, int slotRequired);
     }
 }

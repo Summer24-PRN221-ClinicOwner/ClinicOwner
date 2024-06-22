@@ -8,5 +8,18 @@ namespace ClinicRepositories
         public AppointmentRepository() : base()
         {
         }
+
+        public async Task<bool> AddAppointmentAsync(Appointment appointment)
+        {
+            try
+            {
+                await _context.Appointments.AddAsync(appointment);
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
+            return true;
+        }
     }
 }

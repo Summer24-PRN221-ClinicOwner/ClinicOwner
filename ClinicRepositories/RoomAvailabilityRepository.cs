@@ -31,7 +31,7 @@ namespace ClinicRepositories
             {
                 if (SlotDefiner.CheckSlotRequired(item.AvailableSlots, slotRequired) != -1)
                 {
-                    tmplist.Add(item);
+                    tmplist.Add(new() { Id = item.Id, AvailableSlots = item.AvailableSlots, Day = item.Day, RoomId = item.RoomId });
                 }
             }
             //Convert to available slots 
@@ -58,21 +58,43 @@ namespace ClinicRepositories
 
         }
 
-        public async Task<Room> GetAvailableRoomAsync(DateTime date, int slotRequired)
+        public Room GetAvailableRoomAsync(DateTime date, int slotRequired)
         {
             var checklist = _context.RoomAvailabilities.ToList();
-            List<RoomAvailability> item =  _context.RoomAvailabilities.Include(item => item.Room).
-                Where(item => item.Day.Date == date.Date && item.AvailableSlots != "0000000000" ).ToList();
-            foreach (var room in item) {
+            List<RoomAvailability> item = _context.RoomAvailabilities.Include(item => item.Room).
+                Where(item => item.Day.Date == date.Date && item.AvailableSlots != "0000000000").ToList();
+            foreach (var room in item)
+            {
 
                 int check = SlotDefiner.CheckSlotRequired(room.AvailableSlots, slotRequired);
-                if( check != -1)
+                if (check != -1)
                 {
                     return room.Room;
                 }
             }
 
             return null;
+        }
+
+        public async Task<bool> UpdateAvaialeString(int roomId, DateTime date, int startSlot, int slotRequired)
+        {
+            var item = await _context.RoomAvailabilities.FirstOrDefaultAsync(item => item.Day.Date == date && item.RoomId == roomId);
+            var slotList = SlotDefiner.ConvertFromString(item.AvailableSlots);
+
+            for (int i = startSlot; i < startSlot + slotRequired; i++)
+            {
+                slotList.ElementAt(startSlot - 1).IsAvailable = false;
+            }
+            item.AvailableSlots = SlotDefiner.ConvertToString(slotList);
+            try
+            {
+                _context.SaveChanges();
+            }
+            catch (Exception e)
+            {
+                return false;
+            }
+            return true;
         }
 
     }

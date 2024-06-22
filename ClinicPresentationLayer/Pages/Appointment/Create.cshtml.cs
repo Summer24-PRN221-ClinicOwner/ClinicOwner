@@ -1,17 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using BusinessObjects;
+using BusinessObjects.Entities;
+using ClinicPresentationLayer.Extension;
+using ClinicServices.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using BusinessObjects.Entities;
-using ClinicRepositories;
-using BusinessObjects;
-using ClinicServices.Interfaces;
-using ClinicPresentationLayer.Extension;
-using System.Globalization;
-using ClinicServices.EmailService;
 
 namespace ClinicPresentationLayer.Pages.Appointment
 {
@@ -101,7 +94,7 @@ namespace ClinicPresentationLayer.Pages.Appointment
                     return RedirectToPage("./Index");
                 }
             }
-            catch (Exception ex) 
+            catch (Exception ex)
             {
 
             }
