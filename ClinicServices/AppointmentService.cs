@@ -105,6 +105,7 @@ namespace ClinicServices
         public async Task<AppointmentDentistSchedule> GetAppoinmentSchedule(int pageWeek)
         {
             var date = DateTime.Now;
+            date = date.AddDays(7 * pageWeek);
             while (date.DayOfWeek != DayOfWeek.Monday)
             {
                 date = date.AddDays(-1);
