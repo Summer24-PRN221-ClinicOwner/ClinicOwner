@@ -12,5 +12,6 @@ namespace BusinessObjects
         public required List<Appointment> Saturday { get; set; }
         public required List<Appointment> Sunday { get; set; }
 
+
     }
 }

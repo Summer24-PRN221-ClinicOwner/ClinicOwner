@@ -25,7 +25,8 @@ namespace ClinicRepositories
 
         public async Task<List<Appointment>> GetByDate(DateTime date)
         {
-            return await _context.Appointments.Where(item => item.AppointDate.Date == date.Date).ToListAsync();
+           var a = await _context.Appointments.ToListAsync();
+           return a;
         }
     }
 }
