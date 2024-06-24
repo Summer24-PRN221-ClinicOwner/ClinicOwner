@@ -24,7 +24,7 @@ namespace ClinicRepositories
             //Querry list of available room
             List<RoomAvailability> list = await GetAllAsync();
             list = list.Where(
-                    item => item.Day.Date == date.Date && item.AvailableSlots != "0000000000" 
+                    item => item.Day.Date == date.Date && item.AvailableSlots != "0000000000"
                 ).ToList();
             List<RoomAvailability> tmplist = new List<RoomAvailability>();
             foreach (var item in list)
@@ -38,15 +38,16 @@ namespace ClinicRepositories
             List<Slot> slots = SlotDefiner.ConvertFromString("0000000000");
             foreach (var room in tmplist)
             {
+                if (SlotDefiner.ConvertToString(slots) == "11111111111") return slots;
                 int availableSlot = SlotDefiner.CheckSlotRequired(room.AvailableSlots, slotRequired);
                 while (availableSlot != -1)
                 {
                     // Set available string 
-                    slots.FirstOrDefault(item => item.Key == availableSlot).IsAvailable = true;
+                    slots.ElementAt(availableSlot - 1).IsAvailable = true;
 
                     // Inactive slot 
                     List<Slot> tempSlot = SlotDefiner.ConvertFromString(room.AvailableSlots);
-                    tempSlot.FirstOrDefault(item => item.Key == availableSlot).IsAvailable = false;
+                    tempSlot.ElementAt(availableSlot - 1).IsAvailable = false;
                     room.AvailableSlots = SlotDefiner.ConvertToString(tempSlot);
 
                     // Continue
@@ -58,7 +59,7 @@ namespace ClinicRepositories
 
         }
 
-        public async Task<Room> GetAvailableRoomAsync(DateTime date, int slotRequired)
+        public Room GetAvailableRoomAsync(DateTime date, int slotRequired)
         {
             var checklist = _context.RoomAvailabilities.ToList();
             List<RoomAvailability> item = _context.RoomAvailabilities.Include(item => item.Room).
