@@ -2,19 +2,22 @@
 @model ClinicPresentationLayer.Pages.Appointment.ListModel
 @{
 
-    var schedule = new string[8, 7];
+    var schedule = Model.Schedule;
 
     // Hardcoding the schedule data
-    schedule[0, 0] = "Mr. A\nNhổ răng khôn";
-    schedule[2, 2] = "Mr. B\nLàm trắng răng";
-    schedule[4, 1] = "Mr. C\nNhổ răng thường";
+    // schedule[0, 0] = "Mr. A\nNhổ răng khôn";
+    // schedule[2, 2] = "Mr. B\nLàm trắng răng";
+    // schedule[4, 1] = "Mr. C\nNhổ răng thường";
     // schedule[1, 3] = "Mr. D\nKhám tổng quát";
 
 }
 
 <body>
     <h1>Clinic Schedule</h1>
-
+    <div>
+        <a asp-page="./List" asp-route-PageWeek="@(Model.PageWeek - 1)" class="btn btn-primary">Previous</a>
+        <a asp-page="./List" asp-route-PageWeek="@(Model.PageWeek + 1)" class="btn btn-primary">Next</a>
+    </div>
     <h1>Schedule</h1>
    @*  <table class="table table-bordered"> *@
        <table>  
@@ -28,14 +31,13 @@
                 <th>Thứ 6</th>
                 <th>Thứ 7</th>
                 <th>Chủ Nhật</th>
-                
             </tr>
         </thead>
         <tbody>
-            @for (int slot = 0; slot < 8; slot++)
+            @for (int slot = 0; slot < 10; slot++)
             {
                 <tr>
-                    <td>Slot @slot</td>
+                    <td>@("Slot " + (slot + 1) + " : " + GetSlotTime(slot))</td>
                     @for (int day = 0; day < 7; day++)
                     {
                         var cellContent = schedule[slot, day];
@@ -62,33 +64,34 @@
             background-color: yellow;
         }
     </style>
-@*     <script>
-        $(function () {
-            $('#dateRange').daterangepicker({
-                opens: 'left',
-                autoApply: true,
-                locale: {
-                    format: 'MM/DD/YYYY'
-                },
-                isInvalidDate: function (date) {
-                    return date.day() !== 1; // Disable all days except Monday
-                },
-                startDate: moment().day(1), // Start with the current week's Monday
-                endDate: moment().day(7) // End with the current week's Sunday
-            }, function (start, end, label) {
-                if (start.day() === 1) {
-                    end = start.clone().day(7);
-                    $('#dateRange').val(start.format('MM/DD/YYYY') + ' - ' + end.format('MM/DD/YYYY'));
-                }
-            });
-
-            // Update the end date to the following Sunday if the start date is changed
-            $('#dateRange').on('apply.daterangepicker', function (ev, picker) {
-                if (picker.startDate.day() === 1) {
-                    picker.endDate = picker.startDate.clone().day(7);
-                    $(this).val(picker.startDate.format('MM/DD/YYYY') + ' - ' + picker.endDate.format('MM/DD/YYYY'));
-                }
-            });
-        });
-    </script> *@
+    @functions {
+        public string GetSlotTime(int slotIndex)
+        {
+            switch (slotIndex)
+            {
+                case 0:
+                    return "7h00 - 8h00";
+                case 1:
+                    return "8h00 - 9h00";
+                case 2:
+                    return "9h00 - 10h00";
+                case 3:
+                    return "10h00 - 11h00";
+                case 4:
+                    return "11h00 - 12h00";
+                case 5:
+                    return "13h00 - 14h00";
+                case 6:
+                    return "14h00 - 15h00";
+                case 7:
+                    return "15h00 - 16h00";
+                case 8:
+                    return "16h00 - 17h00";
+                case 9:
+                    return "17h00 - 18h00";
+                default:
+                    return "";
+            }
+        }
+    }
 </body>
