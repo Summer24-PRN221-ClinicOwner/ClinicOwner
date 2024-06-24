@@ -1,5 +1,6 @@
 ﻿using BusinessObjects.Entities;
 using ClinicRepositories.Interfaces;
+using Microsoft.EntityFrameworkCore;
 
 namespace ClinicRepositories
 {
@@ -20,6 +21,11 @@ namespace ClinicRepositories
                 return false;
             }
             return true;
+        }
+
+        public async Task<List<Appointment>> GetByDate(DateTime date)
+        {
+            return await _context.Appointments.Where(item => item.AppointDate.Date == date.Date).ToListAsync();
         }
     }
 }

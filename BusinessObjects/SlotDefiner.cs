@@ -93,7 +93,8 @@ namespace BusinessObjects
                 }
                 else
                 {
-                    checkedSlot = 0;
+                    if (slot.IsAvailable && slot.Key == 6) checkedSlot = 1;
+                    else checkedSlot = 0;
                 }
             }
             return -1;
@@ -120,9 +121,13 @@ namespace BusinessObjects
         }
         public static List<Slot> DurationDiplayTimeOnSlot(List<Slot> listSlot, int requiredSlot)
         {
+
             foreach (Slot slot in listSlot)
             {
-                slot.DisplayTime = sequenceDisplayTime.ElementAt(slot.Key - 1) + " - " + sequenceDisplayTime.ElementAt(slot.Key);
+                if (slot.Key + requiredSlot >= sequenceDisplayTime.Count()) return listSlot;
+                if (slot.Key < 6)
+                    slot.DisplayTime = sequenceDisplayTime.ElementAt(slot.Key - 1) + " - " + sequenceDisplayTime.ElementAt(slot.Key + requiredSlot - 1);
+                else slot.DisplayTime = sequenceDisplayTime.ElementAt(slot.Key) + " - " + sequenceDisplayTime.ElementAt(slot.Key + requiredSlot);
             }
             return listSlot;
         }
