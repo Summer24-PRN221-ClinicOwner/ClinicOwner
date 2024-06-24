@@ -63,7 +63,7 @@ namespace ClinicServices
 
         public async Task<List<Slot>> GetAvailableSlotAsync(DateTime date, int slotRequired)
         {
-            return await _roomAvailabilityRepository.GetSlotsAvailabilityAsync(date, slotRequired);
+            return await _roomAvailabilityRepository.GetRoomsAvailabilityAsync(date, slotRequired);
         }
 
         public async Task<Appointment> GetByIdAsync(int id)
@@ -71,9 +71,9 @@ namespace ClinicServices
             return await _appointmentRepository.GetByIdAsync(id);
         }
 
-        public Room GetRoomAvailable(DateTime date, int slotRequired)
+        public async Task<Room> GetRoomAvailable(DateTime date, int slotRequired)
         {
-            return _roomAvailabilityRepository.GetAvailableRoomAsync(date, slotRequired);
+            return await _roomAvailabilityRepository.GetAvailableRoomAsync(date, slotRequired);
         }
 
         public async Task UpdateAsync(Appointment entity)

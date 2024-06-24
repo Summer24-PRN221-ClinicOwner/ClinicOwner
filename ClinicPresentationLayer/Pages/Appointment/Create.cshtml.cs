@@ -35,7 +35,7 @@ namespace ClinicPresentationLayer.Pages.Appointment
                 return RedirectToPage("/MainPage");
             }
             Service = await _serviceService.GetByIdAsync(id);
-            services1.Add(Service);
+            //services1.Add(Service);
             //ViewData["StartSlot"] = new SelectList(SlotDefiner.slots, "Key", "DisplayTime");
             if (id != null)
             {
@@ -80,8 +80,8 @@ namespace ClinicPresentationLayer.Pages.Appointment
             Appointment.ServiceId = (int)TempData["ServiceId"];
 
             Appointment.PatientId = currentAcc.Id;
-            var availRoom = await _appointmentService.GetRoomAvailable(Appointment.AppointDate, Service.Duration);
-            Appointment.RoomId = availRoom.Id;
+            //var availRoom = await _appointmentService.GetRoomAvailable(Appointment.AppointDate, Service.Duration);
+            //Appointment.RoomId = availRoom.Id;
             Appointment.Status = (int)AppointmentStatus.Waiting;
             Appointment.CreateDate = Appointment.ModifyDate = DateTime.UtcNow.AddHours(7);
             Appointment.EndSlot = Appointment.StartSlot + Service.Duration - 1;
