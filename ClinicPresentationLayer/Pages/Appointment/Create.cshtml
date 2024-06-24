@@ -1,74 +1,74 @@
 ﻿@page
 @using BusinessObjects
+@using BusinessObjects.Entities
 @model ClinicPresentationLayer.Pages.Appointment.CreateModel
 @addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
 @{
-    // ViewData["Title"] = "Create";
+    ViewData["Title"] = "Create Appointment";
 }
+
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - ClinicPresentationLayer</title>
+    <title>@ViewData["Title"]</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/ClinicPresentationLayer.styles.css" asp-append-version="true" />
     <script src="~/lib/jquery/dist/jquery.js"></script>
 </head>
-
 <body>
     <div id="main-wrapper" class="show">
-        <h1>Create</h1>
-
-        <h4>Appointment</h4>
+        <h1>Create Appointment</h1>
         <hr />
         <div class="row">
-            <!-- Form 1: Basic Appointment Details -->
-            <form id="form1" method="post" asp-page-handler="SubmitBasic">
+            <form id="combinedForm" method="post" asp-page-handler="SubmitAppointment">
                 <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                 <div class="form-group">
-                    <label asp-for="Appointment.ServiceId" class="control-label"></label>
-                    <select asp-for="Appointment.ServiceId" class="form-control" asp-items="ViewBag.ServiceId"></select>
+                    <input type="hidden" asp-for="Appointment.ServiceId" />
+                    <span asp-validation-for="Appointment.ServiceId" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label class="control-label">Chi tiết dịch vụ</label>
+                    <div>
+                        <strong>Tên dịch vụ: </strong>@Model.Service.Name
+                    </div>
+                    <div>
+                        <strong>Mô tả: </strong>@Model.Service.Description
+                    </div>
+                    <div>
+                        <strong>Chi phí: </strong>@Model.Service.Cost
+                    </div>
+                    <div>
+                        <strong>Thời gian: </strong>@Model.Service.Duration minutes
+                    </div>
                 </div>
                 <div class="form-group">
-                    <label asp-for="Appointment.AppointDate" class="control-label"></label>
-                    <input type="date" asp-for="Appointment.AppointDate" class="form-control" id="Appointment_AppointDate" onclick="console.log('me-here')" onchange="updateAvailableSlots();" />
+                    <label asp-for="Appointment.AppointDate" class="control-label">Appointment Date</label>
+                    <input type="date" asp-for="Appointment.AppointDate" class="form-control" id="Appointment_AppointDate" onchange="updateAvailableSlots();" />
                     <span asp-validation-for="Appointment.AppointDate" class="text-danger"></span>
                 </div>
-                <div>
-                    <div class="form-group">
-                        <label asp-for="Appointment.StartSlot" class="control-label"></label>
-                        <select id="appointment-slots-partial" asp-for="Appointment.StartSlot" class="form-control">
-                            @await Html.PartialAsync("_SlotPartial", new List<Slot>())
-                           </select>
-                        <span asp-validation-for="Appointment.StartSlot" class="text-danger"></span>
-                    </div>
-                </div>
-                
-
                 <div class="form-group">
-                    <button type="submit" class="btn btn-primary">Next</button>
+                    <label asp-for="Appointment.StartSlot" class="control-label">Start Slot</label>
+                    <select id="appointment-slots-partial" asp-for="Appointment.StartSlot" class="form-control" onchange="updateAvailableDentists();">
+                        @* Populate slots dynamically based on appointment date and service *@
+                        @await Html.PartialAsync("_SlotPartial", new List<Slot>())
+                    </select>
+                    <span asp-validation-for="Appointment.StartSlot" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Appointment.DentistId" class="control-label">Dentist</label>
+                    <select id="dentist-list" asp-for="Appointment.DentistId" class="form-control">
+                        @* Populate dentists dynamically based on selected slot and service *@
+                        @await Html.PartialAsync("_DentistPartial", new List<Dentist>())
+                    </select>
+                    <span asp-validation-for="Appointment.DentistId" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <button type="submit" class="btn btn-primary">Submit Appointment</button>
                 </div>
             </form>
-
-            <!-- Form 2: Complete Appointment Details -->
-            @if(Model.ShowDentistForm)
-            {
-                <form id="form2" method="post" asp-page-handler="SubmitComplete">
-                    <input type="hidden" asp-for="Appointment.AppointDate" />
-                    <input type="hidden" asp-for="Appointment.StartSlot" />
-                    <input type="hidden" asp-for="Appointment.ServiceId" />
-                    <div class="form-group">
-                        <label asp-for="Appointment.DentistId" class="control-label"></label>
-                        <select asp-for="Appointment.DentistId" class="form-control" asp-items="ViewBag.DentistId"></select>
-                    </div>
-                    <div class="form-group">
-                        <button type="submit" class="btn btn-primary">Submit Appointment</button>
-                    </div>
-                </form>
-            }
         </div>
     </div>
     <script>
@@ -82,10 +82,37 @@
                 data: { appointmentDate: appointmentDate, serviceDuration: serviceDuration },
                 success: function (data) {
                     $('#appointment-slots-partial').html(data);
+                    updateAvailableDentists();
                     console.log(data);
                 },
                 error: function (xhr, status, error) {
                     console.error('Error updating available slots:', error);
+                }
+            });
+            updateAvailableDentists();
+        }
+
+        function updateAvailableDentists() {
+            var appointmentDate = $('#Appointment_AppointDate').val();
+            var serviceDuration = @Model.Service.Duration;
+            var startSlot = $('#appointment-slots-partial').val();
+            var serviceId = @Model.Service.Id;
+
+            $.ajax({
+                url: '@Url.Page("./Create", new { handler = "AvailableDentistsPartial" })',
+                type: 'GET',
+                data: {
+                    appointmentDate: appointmentDate,
+                    serviceDuration: serviceDuration,
+                    startSlot: startSlot,
+                    serviceId: serviceId
+                },
+                success: function (data) {
+                    $('#dentist-list').html(data);
+                    console.log(data);
+                },
+                error: function (xhr, status, error) {
+                    console.error('Error retrieving available dentists:', error);
                 }
             });
         }
@@ -98,6 +125,3 @@
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
 }
-
-
-

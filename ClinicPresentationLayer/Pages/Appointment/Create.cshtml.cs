@@ -1,4 +1,7 @@
-﻿using BusinessObjects;
+﻿using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
+using BusinessObjects;
 using BusinessObjects.Entities;
 using ClinicPresentationLayer.Extension;
 using ClinicServices.Interfaces;
@@ -14,15 +17,19 @@ namespace ClinicPresentationLayer.Pages.Appointment
         private readonly IServiceService _serviceService;
         private readonly IDentistAvailabilityService _dentistAvailService;
 
-        public Service Service;
+        [BindProperty]
+        public Service Service { get; set; } = default!;
+
+        [BindProperty]
+        public BusinessObjects.Entities.Appointment Appointment { get; set; } = default!;
+
         public CreateModel(IAppointmentService appointmentService, IServiceService serviceService, IDentistAvailabilityService dentistService)
         {
             _appointmentService = appointmentService;
             _serviceService = serviceService;
             _dentistAvailService = dentistService;
         }
-        public bool IsServiceIdDisabled { get; set; }
-        public bool ShowDentistForm { get; set; } = false;
+
         public async Task<IActionResult> OnGet(int id)
         {
             User currentAcc = HttpContext.Session.GetObject<User>("UserAccount");
@@ -34,59 +41,44 @@ namespace ClinicPresentationLayer.Pages.Appointment
             {
                 return RedirectToPage("/MainPage");
             }
+
             Service = await _serviceService.GetByIdAsync(id);
-            //services1.Add(Service);
-            //ViewData["StartSlot"] = new SelectList(SlotDefiner.slots, "Key", "DisplayTime");
-            if (id != null)
+
+            if (Service == null)
             {
-                IsServiceIdDisabled = true;
+                // Handle scenario where service with given id was not found
+                return NotFound();
             }
+
             return Page();
         }
 
-        [BindProperty]
-        public BusinessObjects.Entities.Appointment Appointment { get; set; } = default!;
-
-
-        // To protect from overposting attacks, see https://aka.ms/RazorPagesCRUD
-        public async Task<IActionResult> OnPostSubmitBasicAsync()
-        {
-            if (!ModelState.IsValid)
-            {
-                return Page();
-            }
-            Service = await _serviceService.GetByIdAsync(Appointment.ServiceId);
-            List<Dentist> dentists = await _dentistAvailService.GetAvailableDentist(Appointment.AppointDate, Appointment.StartSlot, Service.Duration, Appointment.ServiceId);
-            dentists.Insert(0, new Dentist { Id = 0, Name = "Please select a dentist" });
-
-            // Set ViewData for DentistId dropdown in Form 2
-            ViewData["DentistId"] = new SelectList(dentists, "Id", "Name");
-            // Proceed to form2 by redirecting with TempData or ViewData
-            TempData["AppointmentDate"] = Appointment.AppointDate;
-            TempData["StartSlot"] = Appointment.StartSlot;
-            TempData["ServiceId"] = Appointment.ServiceId;
-            ShowDentistForm = true;
-            return Page();
-        }
-
-        public async Task<IActionResult> OnPostSubmitCompleteAsync()
+        public async Task<IActionResult> OnPostSubmitAsync()
         {
             User currentAcc = HttpContext.Session.GetObject<User>("UserAccount");
-            Service = await _serviceService.GetByIdAsync(Appointment.ServiceId);
-
-            // Retrieve data from TempData or ViewData set in OnPostSubmitBasicAsync
-            Appointment.AppointDate = (DateTime)TempData["AppointmentDate"];
-            Appointment.StartSlot = (int)TempData["StartSlot"];
-            Appointment.ServiceId = (int)TempData["ServiceId"];
+            if (currentAcc == null)
+            {
+                return RedirectToPage("/Login");
+            }
 
             Appointment.PatientId = currentAcc.Id;
-            //var availRoom = await _appointmentService.GetRoomAvailable(Appointment.AppointDate, Service.Duration);
-            //Appointment.RoomId = availRoom.Id;
-            Appointment.Status = (int)AppointmentStatus.Waiting;
-            Appointment.CreateDate = Appointment.ModifyDate = DateTime.UtcNow.AddHours(7);
-            Appointment.EndSlot = Appointment.StartSlot + Service.Duration - 1;
+
+            // Ensure Service is properly loaded from database
+            Service = await _serviceService.GetByIdAsync(Appointment.ServiceId);
+            if (Service == null)
+            {
+                ModelState.AddModelError("", "Selected service not found.");
+                return Page();
+            }
+
             try
             {
+                var availRoom = await _appointmentService.GetRoomAvailable(Appointment.AppointDate, Service.Duration);
+                Appointment.RoomId = availRoom.Id;
+                Appointment.Status = (int)AppointmentStatus.Waiting;
+                Appointment.CreateDate = Appointment.ModifyDate = DateTime.UtcNow.AddHours(7);
+                Appointment.EndSlot = Appointment.StartSlot + Service.Duration - 1;
+
                 var result = await _appointmentService.AddAsync(Appointment);
 
                 if (result != null)
@@ -96,14 +88,25 @@ namespace ClinicPresentationLayer.Pages.Appointment
             }
             catch (Exception ex)
             {
-
+                // Log the exception for debugging and monitoring
+                Console.WriteLine(ex.Message);
+                ModelState.AddModelError("", "An error occurred while processing your request.");
+                // Optionally, return a specific error page or handle the error
             }
+
             return Page();
         }
+
         public async Task<IActionResult> OnGetAvailableSlotsPartial(DateTime appointmentDate, int serviceDuration)
         {
-            List<Slot> availableSlots = await _appointmentService.GetAvailableSlotAsync(appointmentDate, serviceDuration);;
-            return Partial("_SlotPartial", availableSlots.Where(item=> item.IsAvailable == true).ToList());
+            List<Slot> availableSlots = await _appointmentService.GetAvailableSlotAsync(appointmentDate, serviceDuration);
+            return Partial("_SlotPartial", availableSlots.Where(item => item.IsAvailable == true).ToList());
+        }
+
+        public async Task<IActionResult> OnGetAvailableDentistsPartial(DateTime appointmentDate, int startSlot, int serviceDuration, int serviceId)
+        {
+            List<Dentist> availableDentists = await _dentistAvailService.GetAvailableDentist(appointmentDate, startSlot, serviceDuration, serviceId);
+            return Partial("_DentistPartial", availableDentists.ToList());
         }
     }
 }
