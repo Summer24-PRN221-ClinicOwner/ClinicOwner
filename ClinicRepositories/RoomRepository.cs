@@ -14,5 +14,12 @@ namespace ClinicRepositories
         public RoomRepository() : base()
         {
         }
+        public async Task<List<Room>> GetRoomsAsync()
+        {
+            return await _context.Rooms
+                .Include(r => r.Clinic)
+                .Include(r => r.RoomAvailabilities)
+                .ToListAsync();
+        }
     }
 }

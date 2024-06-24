@@ -39,9 +39,7 @@ namespace ClinicPresentationLayer.Pages.Appointment
             {
                 return RedirectToPage("/MainPage");
             }
-
             Service = await _serviceService.GetByIdAsync(id);
-
             if (Service == null)
             {
                 // Handle scenario where service with given id was not found

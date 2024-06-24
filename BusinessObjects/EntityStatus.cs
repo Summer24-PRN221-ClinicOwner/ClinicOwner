@@ -19,5 +19,10 @@ namespace BusinessObjects
         Absent,
         Reported
     }
+    public enum RoomStatus
+    {
+        Open,
+        Closed
+    }
 
 }
