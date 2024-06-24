@@ -17,9 +17,9 @@ namespace ClinicServices
         private readonly IServiceRepository _serviceRepository;
         private readonly IEmailSender _emailSender;
 
-        public AppointmentService(IAppointmentRepository iAppointmentRepository, IRoomAvailabilityRepository roomAvailabilityRepository, 
-            IDentistAvailabilityRepository dentistAvailabilityRepository, IPatientRepository patientRepository, 
-            IDentistRepository dentistRepository,IServiceRepository serviceRepository, IRoomRepository roomRepository, IEmailSender emailSender)
+        public AppointmentService(IAppointmentRepository iAppointmentRepository, IRoomAvailabilityRepository roomAvailabilityRepository,
+            IDentistAvailabilityRepository dentistAvailabilityRepository, IPatientRepository patientRepository,
+            IDentistRepository dentistRepository, IServiceRepository serviceRepository, IRoomRepository roomRepository, IEmailSender emailSender)
         {
             _appointmentRepository = iAppointmentRepository;
             _roomAvailabilityRepository = roomAvailabilityRepository;
@@ -71,9 +71,9 @@ namespace ClinicServices
             return await _appointmentRepository.GetByIdAsync(id);
         }
 
-        public async Task<Room> GetRoomAvailable(DateTime date, int slotRequired)
+        public Room GetRoomAvailable(DateTime date, int slotRequired)
         {
-            return await _roomAvailabilityRepository.GetAvailableRoomAsync(date, slotRequired);
+            return _roomAvailabilityRepository.GetAvailableRoomAsync(date, slotRequired);
         }
 
         public async Task UpdateAsync(Appointment entity)
@@ -85,7 +85,7 @@ namespace ClinicServices
             Patient patient = await _patientRepository.GetByIdAsync(patientId);
             Dentist dentist = await _dentistRepository.GetByIdAsync(details.DentistId);
             Room room = await _roomRepository.GetByIdAsync(details.RoomId);
-            Service serv =  await _serviceRepository.GetByIdAsync(details.ServiceId);
+            Service serv = await _serviceRepository.GetByIdAsync(details.ServiceId);
             Slot startSlot = SlotDefiner.NewSlot(details.StartSlot);
             var subject = "Your Appointment Details";
             var content = $"Dear {patient.Name},<br/><br/>" +
@@ -100,6 +100,34 @@ namespace ClinicServices
             EmailAddress patientEmail = emailAddress;
             EmailService.Message message = new([patientEmail], subject, content);
             await _emailSender.SendEmailAsync(message);
+        }
+
+        public async Task<AppointmentDentistSchedule> GetAppoinmentSchedule(int pageWeek)
+        {
+            var date = DateTime.Now;
+            while (date.DayOfWeek != DayOfWeek.Monday)
+            {
+                date = date.AddDays(-1);
+            }
+            var Monday = await _appointmentRepository.GetByDate(date);
+            var Tuesday = await _appointmentRepository.GetByDate(date.AddDays(1));
+            var Wednesday = await _appointmentRepository.GetByDate(date.AddDays(2));
+            var Thursday = await _appointmentRepository.GetByDate(date.AddDays(3));
+            var Friday = await _appointmentRepository.GetByDate(date.AddDays(4));
+            var Saturday = await _appointmentRepository.GetByDate(date.AddDays(5));
+            var Sunday = await _appointmentRepository.GetByDate(date.AddDays(6));
+
+            AppointmentDentistSchedule result = new()
+            {
+                Monday = Monday,
+                Tuesday = Tuesday,
+                Wednesday = Wednesday,
+                Thursday = Thursday,
+                Friday = Friday,
+                Saturday = Saturday,
+                Sunday = Sunday
+            };
+            return result;
         }
     }
 }

@@ -1,13 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-using BusinessObjects;
+﻿using BusinessObjects;
 using BusinessObjects.Entities;
 using ClinicPresentationLayer.Extension;
 using ClinicServices.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace ClinicPresentationLayer.Pages.Appointment
 {
@@ -73,7 +69,7 @@ namespace ClinicPresentationLayer.Pages.Appointment
 
             try
             {
-                var availRoom = await _appointmentService.GetRoomAvailable(Appointment.AppointDate, Service.Duration);
+                var availRoom = _appointmentService.GetRoomAvailable(Appointment.AppointDate, Service.Duration);
                 Appointment.RoomId = availRoom.Id;
                 Appointment.Status = (int)AppointmentStatus.Waiting;
                 Appointment.CreateDate = Appointment.ModifyDate = DateTime.UtcNow.AddHours(7);
@@ -100,7 +96,9 @@ namespace ClinicPresentationLayer.Pages.Appointment
         public async Task<IActionResult> OnGetAvailableSlotsPartial(DateTime appointmentDate, int serviceDuration)
         {
             List<Slot> availableSlots = await _appointmentService.GetAvailableSlotAsync(appointmentDate, serviceDuration);
-            return Partial("_SlotPartial", availableSlots.Where(item => item.IsAvailable == true).ToList());
+            availableSlots = availableSlots.Where(item => item.IsAvailable).ToList();
+            availableSlots = SlotDefiner.DurationDiplayTimeOnSlot(availableSlots, serviceDuration);
+            return Partial("_SlotPartial", availableSlots);
         }
 
         public async Task<IActionResult> OnGetAvailableDentistsPartial(DateTime appointmentDate, int startSlot, int serviceDuration, int serviceId)
