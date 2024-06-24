@@ -35,7 +35,7 @@ namespace ClinicPresentationLayer.Pages.Appointment
                 return RedirectToPage("/MainPage");
             }
             Service = await _serviceService.GetByIdAsync(id);
-            services1.Add(Service);
+            
             //ViewData["StartSlot"] = new SelectList(SlotDefiner.slots, "Key", "DisplayTime");
             if (id != null)
             {

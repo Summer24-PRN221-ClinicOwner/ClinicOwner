@@ -19,7 +19,7 @@ namespace ClinicRepositories
              Availale   11100 11100
                 
              */
-        public async Task<List<Slot>> GetSlotsAvailabilityAsync(DateTime date, int slotRequired)
+        public async Task<List<Slot>> GetRoomsAvailabilityAsync(DateTime date, int slotRequired)
         {
             //Querry list of available room
             List<RoomAvailability> list = await GetAllAsync();
@@ -58,9 +58,9 @@ namespace ClinicRepositories
 
         }
 
-        public Room GetAvailableRoomAsync(DateTime date, int slotRequired)
+        public async Task<Room> GetAvailableRoomAsync(DateTime date, int slotRequired)
         {
-            var checklist = _context.RoomAvailabilities.ToList();
+            var checklist =   _context.RoomAvailabilities.ToList();
             List<RoomAvailability> item = _context.RoomAvailabilities.Include(item => item.Room).
                 Where(item => item.Day.Date == date.Date && item.AvailableSlots != "0000000000").ToList();
             foreach (var room in item)
