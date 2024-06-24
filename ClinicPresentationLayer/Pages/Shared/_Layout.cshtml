@@ -7,147 +7,87 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Tabib Apps web | Admin Dashboard Template</title>
-    <!-- Favicon icon -->
-    <link rel="icon" type="image/png" href="~/images/favicon-32x32.png">
-    <!-- Base Styling -->
-    <link rel="stylesheet" href="~/main/css/fonts.css">
-    <link rel="stylesheet" href="~/main/css/style.css">
-    <!-- Bootstrap CSS (you might already have this included in your main CSS file) -->
-    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css">
-    <!-- Date Range Picker CSS (replace with your actual path if different) -->
-    <link rel="stylesheet" href="~/plugins/daterangepicker/daterangepicker.css">
+    <title>Responsive Navbar | CodingNepal</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" />
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" />
+    <style>
+        * {
+            padding: 0;
+            margin: 0;
+            text-decoration: none;
+            list-style: none;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: montserrat;
+        }
+
+        .content-body {
+            margin-top: 40px;
+            padding: 20px;
+        }
+
+        .navbar-nav .nav-item .nav-link {
+            color: white !important;
+        }
+
+        .navbar-brand, .navbar-nav .nav-link {
+            color: white !important;
+        }
+
+        .form-inline .form-control {
+            width: 300px;
+        }
+    </style>
 </head>
+
 <body>
-    <div id="main-wrapper" class="show">
-        <!-- Start logo components -->
-        <div class="nav-header">
-            <div class="brand-logo">
-                <a href="index.html">
-                    <img class="logo-tabib" src="~/images/download.png" alt="">
-                </a>
-                <a href="index.html">
-                    <img class="brand-title" src="~/images/logo.png" alt="">
-                </a>
-            </div>
-        </div>
-        <!-- End logo components -->
-        <!-- Start section sidebar -->
-        <aside class="left-panel nicescroll-box">
-            <!-- Navigation Menu -->
-            <nav class="navigation">
-                <!-- List of Menu Items -->
-                <ul class="list-unstyled main-menu">
-                    <!-- Menu items as per your application -->
-                    <!-- Example menu item -->
-                    <li class="has-submenu">
-                        <a href="index.html">
-                            <i class="fas fa-th-large"></i>
-                            <span class="nav-label">Dashboard</span>
-                        </a>
-                    </li>
-                    <!-- Repeat similar structure for other menu items -->
-                </ul>
-            </nav>
-            <!-- Sidebar Widgets -->
-            <div class="sidebar-widgets">
-                <!-- Example sidebar widget -->
-                <div class="top-sidebar box-shadow mx-25 m-b-30 p-b-20 text-center">
-                    <a href="new-appointment.html">
-                        <img src="https://via.placeholder.com/215/f8f8f8/2b2b2b" class="side-img" alt="img">
-                    </a>
-                    <a href="#">
-                        <h4 class="text-primary mb-0">Make an Appointment</h4>
-                    </a>
+    <nav class="navbar navbar-expand-lg navbar-light bg-primary">
+        @* <div class="container-fluid"> *@
+            <a class="navbar-brand" href="/">Clinic</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+                <div class="navbar-nav mr-auto">
+                    <a class="nav-link active" aria-current="page" href="/Appointment/List">Appointment</a>
+                    <a class="nav-link" href="#">Link</a>
+                    <a class="nav-link" href="#">Dropdown</a>
+                    <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">Disabled</a>
                 </div>
-                <!-- Copyright Info -->
-                <div class="copyright text-center">
-                    <p class="mb-0">Tabib Dashboard</p>
-                    <p class="mb-0">© 2022</p>
+                <div class="fullscreen notification_dropdown widget-5 mt-3 mb-3">
+                    @if (user != null)
+                    {
+                        <span class="text-lg">Welcome,</span>
+                        <span class="text-red-500 ml-2 text-lg">@user.Username</span>
+                        <form method="post" asp-controller="Account" asp-action="Logout" style="display:inline;" class="m-lg-2">
+                            <button type="submit" class="btn btn-danger">Logout</button>
+                        </form>
+                    }
+                    else
+                    {
+                        <!-- Login Button -->
+                        <a href="/Login" class="btn btn-success">Login</a>
+                    }
                 </div>
             </div>
-        </aside>
-        <!-- End section sidebar -->
-        <!-- Start section header -->
-        <div class="header">
-            <!-- Top Head -->
-            <header class="top-head container-fluid">
-                <!-- Navigation Control -->
-                <div class="nav-control">
-                    <!-- Hamburger Icon -->
-                    <div class="hamburger">
-                        <span class="line"></span><span class="line"></span><span class="line"></span>
-                    </div>
-                    <!-- Left Header Content -->
-                    <div class="left-header content-header__menu">
-                        <!-- List of Header Links -->
-                        <ul class="list-unstyled">
-                            <!-- Example header link -->
-                            <li class="nav-link btn">
-                                <a href="/Appointment/Create">
-                                    <i class="far fa-calendar-check"></i> <span>Make an appointment</span>
-                                </a>
-                            </li>
-                            <!-- Repeat similar structure for other header links -->
-                        </ul>
-                    </div>
-                </div>
+        @* </div> *@
+    </nav>
 
-                <!-- Right Header Content -->
-                <div class="header-right">
-                    <!-- User Info and Authentication -->
-                    <div class="fullscreen notification_dropdown widget-5 mt-3">
-                        @if (user != null)
-                        {
-                            <!-- User Welcome and Logout Button -->
-                            <span class="text-lg">Welcome,</span>
-                            <span class="text-red-500 ml-2 text-lg">@user.Username</span>
-                            <form method="post" asp-controller="Account" asp-action="Logout" style="display:inline;" class="m-lg-2">
-                                <button type="submit" class="btn btn-danger">Logout</button>
-                            </form>
-                        }
-                        else
-                        {
-                            <!-- Login Button -->
-                            <a href="/Login" class="btn btn-primary">Login</a>
-                        }
-                    </div>
-                </div>
-            </header>
-        </div>
-        <!-- End section header -->
-        <!-- Start section content -->
-        <div class="content-body">
-            <div class="warper container-fluid">
-                <div class="container mb-5">
-                    <!-- Render Razor Pages Body Content -->
-                    @RenderBody()
-                </div>
+    <div class="content-body">
+        <div class="warper container-fluid">
+            <div class="container mb-5">
+                @RenderBody()
             </div>
         </div>
-
     </div>
 
-    <!-- Scripts -->
-    <!-- jQuery -->
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-    <!-- Bootstrap JS -->
-    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-    <!-- Moment JS -->
-    <script src="~/plugins/moment/moment.min.js"></script>
-    <!-- Date Range Picker JS -->
-    <script src="~/plugins/daterangepicker/daterangepicker.min.js"></script>
-    <!-- DataTables JS -->
-    <script src="~/plugins/datatables/jquery.dataTables.min.js"></script>
-    <!-- Custom Scripts -->
-    <script src="~/js/site.js" asp-append-version="true"></script>
-    <script src="~/js/toggleFullScreen.js"></script>
-    <script src="~/js/main.js"></script>
-    <script src="~/js/option-themes.js"></script>
-
     <!-- Optional: Scripts for specific pages or components -->
+@*      <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script> *@
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

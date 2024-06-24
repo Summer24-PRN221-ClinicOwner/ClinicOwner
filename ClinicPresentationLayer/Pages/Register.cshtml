@@ -2,21 +2,6 @@
 @model ClinicPresentationLayer.Pages.RegisterModel
 @{
 }
-<!DOCTYPE html>
-<html lang="en">
-
-<head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Tabib Apps web | Admin Dashboard Template</title>
-    <!-- Favicon icon -->
-    <link rel="icon" type="image/png" href="~/images/favicon-32x32.png">
-    <!-- Base Styling  -->
-    <link rel="stylesheet" href="~/main/css/fonts.css">
-    <link rel="stylesheet" href="~/main/css/style.css">
-</head>
-
 <body class="auth">
     <div id="main-wrapper" class="show">
 
@@ -32,21 +17,6 @@
                 <div class="login-main">
                         <h4>Create your account</h4>
                         <p>Enter your personal details to create account</p>
-                       @*  <div class="form-group m-b-10">
-                            <label class="col-form-label pt-0">Your Name</label>
-                            <div class="row g-2">
-                                <div class="col-md-12 col-lg-6">
-                                    <div class="form-group mb-0">
-                                        <input class="form-control" type="text" placeholder="First name">
-                                    </div>
-                                </div>
-                                <div class="col-md-12 col-lg-6">
-                                    <div class="form-group mb-0">
-                                        <input class="form-control" type="text" placeholder="Last name">
-                                    </div>
-                                </div>
-                            </div>
-                        </div> *@
                         <form class ="theme-form" method="post">
                             <div class="form-group">
                                 <label asp-for="Username" class="control-label"></label>
@@ -73,30 +43,6 @@
                 </div>
             </div>
         </div>
-        <!-- End Register page -->
-
     </div>
-
-    <!-- JQuery v3.5.1 -->
-    <script src="~/plugins/jquery/jquery.min.js"></script>
-
-    <!-- popper js -->
-    <script src="~/plugins/popper/popper.min.js"></script>
-
-    <!-- Bootstrap -->
-    <script src="~/plugins/bootstrap/js/bootstrap.js"></script>
-
-    <!-- Moment -->
-    <script src="~/plugins/moment/moment.min.js"></script>
-
-    <!-- Date Range Picker -->
-    <script src="~/plugins/daterangepicker/daterangepicker.min.js"></script>
-
-    <!-- Main Custom JQuery -->
-    <script src="~/js/toggleFullScreen.js"></script>
-    <script src="~/js/main.js"></script>
-    <script src="~/js/option-themes.js"></script>
-
 </body>
 
-</html>
