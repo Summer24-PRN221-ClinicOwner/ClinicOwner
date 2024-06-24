@@ -19,6 +19,7 @@ namespace ClinicPresentationLayer.Pages.Appointment
 
         [BindProperty]
         public Service Service { get; set; } = default!;
+        public List<Service> Services { get; set; } = default!;
 
         [BindProperty]
         public BusinessObjects.Entities.Appointment Appointment { get; set; } = default!;
@@ -32,6 +33,7 @@ namespace ClinicPresentationLayer.Pages.Appointment
 
         public async Task<IActionResult> OnGet(int id)
         {
+            Services = await _serviceService.GetAllAsync();
             User currentAcc = HttpContext.Session.GetObject<User>("UserAccount");
             if (currentAcc == null)
             {
