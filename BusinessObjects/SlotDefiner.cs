@@ -122,7 +122,9 @@ namespace BusinessObjects
         {
             foreach (Slot slot in listSlot)
             {
-                slot.DisplayTime = sequenceDisplayTime.ElementAt(slot.Key - 1) + " - " + sequenceDisplayTime.ElementAt(slot.Key);
+                if (slot.Key < 6)
+                    slot.DisplayTime = sequenceDisplayTime.ElementAt(slot.Key - 1) + " - " + sequenceDisplayTime.ElementAt(slot.Key);
+                else slot.DisplayTime = sequenceDisplayTime.ElementAt(slot.Key) + " - " + sequenceDisplayTime.ElementAt(slot.Key + 1);
             }
             return listSlot;
         }
