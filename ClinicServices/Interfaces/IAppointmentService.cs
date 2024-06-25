@@ -12,6 +12,6 @@ namespace ClinicServices.Interfaces
         Task DeleteAsync(int id);
         Task<List<Slot>> GetAvailableSlotAsync(DateTime date, int slotRequired);
         Room GetRoomAvailable(DateTime date, int slotRequired);
-        Task<AppointmentDentistSchedule> GetAppoinmentSchedule(int pageWeek);
+        Task<AppointmentDentistSchedule> GetAppoinmentSchedule(int pageWeek, int id);
     }
 }

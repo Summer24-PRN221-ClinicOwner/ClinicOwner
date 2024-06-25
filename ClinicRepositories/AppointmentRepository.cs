@@ -23,9 +23,15 @@ namespace ClinicRepositories
             return true;
         }
 
-        public async Task<List<Appointment>> GetByDate(DateTime date)
+        public async Task<List<Appointment>> GetByDate(DateTime date, int dentistId)
         {
-           var a = await _context.Appointments.ToListAsync();
+           var a = await _context.Appointments
+                .Where(c => c.AppointDate.Date == date.Date && c.DentistId == dentistId)
+                //.Include(a => a.Room)
+                .Include(a => a.Patient)
+                .Include(a => a.Service)
+                .ToListAsync();
+            Console.WriteLine(a);
            return a;
         }
     }

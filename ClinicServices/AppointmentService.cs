@@ -102,9 +102,9 @@ namespace ClinicServices
             await _emailSender.SendEmailAsync(message);
         }
 
-        public async Task<AppointmentDentistSchedule> GetAppoinmentSchedule(int pageWeek)
+        public async Task<AppointmentDentistSchedule> GetAppoinmentSchedule(int pageWeek, int dentistId)
         {
-            //Dentist dentist = await _dentistRepository.GetByIdAsync(dentistId);
+            Dentist dentist = await _dentistRepository.GetByIdAsync(dentistId);
             var date = DateTime.Now;
             date = date.AddDays(7 * pageWeek);
             while (date.DayOfWeek != DayOfWeek.Monday)
@@ -114,13 +114,13 @@ namespace ClinicServices
 
             AppointmentDentistSchedule result = new()
             {
-                Monday = await _appointmentRepository.GetByDate(date),
-                Tuesday = await _appointmentRepository.GetByDate(date.AddDays(1)),
-                Wednesday = await _appointmentRepository.GetByDate(date.AddDays(2)),
-                Thursday = await _appointmentRepository.GetByDate(date.AddDays(3)),
-                Friday = await _appointmentRepository.GetByDate(date.AddDays(4)),
-                Saturday = await _appointmentRepository.GetByDate(date.AddDays(5)),
-                Sunday = await _appointmentRepository.GetByDate(date.AddDays(6))
+                Monday = await _appointmentRepository.GetByDate(date, dentistId),
+                Tuesday = await _appointmentRepository.GetByDate(date.AddDays(1), dentistId),
+                Wednesday = await _appointmentRepository.GetByDate(date.AddDays(2), dentistId),
+                Thursday = await _appointmentRepository.GetByDate(date.AddDays(3), dentistId),
+                Friday = await _appointmentRepository.GetByDate(date.AddDays(4), dentistId),
+                Saturday = await _appointmentRepository.GetByDate(date.AddDays(5), dentistId),
+                Sunday = await _appointmentRepository.GetByDate(date.AddDays(6), dentistId)
             };
             return result;
         }
