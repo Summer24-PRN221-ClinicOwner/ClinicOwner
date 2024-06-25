@@ -17,7 +17,7 @@ namespace ClinicPresentationLayer.Pages.Appointment
         [BindProperty(SupportsGet = true)]
         public int PageWeek { get; set; } = 0;
         [BindProperty(SupportsGet = true)]
-        public int Id { get; set; } = 3;
+        public int Id { get; set; } = 5;
         public AppointmentDentistSchedule AppointmentSchedule { get; set; }
         
         public async Task<IActionResult> OnGet()
@@ -25,8 +25,8 @@ namespace ClinicPresentationLayer.Pages.Appointment
             try
         {
                 Console.WriteLine(PageWeek);
-                AppointmentSchedule = await _appointmentService.GetAppoinmentSchedule(PageWeek);
-                Console.WriteLine(AppointmentSchedule);
+                AppointmentSchedule = await _appointmentService.GetAppoinmentSchedule(PageWeek, Id);
+                Console.WriteLine(AppointmentSchedule.Monday);
                 return Page();
         }
         catch (Exception ex)
@@ -51,5 +51,6 @@ namespace ClinicPresentationLayer.Pages.Appointment
             return RedirectToPage(new { PageWeek });
         }
         public string[,] Schedule { get; set; } = new string[10, 7];
+
     }
 }

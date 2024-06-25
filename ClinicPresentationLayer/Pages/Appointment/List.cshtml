@@ -1,15 +1,7 @@
 ﻿@page
 @model ClinicPresentationLayer.Pages.Appointment.ListModel
 @{
-
-    var schedule = Model.Schedule;
-
-    // Hardcoding the schedule data
-    // schedule[0, 0] = "Mr. A\nNhổ răng khôn";
-    // schedule[2, 2] = "Mr. B\nLàm trắng răng";
-    // schedule[4, 1] = "Mr. C\nNhổ răng thường";
-    // schedule[1, 3] = "Mr. D\nKhám tổng quát";
-
+    var schedule = Model.AppointmentSchedule;
 }
 
 <body>
@@ -19,9 +11,8 @@
         <a asp-page="./List" asp-route-PageWeek="@(Model.PageWeek + 1)" class="btn btn-primary">Next</a>
     </div>
     <h1>Schedule</h1>
-   @*  <table class="table table-bordered"> *@
-       <table>  
-       <thead>
+    <table class="table table-bordered">
+        <thead>
             <tr>
                 <th></th>
                 <th>Thứ 2</th>
@@ -38,11 +29,13 @@
             {
                 <tr>
                     <td>@("Slot " + (slot + 1) + " : " + GetSlotTime(slot))</td>
-                    @for (int day = 0; day < 7; day++)
-                    {
-                        var cellContent = schedule[slot, day];
-                        <td class="@(string.IsNullOrEmpty(cellContent) ? "" : "highlight")">@cellContent</td>
-                    }
+                    <td class="@(HasAppointment(schedule.Monday, slot) ? "highlight" : "")">@GetAppointmentCellContent(schedule.Monday, slot)</td>
+                    <td class="@(HasAppointment(schedule.Tuesday, slot) ? "highlight" : "")">@GetAppointmentCellContent(schedule.Tuesday, slot)</td>
+                    <td class="@(HasAppointment(schedule.Wednesday, slot) ? "highlight" : "")">@GetAppointmentCellContent(schedule.Wednesday, slot)</td>
+                    <td class="@(HasAppointment(schedule.Thursday, slot) ? "highlight" : "")">@GetAppointmentCellContent(schedule.Thursday, slot)</td>
+                    <td class="@(HasAppointment(schedule.Friday, slot) ? "highlight" : "")">@GetAppointmentCellContent(schedule.Friday, slot)</td>
+                    <td class="@(HasAppointment(schedule.Saturday, slot) ? "highlight" : "")">@GetAppointmentCellContent(schedule.Saturday, slot)</td>
+                    <td class="@(HasAppointment(schedule.Sunday, slot) ? "highlight" : "")">@GetAppointmentCellContent(schedule.Sunday, slot)</td>
                 </tr>
             }
         </tbody>
@@ -64,34 +57,36 @@
             background-color: yellow;
         }
     </style>
+
     @functions {
         public string GetSlotTime(int slotIndex)
         {
             switch (slotIndex)
             {
-                case 0:
-                    return "7h00 - 8h00";
-                case 1:
-                    return "8h00 - 9h00";
-                case 2:
-                    return "9h00 - 10h00";
-                case 3:
-                    return "10h00 - 11h00";
-                case 4:
-                    return "11h00 - 12h00";
-                case 5:
-                    return "13h00 - 14h00";
-                case 6:
-                    return "14h00 - 15h00";
-                case 7:
-                    return "15h00 - 16h00";
-                case 8:
-                    return "16h00 - 17h00";
-                case 9:
-                    return "17h00 - 18h00";
-                default:
-                    return "";
+                case 0: return "7h00 - 8h00";
+                case 1: return "8h00 - 9h00";
+                case 2: return "9h00 - 10h00";
+                case 3: return "10h00 - 11h00";
+                case 4: return "11h00 - 12h00";
+                case 5: return "13h00 - 14h00";
+                case 6: return "14h00 - 15h00";
+                case 7: return "15h00 - 16h00";
+                case 8: return "16h00 - 17h00";
+                case 9: return "17h00 - 18h00";
+                default: return "";
             }
+        }
+
+        public string GetAppointmentCellContent(List<BusinessObjects.Entities.Appointment> appointments, int slot)
+        {
+            var appointment = appointments.FirstOrDefault(a => a.StartSlot <= slot + 1 && a.EndSlot >= slot + 1);
+            return appointment != null ? $"Patient: Mr. {appointment.Patient.Name}\nService: {appointment.Service.Name}\n" : "";
+            // return appointment != null ? $"Patient: Mr. {appointment.Patient.Name}\nService: {appointment.Service.Name}\nRoom: {appointment.Room.RoomNumber}" : "";
+        }
+
+        public bool HasAppointment(List<BusinessObjects.Entities.Appointment> appointments, int slot)
+        {
+            return appointments.Any(a => a.StartSlot <= slot + 1 && a.EndSlot >= slot + 1);
         }
     }
 </body>
