@@ -1,0 +1,33 @@
+﻿@page
+@model ClinicPresentationLayer.Pages.PatientHistoryModel
+@{
+}
+<table class="table">
+    <thead>
+        <tr>
+            <th>Appointment date</th>
+            <th>Start Slot</th>
+            <th>End Slot</th>
+            <th>Room</th>
+            <th>Dentist</th>
+            <th>Patient</th>
+            <th>Service</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.Appointments)
+        {
+            <tr>
+                <td>@item.AppointDate</td>
+                <td>@item.StartSlot</td>
+                <td>@item.EndSlot</td>
+                <td>@item.Room.RoomNumber</td>
+                <td>@item.Dentist.Name</td>
+                <td>@item.Patient.Name</td>
+                <td>@item.Service.Name</td>
+                <td></td>
+            </tr>
+        }
+    </tbody>
+</table>

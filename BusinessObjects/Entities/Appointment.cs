@@ -27,11 +27,11 @@ public partial class Appointment
 
     public DateTime ModifyDate { get; set; }
 
-    public virtual Dentist? Dentist { get; set; }
+    public virtual Dentist Dentist { get; set; } = null!;
 
-    public virtual Patient? Patient { get; set; }
+    public virtual Patient Patient { get; set; } = null!;
 
-    public virtual Room? Room { get; set; }
+    public virtual Room Room { get; set; } = null!;
 
-    public virtual Service? Service { get; set; }
+    public virtual Service Service { get; set; } = null!;
 }

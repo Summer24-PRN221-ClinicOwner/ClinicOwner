@@ -16,11 +16,11 @@ public partial class Dentist
     public int ClinicId { get; set; }
 
     public virtual ICollection<Appointment> Appointments { get; set; } = new List<Appointment>();
-    [ExcludeFromValidation]
+
     public virtual Clinic Clinic { get; set; } = null!;
 
     public virtual ICollection<DentistAvailability> DentistAvailabilities { get; set; } = new List<DentistAvailability>();
-    [ExcludeFromValidation]
+
     public virtual User IdNavigation { get; set; } = null!;
 
     public virtual ICollection<License> Licenses { get; set; } = new List<License>();

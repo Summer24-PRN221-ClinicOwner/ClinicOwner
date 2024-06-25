@@ -123,6 +123,12 @@ namespace ClinicServices
                 Sunday = await _appointmentRepository.GetByDate(date.AddDays(6))
             };
             return result;
+
+        }
+
+        public Task<List<Appointment>> GetAppoinmentHistoryAsync(int patientId)
+        {
+            return _appointmentRepository.GetByPatientId(patientId);
         }
     }
 }

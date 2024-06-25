@@ -14,5 +14,9 @@ namespace ClinicRepositories
         {
              return await _context.Users.FirstOrDefaultAsync(item => item.Username == username && item.Password == password);
         }
+        public async Task<User?> GetUserByUsername(string username)
+        {
+            return await _context.Users.FirstOrDefaultAsync(item => item.Username == username);
+        }
     }
 }
