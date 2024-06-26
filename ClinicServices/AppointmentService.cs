@@ -3,6 +3,7 @@ using BusinessObjects.Entities;
 using ClinicRepositories.Interfaces;
 using ClinicServices.EmailService;
 using ClinicServices.Interfaces;
+using System.Globalization;
 
 namespace ClinicServices
 {
@@ -90,7 +91,7 @@ namespace ClinicServices
             var subject = "Your Appointment Details";
             var content = $"Dear {patient.Name},<br/><br/>" +
                           $"Here are the details of your upcoming appointment:<br/>" +
-                          $"<b>Appointment Date:</b> {details.AppointDate.Date}<br/>" +
+                          $"<b>Appointment Date:</b> {details.AppointDate.ToString("dd/MM/yyyy")}<br/>" +
                           $"<b>Service name:</b> {serv.Name}<br/>" +
                           $"<b>Dentist name:</b> {dentist.Name}<br/>" +
                           $"<b>Start Slot:</b> {startSlot.DisplayTime}<br/>" +
