@@ -30,6 +30,7 @@ namespace ClinicRepositories
                 //.Include(a => a.Room)
                 .Include(a => a.Patient)
                 .Include(a => a.Service)
+                .Include(a => a.Dentist)
                 .ToListAsync();
             Console.WriteLine(a);
            return a;
