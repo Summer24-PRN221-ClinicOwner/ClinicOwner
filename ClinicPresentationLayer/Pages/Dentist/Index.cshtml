@@ -1,0 +1,116 @@
+﻿@page
+@model ClinicPresentationLayer.Pages.Dentist.IndexModel
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Index</h1>
+
+<p>
+    <a href="#" id="create-new-dentist-link">Create New Dentist</a>
+</p>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Username</th>
+            <th>Password</th>
+            <th>Name</th>
+            <th>Phone</th>
+            <th>Email</th>
+            <th>Clinic</th>
+
+            <th>Action</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.Dentists)
+        {
+            <tr>
+                <td>@item.Id</td>
+                <td>@item.IdNavigation.Username</td>
+                <td>@item.IdNavigation.Password</td>
+                <td>@item.Name</td>
+                <td>@item.Phone</td>
+                <td>@item.Email</td>
+                <td>@item.Clinic.Name</td>
+
+                <td>
+                    <a asp-page="./Edit" asp-route-id="@item.Id">Edit</a> |
+                    <a asp-page="./Details" asp-route-id="@item.Id">Details</a> |
+                    <a asp-page="./Delete" asp-route-id="@item.Id">Delete</a>
+                </td>
+            </tr>
+        }
+        <form id="create-dentist-form" method="post">
+        <tr id="create-dentist-row" style="display:none;">
+            <td></td>
+            <td>
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <div class="form-group">
+                    <label asp-for="Username" class="control-label"></label>
+                    <input asp-for="Username" class="form-control" />
+                    <span asp-validation-for="Username" class="text-danger"></span>
+                </div>
+            </td>
+            <td>
+                <div class="form-group">
+                    <label asp-for="Password" class="control-label"></label>
+                    <input asp-for="Password" class="form-control" type="password" />
+                    <span asp-validation-for="Password" class="text-danger"></span>
+                </div>
+            </td>
+            <td>
+                <div class="form-group">
+                    <label asp-for="Dentist.Name" class="control-label"></label>
+                    <input asp-for="Dentist.Name" class="form-control" />
+                    <span asp-validation-for="Dentist.Name" class="text-danger"></span>
+                </div>
+            </td>
+            <td>
+                <div class="form-group">
+                    <label asp-for="Dentist.Phone" class="control-label"></label>
+                    <input asp-for="Dentist.Phone" class="form-control" />
+                    <span asp-validation-for="Dentist.Phone" class="text-danger"></span>
+                </div>
+            </td>
+            <td>
+                <div class="form-group">
+                    <label asp-for="Dentist.Email" class="control-label"></label>
+                    <input asp-for="Dentist.Email" class="form-control" />
+                    <span asp-validation-for="Dentist.Email" class="text-danger"></span>
+                </div>
+            </td>
+            <td>
+                <div class="form-group">
+                    <label asp-for="Dentist.ClinicId" class="control-label"></label>
+                    <select asp-for="Dentist.ClinicId" class="form-control" asp-items="ViewBag.ClinicId"></select>
+                    <span asp-validation-for="Dentist.ClinicId" class="text-danger"></span>
+                </div>
+            </td>
+            <td>
+                <div class="form-group">
+                    <input type="submit" value="Create" class="btn btn-primary" />
+                    <a href="#" id="cancel-create-dentist-link" class="btn btn-secondary">Cancel</a>
+                </div>
+            </td>
+        </tr>
+        </form>
+
+    </tbody>
+</table>
+@section Scripts {
+    <script>
+        document.getElementById("create-new-dentist-link").addEventListener("click", function (e) {
+            e.preventDefault();
+            document.getElementById("create-dentist-row").style.display = "table-row";
+        });
+
+        document.getElementById("cancel-create-dentist-link").addEventListener("click", function (e) {
+            e.preventDefault();
+            document.getElementById("create-dentist-row").style.display = "none";
+        });
+    </script>
+}

@@ -5,6 +5,7 @@ namespace ClinicRepositories.Interfaces
     public interface IAppointmentRepository : IGenericRepository<Appointment>
     {
         public Task<bool> AddAppointmentAsync(Appointment appointment);
-        public Task<List<Appointment>> GetByDate(DateTime date, int dentistId);
+        public Task<List<Appointment>> GetByDate(DateTime date);
+        public Task<List<Appointment>> GetByPatientId(int id);
     }
 }

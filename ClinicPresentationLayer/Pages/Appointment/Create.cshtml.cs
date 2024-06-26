@@ -103,7 +103,7 @@ namespace ClinicPresentationLayer.Pages.Appointment
 
         public async Task<IActionResult> OnGetAvailableDentistsPartial(DateTime appointmentDate, int startSlot, int serviceDuration, int serviceId)
         {
-            List<Dentist> availableDentists = await _dentistAvailService.GetAvailableDentist(appointmentDate, startSlot, serviceDuration, serviceId);
+            List<BusinessObjects.Entities.Dentist> availableDentists = await _dentistAvailService.GetAvailableDentist(appointmentDate, startSlot, serviceDuration, serviceId);
             return Partial("_DentistPartial", availableDentists.ToList());
         }
     }

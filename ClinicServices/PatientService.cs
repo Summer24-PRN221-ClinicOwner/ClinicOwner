@@ -17,12 +17,29 @@ namespace ClinicServices
 
         public async Task<Patient> AddAsync(Patient entity, User userAccount)
         {
+            var existingUser = await _userService.GetByUsernameAsync(userAccount.Username);
+            if (existingUser != null)
+            {
+                throw new Exception("A user with the same username already exists.");
+            }
             userAccount.Status = 1;
             var newAccount = await _userService.AddAsync(userAccount);
             entity.Id = newAccount.Id;
             return await _repository.AddAsync(entity);
         }
+        public async Task<Patient> StaffAddAsync(Patient entity, User userAccount)
+        {
+            var existingUser = await _userService.GetByUsernameAsync(userAccount.Username);
+            if (existingUser != null)
+            {
+                throw new Exception("A user with the same username already exists.");
+            }
+            userAccount.Status = 1;
+            var newAccount = await _userService.AddAsync(userAccount);
+            entity.Id = newAccount.Id;
+            return await _repository.AddAsync(entity);
 
+        }
         public async Task DeleteAsync(int id)
         {
             await _userService.DeleteAsync(id);
