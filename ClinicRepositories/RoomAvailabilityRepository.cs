@@ -81,23 +81,18 @@ namespace ClinicRepositories
             return slots;
         }
 
-        public Room GetAvailableRoomAsync(DateTime date, int slotRequired)
+        public Room GetAvailableRoomAsync(DateTime date, int slotRequired, int startSlot)
         {
-            var checklist = _context.RoomAvailabilities.ToList();
             List<RoomAvailability> item = _context.RoomAvailabilities.Include(item => item.Room).
                 Where(item => item.Day.Date == date.Date && item.AvailableSlots != "0000000000").ToList();
             foreach (var room in item)
             {
-
-                int check = SlotDefiner.CheckSlotRequired(room.AvailableSlots, slotRequired);
-                if (check != -1)
-                {
-                    return room.Room;
-                }
+                if (SlotDefiner.IsAvaiRoom(room.AvailableSlots, slotRequired, startSlot)) return room.Room;
             }
 
             return null;
         }
+
 
         public async Task<bool> UpdateAvaialeString(int roomId, DateTime date, int startSlot, int slotRequired)
         {
