@@ -87,7 +87,7 @@ namespace ClinicRepositories
                 Where(item => item.Day.Date == date.Date && item.AvailableSlots != "0000000000").ToList();
             foreach (var room in item)
             {
-                if (SlotDefiner.IsAvaiRoom(room.AvailableSlots, slotRequired, startSlot)) return room.Room;
+                if (SlotDefiner.IsAvaiForSlot(room.AvailableSlots, slotRequired, startSlot)) return room.Room;
             }
 
             return null;
@@ -97,11 +97,18 @@ namespace ClinicRepositories
         public async Task<bool> UpdateAvaialeString(int roomId, DateTime date, int startSlot, int slotRequired)
         {
             var item = await _context.RoomAvailabilities.FirstOrDefaultAsync(item => item.Day.Date == date && item.RoomId == roomId);
+            if (item == null)
+            {
+                item = new() { AvailableSlots = "1111111111", Day = date.Date, RoomId = roomId };
+                _context.RoomAvailabilities.Add(item);
+                _context.SaveChanges();
+            }
             var slotList = SlotDefiner.ConvertFromString(item.AvailableSlots);
 
             for (int i = startSlot; i < startSlot + slotRequired; i++)
             {
-                slotList.ElementAt(startSlot - 1).IsAvailable = false;
+                if (slotList.ElementAt(startSlot - 1).IsAvailable == true) slotList.ElementAt(startSlot - 1).IsAvailable = false;
+                else return false;
             }
             item.AvailableSlots = SlotDefiner.ConvertToString(slotList);
             try
