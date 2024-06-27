@@ -21,42 +21,64 @@ namespace ClinicRepositories
              */
         public async Task<List<Slot>> GetRoomsAvailabilityAsync(DateTime date, int slotRequired)
         {
+            List<Slot> slots = SlotDefiner.ConvertFromString("0000000000");
             //Querry list of available room
             List<RoomAvailability> list = await GetAllAsync();
             list = list.Where(
-                    item => item.Day.Date == date.Date && item.AvailableSlots != "0000000000"
+                    item => item.Day.Date == date.Date
                 ).ToList();
-            List<RoomAvailability> tmplist = new List<RoomAvailability>();
-            foreach (var item in list)
+            if (list.Count != 0)
             {
-                if (SlotDefiner.CheckSlotRequired(item.AvailableSlots, slotRequired) != -1)
+                List<RoomAvailability> tmplist = new List<RoomAvailability>();
+                foreach (var item in list)
                 {
-                    tmplist.Add(new() { Id = item.Id, AvailableSlots = item.AvailableSlots, Day = item.Day, RoomId = item.RoomId });
+                    if (SlotDefiner.CheckSlotRequired(item.AvailableSlots, slotRequired) != -1)
+                    {
+                        tmplist.Add(new() { Id = item.Id, AvailableSlots = item.AvailableSlots, Day = item.Day, RoomId = item.RoomId });
+                    }
+                }
+
+                //Convert to available slots 
+                foreach (var room in tmplist)
+                {
+                    if (SlotDefiner.ConvertToString(slots) == "11111111111") return slots;
+                    int availableSlot = SlotDefiner.CheckSlotRequired(room.AvailableSlots, slotRequired);
+                    while (availableSlot != -1)
+                    {
+                        // Set available string 
+                        slots.ElementAt(availableSlot - 1).IsAvailable = true;
+
+                        // Inactive slot 
+                        List<Slot> tempSlot = SlotDefiner.ConvertFromString(room.AvailableSlots);
+                        tempSlot.ElementAt(availableSlot - 1).IsAvailable = false;
+                        room.AvailableSlots = SlotDefiner.ConvertToString(tempSlot);
+
+                        // Continue
+                        availableSlot = SlotDefiner.CheckSlotRequired(room.AvailableSlots, slotRequired);
+                    }
+
                 }
             }
-            //Convert to available slots 
-            List<Slot> slots = SlotDefiner.ConvertFromString("0000000000");
-            foreach (var room in tmplist)
+            else
             {
-                if (SlotDefiner.ConvertToString(slots) == "11111111111") return slots;
-                int availableSlot = SlotDefiner.CheckSlotRequired(room.AvailableSlots, slotRequired);
+                string standard = "1111111111";
+                int availableSlot = SlotDefiner.CheckSlotRequired(standard, slotRequired);
                 while (availableSlot != -1)
                 {
                     // Set available string 
                     slots.ElementAt(availableSlot - 1).IsAvailable = true;
 
                     // Inactive slot 
-                    List<Slot> tempSlot = SlotDefiner.ConvertFromString(room.AvailableSlots);
+                    List<Slot> tempSlot = SlotDefiner.ConvertFromString(standard);
                     tempSlot.ElementAt(availableSlot - 1).IsAvailable = false;
-                    room.AvailableSlots = SlotDefiner.ConvertToString(tempSlot);
+                    standard = SlotDefiner.ConvertToString(tempSlot);
 
                     // Continue
-                    availableSlot = SlotDefiner.CheckSlotRequired(room.AvailableSlots, slotRequired);
+                    availableSlot = SlotDefiner.CheckSlotRequired(standard, slotRequired);
                 }
             }
+
             return slots;
-
-
         }
 
         public Room GetAvailableRoomAsync(DateTime date, int slotRequired)
