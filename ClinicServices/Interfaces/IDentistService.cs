@@ -12,7 +12,7 @@ namespace ClinicServices.Interfaces
 	{
         Task<List<Dentist>> GetAllAsync();
         Task<Dentist> GetByIdAsync(int id);
-        Task<Dentist> AddAsync(Dentist entity);
+        Task<Dentist> AddAsync(Dentist entity, User newUser);
         Task UpdateAsync(Dentist entity);
         Task DeleteAsync(int id);
     }

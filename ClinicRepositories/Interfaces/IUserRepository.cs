@@ -10,5 +10,6 @@ namespace ClinicRepositories.Interfaces
     public interface IUserRepository : IGenericRepository<User>
     {
         Task<User?> GetUserByUsernamePass(string username, string password);
+        Task<User?> GetUserByUsername(string username);
     }
 }

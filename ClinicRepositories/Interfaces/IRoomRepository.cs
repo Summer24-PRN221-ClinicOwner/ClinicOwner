@@ -10,6 +10,6 @@ namespace ClinicRepositories.Interfaces
 {
     public interface IRoomRepository : IGenericRepository<Room>
     {
-        
+        Task<List<Room>> GetRoomsAsync();
     }
 }

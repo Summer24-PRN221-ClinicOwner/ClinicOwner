@@ -6,5 +6,6 @@ namespace ClinicRepositories.Interfaces
     {
         public Task<bool> AddAppointmentAsync(Appointment appointment);
         public Task<List<Appointment>> GetByDate(DateTime date);
+        public Task<List<Appointment>> GetByPatientId(int id);
     }
 }

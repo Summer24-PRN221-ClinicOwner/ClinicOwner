@@ -43,5 +43,10 @@ namespace ClinicServices
         {
            return await _repository.GetUserByUsernamePass(username, password);
         }
+
+        public async Task<User> GetByUsernameAsync(string username)
+        {
+            return await _repository.GetUserByUsername(username);
+        }
     }
 }

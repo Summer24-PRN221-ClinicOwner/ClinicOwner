@@ -11,8 +11,8 @@ namespace ClinicServices.Interfaces
     {
         Task<List<Room>> GetAllAsync();
         Task<Room> GetByIdAsync(int id);
-        Task<bool> AddAsync(Service entity);
-        Task<bool> UpdateAsync(Service entity);
+        Task<bool> AddAsync(Room entity);
+        Task<bool> UpdateAsync(Room entity);
         Task<bool> DeleteAsync(int id);
     }
 }

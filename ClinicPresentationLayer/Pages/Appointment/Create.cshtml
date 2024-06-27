@@ -22,10 +22,12 @@
         <h1>Create Appointment</h1>
         <hr />
         <div class="row">
-            <form id="combinedForm" method="post" asp-page-handler="SubmitAppointment">
+            <form id="combinedForm" method="post" asp-page-handler="Submit">
                 <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                 <div class="form-group">
-                    <input type="hidden" asp-for="Appointment.ServiceId" />
+                    <select class="form-control" asp-for="Appointment.ServiceId" hidden>
+                        <option>@Model.Service.Id</option>
+                    </select>
                     <span asp-validation-for="Appointment.ServiceId" class="text-danger"></span>
                 </div>
 
@@ -69,6 +71,24 @@
                     <button type="submit" class="btn btn-primary">Submit Appointment</button>
                 </div>
             </form>
+        </div>
+        <h5 class="mt-10    ">Relatived Services</h5>
+        <div class="d-flex justify-content-between">
+            @foreach (var service in Model.Services)
+            {
+                <div class="service-box d-flex">
+                    <div>
+                        <h2>@service.Name</h2>
+                        <p>@service.Description</p>
+                        <p>@service.Cost?.ToString("C")</p>
+                        <p>Duration: @service.Duration</p>
+                        <a asp-page="./Appointment/Create" asp-route-id="@service.Id">Book Appointment</a>
+                    </div>
+                    <div>
+                        <img class="image-service" src="~/images/defaultImage.jpg" alt="Ảnh của dịch vụ @service.Name" />
+                    </div>
+                </div>
+            }
         </div>
     </div>
     <script>
@@ -117,6 +137,53 @@
             });
         }
     </script>
+    <style>
+        .container-fluid {
+            max-width: 1200px;
+        }
+
+        .d-flex {
+            display: flex;
+            flex-wrap: wrap;
+        }
+
+        .service-box {
+            border: 1px solid #ccc;
+            padding: 8px;
+            margin: 8px;
+            border-radius: 8px;
+            background-color: #f9f9f9;
+            /* flex: 1 1 calc(50% - 16px); */
+            box-sizing: border-box;
+        }
+
+        .image-service {
+            width: 113px;
+            height: 100px;
+        }
+
+        .service-box h2 {
+            margin-top: 0;
+        }
+
+        .service-box p {
+            margin: 8px 0;
+        }
+
+        .service-box a {
+            display: inline-block;
+            margin-top: 8px;
+            padding: 8px 8px;
+            background-color: #007bff;
+            color: #fff;
+            text-decoration: none;
+            border-radius: 4px;
+        }
+
+            .service-box a:hover {
+                background-color: #0056b3;
+            }
+    </style>
 </body>
 </html>
 

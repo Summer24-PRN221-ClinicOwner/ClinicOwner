@@ -15,6 +15,7 @@ namespace ClinicPresentationLayer.Pages.Appointment
 
         [BindProperty]
         public Service Service { get; set; } = default!;
+        public List<Service> Services { get; set; } = default!;
 
         [BindProperty]
         public BusinessObjects.Entities.Appointment Appointment { get; set; } = default!;
@@ -28,6 +29,7 @@ namespace ClinicPresentationLayer.Pages.Appointment
 
         public async Task<IActionResult> OnGet(int id)
         {
+            Services = await _serviceService.GetAllAsync();
             User currentAcc = HttpContext.Session.GetObject<User>("UserAccount");
             if (currentAcc == null)
             {
@@ -37,9 +39,7 @@ namespace ClinicPresentationLayer.Pages.Appointment
             {
                 return RedirectToPage("/MainPage");
             }
-
             Service = await _serviceService.GetByIdAsync(id);
-
             if (Service == null)
             {
                 // Handle scenario where service with given id was not found
@@ -103,7 +103,7 @@ namespace ClinicPresentationLayer.Pages.Appointment
 
         public async Task<IActionResult> OnGetAvailableDentistsPartial(DateTime appointmentDate, int startSlot, int serviceDuration, int serviceId)
         {
-            List<Dentist> availableDentists = await _dentistAvailService.GetAvailableDentist(appointmentDate, startSlot, serviceDuration, serviceId);
+            List<BusinessObjects.Entities.Dentist> availableDentists = await _dentistAvailService.GetAvailableDentist(appointmentDate, startSlot, serviceDuration, serviceId);
             return Partial("_DentistPartial", availableDentists.ToList());
         }
     }
