@@ -80,8 +80,8 @@
         public string GetAppointmentCellContent(List<BusinessObjects.Entities.Appointment> appointments, int slot)
         {
             var appointment = appointments.FirstOrDefault(a => a.StartSlot <= slot + 1 && a.EndSlot >= slot + 1);
-            return appointment != null ? $"Patient: Mr. {appointment.Patient.Name}\nService: {appointment.Service.Name}\n" : "";
-            // return appointment != null ? $"Patient: Mr. {appointment.Patient.Name}\nService: {appointment.Service.Name}\nRoom: {appointment.Room.RoomNumber}" : "";
+            //return appointment != null ? $"Patient: Mr. {appointment.Patient.Name}\nService: {appointment.Service.Name}\n" : "";
+             return appointment != null ? $"Patient: Mr. {appointment.Patient.Name}\nService: {appointment.Service.Name}\nRoom: {appointment.Room.RoomNumber}" : "";
         }
 
         public bool HasAppointment(List<BusinessObjects.Entities.Appointment> appointments, int slot)

@@ -68,9 +68,11 @@
                     {
                         <span class="text-lg">Welcome,</span>
                         <span class="text-red-500 ml-2 text-lg">@user.Username</span>
-                        <form method="post" asp-controller="Account" asp-action="Logout" style="display:inline;" class="m-lg-2">
-                            <button type="submit" class="btn btn-danger">Logout</button>
-                        </form>
+
+                    <form method="post" action="/Logout" style="display:inline;" class="m-lg-2">
+                        <button type="submit" class="btn btn-danger">Logout</button>
+                    </form>
+
                     }
                     else
                     {

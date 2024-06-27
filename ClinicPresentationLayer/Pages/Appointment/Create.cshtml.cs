@@ -69,7 +69,7 @@ namespace ClinicPresentationLayer.Pages.Appointment
 
             try
             {
-                var availRoom = _appointmentService.GetRoomAvailable(Appointment.AppointDate, Service.Duration);
+                var availRoom = _appointmentService.GetRoomAvailable(Appointment.AppointDate, Service.Duration, Appointment.StartSlot);
                 Appointment.RoomId = availRoom.Id;
                 Appointment.Status = (int)AppointmentStatus.Waiting;
                 Appointment.CreateDate = Appointment.ModifyDate = DateTime.UtcNow.AddHours(7);
@@ -79,7 +79,7 @@ namespace ClinicPresentationLayer.Pages.Appointment
 
                 if (result != null)
                 {
-                    return RedirectToPage("./Index");
+                    return RedirectToPage("/PatientHistory");
                 }
             }
             catch (Exception ex)

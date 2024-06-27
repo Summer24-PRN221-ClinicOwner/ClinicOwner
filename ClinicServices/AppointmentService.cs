@@ -72,9 +72,9 @@ namespace ClinicServices
             return await _appointmentRepository.GetByIdAsync(id);
         }
 
-        public Room GetRoomAvailable(DateTime date, int slotRequired)
+        public Room GetRoomAvailable(DateTime date, int slotRequired, int startSlot)
         {
-            return _roomAvailabilityRepository.GetAvailableRoomAsync(date, slotRequired);
+            return _roomAvailabilityRepository.GetAvailableRoomAsync(date, slotRequired, startSlot );
         }
 
         public async Task UpdateAsync(Appointment entity)
