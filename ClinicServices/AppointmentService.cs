@@ -43,6 +43,9 @@ namespace ClinicServices
             if (updateDentist && updateRoom && updateAppointment)
             {
                 SendEmailToPatient(entity.PatientId, entity);
+                _dentistAvailabilityRepository.SaveChanges();
+                _roomAvailabilityRepository.SaveChanges();
+                _appointmentRepository.SaveChanges();
             }
             else
             {

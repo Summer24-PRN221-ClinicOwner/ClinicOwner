@@ -121,5 +121,9 @@ namespace ClinicRepositories
             }
             return true;
         }
+        public void SaveChanges()
+        {
+            _context.SaveChanges();
+        }
     }
 }
