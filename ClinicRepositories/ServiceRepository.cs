@@ -17,7 +17,8 @@ namespace ClinicRepositories
 
         public async Task<List<Service>> GetAllService()
         {
-            return await _context.Services.ToListAsync();
+            return await _context.Services
+                .ToListAsync();
         }
     }
 }

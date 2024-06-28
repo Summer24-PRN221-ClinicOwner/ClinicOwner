@@ -35,10 +35,10 @@ namespace ClinicServices
             //send email about the appointment to the patient
             if (updateDentist && updateRoom && updateAppointment)
             {
-                SendEmailToPatient(entity);
                 _dentistAvailabilityRepository.SaveChanges();
                 _roomAvailabilityRepository.SaveChanges();
                 _appointmentRepository.SaveChanges();
+                await SendEmailToPatient(entity);
             }
             else
             {
@@ -79,8 +79,9 @@ namespace ClinicServices
         {
             await _appointmentRepository.UpdateAsync(entity);
         }
-        public async Task SendEmailToPatient(Appointment appointment)
+        public async Task SendEmailToPatient(Appointment appointmentId)
         {
+           var appointment = await _appointmentRepository.GetAppointmentsByIdAsync(appointmentId.Id);
             if (appointment == null)
             {
                 throw new Exception("Can not find appointment to send email");
@@ -98,7 +99,7 @@ namespace ClinicServices
                           $"<b>Appointment Date:</b> {appointment.AppointDate:dd/MM/yyyy}<br/>" +
                           $"<b>Service name:</b> {service.Name}<br/>" +
                           $"<b>Dentist name:</b> {dentist.Name}<br/>" +
-                          $"<b>Start Slot:</b> {startSlot.DisplayTime}<br/>" +
+                          $"<b>Start Slot:</b> {SlotDefiner.GetSlotDisplayTime(startSlot, service.Duration)}<br/>" +
                           $"<b>Room ID:</b> {room.RoomNumber}<br/>" +
                           $"Thank you,<br/>";
 

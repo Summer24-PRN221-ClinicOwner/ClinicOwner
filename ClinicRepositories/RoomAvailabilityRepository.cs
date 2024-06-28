@@ -83,16 +83,26 @@ namespace ClinicRepositories
             return slots;
         }
 
-        public Room GetAvailableRoomAsync(DateTime date, int slotRequired, int startSlot)
+        public  Room GetAvailableRoomAsync(DateTime date, int slotRequired, int startSlot)
         {
-            List<RoomAvailability> item = _context.RoomAvailabilities.Include(item => item.Room).
-                Where(item => item.Day.Date == date.Date && item.AvailableSlots != "0000000000").ToList();
-            foreach (var room in item)
+            //Room co lich
+            List<RoomAvailability> listRoom = _context.RoomAvailabilities.Include(item => item.Room).
+            Where(item => item.Day.Date == date.Date && item.AvailableSlots != "0000000000").ToList();
+            foreach (var room in listRoom)
             {
                 if (SlotDefiner.IsAvaiForSlot(room.AvailableSlots, slotRequired, startSlot)) return room.Room;
             }
-
-            return null;
+            //neu ko co room da co lich return room dau tien khong co lich
+            var result = _context.Rooms.Include(item => item.RoomAvailabilities).Where(item =>
+            item.RoomAvailabilities.Select(item => item.Day.Date == date.Date).ToList().Count == 0).ToList();
+            if(result.Count != 0)
+            {
+                return result.FirstOrDefault();
+            }
+            else
+            {
+                throw new Exception("No room found");
+            }
         }
 
 
@@ -101,12 +111,11 @@ namespace ClinicRepositories
             localContext = new ClinicContext();
             try
             {
-                var item = await _context.RoomAvailabilities.FirstOrDefaultAsync(item => item.Day.Date == date && item.RoomId == roomId);
+                var item = await localContext.RoomAvailabilities.FirstOrDefaultAsync(item => item.Day.Date == date && item.RoomId == roomId);
                 if (item == null)
                 {
                     item = new() { AvailableSlots = "1111111111", Day = date.Date, RoomId = roomId };
-                    _context.RoomAvailabilities.Add(item);
-                    _context.SaveChanges();
+                    localContext.RoomAvailabilities.Add(item);
                 }
                 var slotList = SlotDefiner.ConvertFromString(item.AvailableSlots);
 
