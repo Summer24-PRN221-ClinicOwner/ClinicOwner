@@ -6,16 +6,19 @@ namespace ClinicRepositories
 {
     public class AppointmentRepository : GenericRepository<Appointment>, IAppointmentRepository
     {
+        private ClinicContext localContext;
         public AppointmentRepository() : base()
         {
+
         }
 
         public async Task<bool> AddAppointmentAsync(Appointment appointment)
         {
+            localContext = new ClinicContext();
             try
             {
-                await _context.Appointments.AddAsync(appointment);
-                await _context.SaveChangesAsync();
+                await localContext.Appointments.AddAsync(appointment);
+
             }
             catch (Exception ex)
             {
@@ -72,7 +75,11 @@ namespace ClinicRepositories
         }
         public void SaveChanges()
         {
-            _context.SaveChanges();
+            localContext.SaveChanges();
+        }
+        public void Dispose()
+        {
+            localContext.Dispose();
         }
     }
 }

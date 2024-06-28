@@ -7,8 +7,10 @@ namespace ClinicRepositories
 {
     public class DentistAvailabilityRepository : GenericRepository<DentistAvailability>, IDentistAvailabilityRepository
     {
+        private ClinicContext localContext;
         public DentistAvailabilityRepository() : base()
         {
+
         }
         /// <summary>
         /// Các dentist có thể làm (service + slot)
@@ -39,24 +41,25 @@ namespace ClinicRepositories
 
         public async Task<bool> UpdateAvaialeString(int dentistId, DateTime date, int startSlot, int slotRequired)
         {
-            var item = await _context.DentistAvailabilities.FirstOrDefaultAsync(item => item.Day.Date == date && item.DentistId == dentistId);
-
-            if (item == null)
-            {
-                item = new() { AvailableSlots = "1111111111", Day = date.Date, DentistId = dentistId };
-                _context.DentistAvailabilities.Add(item);
-            }
-            var slotList = SlotDefiner.ConvertFromString(item.AvailableSlots);
-
-            for (int i = startSlot; i < startSlot + slotRequired; i++)
-            {
-                if (slotList.ElementAt(startSlot - 1).IsAvailable == true) slotList.ElementAt(startSlot - 1).IsAvailable = false;
-                else return false;
-            }
-            item.AvailableSlots = SlotDefiner.ConvertToString(slotList);
+            localContext = new ClinicContext();
             try
             {
-                _context.SaveChanges();
+                var item = await localContext.DentistAvailabilities.FirstOrDefaultAsync(item => item.Day.Date == date && item.DentistId == dentistId);
+
+                if (item == null)
+                {
+                    item = new() { AvailableSlots = "1111111111", Day = date.Date, DentistId = dentistId };
+                    localContext.DentistAvailabilities.Add(item);
+                }
+                var slotList = SlotDefiner.ConvertFromString(item.AvailableSlots);
+
+                for (int i = startSlot; i < startSlot + slotRequired; i++)
+                {
+                    if (slotList.ElementAt(startSlot - 1).IsAvailable == true) slotList.ElementAt(startSlot - 1).IsAvailable = false;
+                    else return false;
+                }
+                item.AvailableSlots = SlotDefiner.ConvertToString(slotList);
+
             }
             catch (Exception e)
             {
@@ -66,7 +69,11 @@ namespace ClinicRepositories
         }
         public void SaveChanges()
         {
-            _context.SaveChanges();
+            localContext.SaveChanges();
+        }
+        public void Dispose()
+        {
+            localContext.Dispose();
         }
     }
 }

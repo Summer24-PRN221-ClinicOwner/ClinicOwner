@@ -9,5 +9,6 @@ namespace ClinicRepositories.Interfaces
         public Room GetAvailableRoomAsync(DateTime date, int slotRequired, int startSlot);
         public Task<bool> UpdateAvaialeString(int roomId, DateTime date, int startSlot, int slotRequired);
         public void SaveChanges();
+        public void Dispose();
     }
 }
