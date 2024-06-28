@@ -45,5 +45,27 @@ namespace ClinicRepositories
                                 .ToListAsync();
             return result;
         }
+        public async Task<Appointment> GetAppointmentsByIdAsync(int id)
+        {
+            return await _context.Appointments
+                                 .Include(a => a.Patient)
+                                 .Include(a => a.Dentist)
+                                 .Include(a => a.Room)
+                                 .Include(a => a.Service)
+                                 .FirstOrDefaultAsync(ap => ap.Id == id);
+        }
+
+        public async Task<List<Appointment>> GetAppointmentsBeforeDaysAsync(int days)
+        {
+            var targetDate = DateTime.Today.AddDays(days);
+
+            return await _context.Appointments
+                .Include(ap => ap.Patient)
+                .Include(ap => ap.Dentist)
+                .Include(ap => ap.Room)
+                .Include(ap => ap.Service)
+                .Where(ap => ap.AppointDate.Date == targetDate.Date)
+                .ToListAsync();
+        }
     }
 }
