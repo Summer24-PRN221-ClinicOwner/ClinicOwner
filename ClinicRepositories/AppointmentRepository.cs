@@ -28,18 +28,13 @@ namespace ClinicRepositories
         {
             var a = await _context.Appointments
                  .Where(c => c.AppointDate.Date == date.Date && c.DentistId == dentistId)
-                 //.Include(a => a.Room)
+                 .Include(a => a.Room)
                  .Include(a => a.Patient)
                  .Include(a => a.Service)
                  .Include(a => a.Dentist)
                  .ToListAsync();
             Console.WriteLine(a);
             return a;
-        }
-
-        public Task<List<Appointment>> GetByDate(DateTime date)
-        {
-            throw new NotImplementedException();
         }
 
         public Task<List<Appointment>> GetByPatientId(int id)
