@@ -17,7 +17,7 @@ namespace ClinicPresentationLayer.Pages.Appointment
         [BindProperty(SupportsGet = true)]
         public int PageWeek { get; set; } = 0;
         [BindProperty(SupportsGet = true)]
-        public int Id { get; set; } = 5;
+        public int Id { get; set; } = 3;
         public AppointmentDentistSchedule AppointmentSchedule { get; set; }
         
         public async Task<IActionResult> OnGet()

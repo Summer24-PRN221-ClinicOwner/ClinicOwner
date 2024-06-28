@@ -37,9 +37,16 @@ namespace ClinicRepositories
             return a;
         }
 
-        public Task<List<Appointment>> GetByPatientId(int id)
+        public async Task<List<Appointment>> GetByPatientId(int id)
         {
-            throw new NotImplementedException();
+            var result = await _context.Appointments
+                                .Include(ap => ap.Room)
+                                .Include(ap => ap.Dentist)
+                                .Include(ap => ap.Service)
+                                .Include(ap => ap.Patient)
+                                .Where(ap => ap.PatientId == id)
+                                .ToListAsync();
+            return result;
         }
         public void SaveChanges()
         {

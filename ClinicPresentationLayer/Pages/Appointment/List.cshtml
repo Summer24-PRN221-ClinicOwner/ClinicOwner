@@ -29,13 +29,13 @@
             {
                 <tr>
                     <td>@("Slot " + (slot + 1) + " : " + GetSlotTime(slot))</td>
-                    <td class="@(HasAppointment(schedule.Monday, slot) ? "highlight" : "")">@GetAppointmentCellContent(schedule.Monday, slot)</td>
-                    <td class="@(HasAppointment(schedule.Tuesday, slot) ? "highlight" : "")">@GetAppointmentCellContent(schedule.Tuesday, slot)</td>
-                    <td class="@(HasAppointment(schedule.Wednesday, slot) ? "highlight" : "")">@GetAppointmentCellContent(schedule.Wednesday, slot)</td>
-                    <td class="@(HasAppointment(schedule.Thursday, slot) ? "highlight" : "")">@GetAppointmentCellContent(schedule.Thursday, slot)</td>
-                    <td class="@(HasAppointment(schedule.Friday, slot) ? "highlight" : "")">@GetAppointmentCellContent(schedule.Friday, slot)</td>
-                    <td class="@(HasAppointment(schedule.Saturday, slot) ? "highlight" : "")">@GetAppointmentCellContent(schedule.Saturday, slot)</td>
-                    <td class="@(HasAppointment(schedule.Sunday, slot) ? "highlight" : "")">@GetAppointmentCellContent(schedule.Sunday, slot)</td>
+                    <td class="@(HasAppointment(schedule.Monday, slot) ? "highlight" : "")">@Html.Raw(GetAppointmentCellContent(schedule.Monday, slot))</td>
+                    <td class="@(HasAppointment(schedule.Tuesday, slot) ? "highlight" : "")">@Html.Raw(GetAppointmentCellContent(schedule.Tuesday, slot))</td>
+                    <td class="@(HasAppointment(schedule.Wednesday, slot) ? "highlight" : "")">@Html.Raw(GetAppointmentCellContent(schedule.Wednesday, slot))</td>
+                    <td class="@(HasAppointment(schedule.Thursday, slot) ? "highlight" : "")">@Html.Raw(GetAppointmentCellContent(schedule.Thursday, slot))</td>
+                    <td class="@(HasAppointment(schedule.Friday, slot) ? "highlight" : "")">@Html.Raw(GetAppointmentCellContent(schedule.Friday, slot))</td>
+                    <td class="@(HasAppointment(schedule.Saturday, slot) ? "highlight" : "")">@Html.Raw(GetAppointmentCellContent(schedule.Saturday, slot))</td>
+                    <td class="@(HasAppointment(schedule.Sunday, slot) ? "highlight" : "")">@Html.Raw(GetAppointmentCellContent(schedule.Sunday, slot))</td>
                 </tr>
             }
         </tbody>
@@ -80,8 +80,12 @@
         public string GetAppointmentCellContent(List<BusinessObjects.Entities.Appointment> appointments, int slot)
         {
             var appointment = appointments.FirstOrDefault(a => a.StartSlot <= slot + 1 && a.EndSlot >= slot + 1);
-            //return appointment != null ? $"Patient: Mr. {appointment.Patient.Name}\nService: {appointment.Service.Name}\n" : "";
-             return appointment != null ? $"Patient: Mr. {appointment.Patient.Name}\nService: {appointment.Service.Name}\nRoom: {appointment.Room.RoomNumber}" : "";
+            if (appointment != null)
+            {
+                var patientLink = $"<a href=\"/Patient/Profile/{appointment.PatientId}\">Mr. {appointment.Patient.Name}</a>";
+                return $"Patient: {patientLink}<br>Service: {appointment.Service.Name}<br>Room: {appointment.Room.RoomNumber}";
+            }
+            return "";
         }
 
         public bool HasAppointment(List<BusinessObjects.Entities.Appointment> appointments, int slot)
