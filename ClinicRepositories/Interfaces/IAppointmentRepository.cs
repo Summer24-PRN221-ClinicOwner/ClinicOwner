@@ -9,5 +9,6 @@ namespace ClinicRepositories.Interfaces
         public Task<List<Appointment>> GetByPatientId(int id);
         public Task<Appointment> GetAppointmentsByIdAsync(int  appointId);
         public Task<List<Appointment>> GetAppointmentsBeforeDaysAsync(int days);
+        public void SaveChanges();
     }
 }

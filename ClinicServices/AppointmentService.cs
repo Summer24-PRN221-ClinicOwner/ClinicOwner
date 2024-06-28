@@ -3,7 +3,6 @@ using BusinessObjects.Entities;
 using ClinicRepositories.Interfaces;
 using ClinicServices.EmailService;
 using ClinicServices.Interfaces;
-using System.Globalization;
 
 namespace ClinicServices
 {
@@ -36,11 +35,14 @@ namespace ClinicServices
             //send email about the appointment to the patient
             if (updateDentist && updateRoom && updateAppointment)
             {
-                SendEmailToPatient(entity.Id);
+                SendEmailToPatient(entity.PatientId, entity);
+                _dentistAvailabilityRepository.SaveChanges();
+                _roomAvailabilityRepository.SaveChanges();
+                _appointmentRepository.SaveChanges();
             }
             else
             {
-                throw new Exception("Fail to add new appointment");
+                throw new Exception("Fail to add new appointment!!");
             }
             return entity;
         }
@@ -67,7 +69,7 @@ namespace ClinicServices
 
         public Room GetRoomAvailable(DateTime date, int slotRequired, int startSlot)
         {
-            return _roomAvailabilityRepository.GetAvailableRoomAsync(date, slotRequired, startSlot );
+            return _roomAvailabilityRepository.GetAvailableRoomAsync(date, slotRequired, startSlot);
         }
 
         public async Task UpdateAsync(Appointment entity)

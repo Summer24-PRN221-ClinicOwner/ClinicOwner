@@ -26,12 +26,15 @@ namespace ClinicRepositories
 
         public async Task<List<Appointment>> GetByDate(DateTime date, int dentistId)
         {
-           return  await _context.Appointments
-                .Include(ap => ap.Room)
-                            .Include(ap => ap.Dentist)
-                            .Include(ap => ap.Service)
-                            .Include(ap => ap.Patient)
-                .Where(ap => ap.AppointDate.Date == date.Date).ToListAsync();
+            var a = await _context.Appointments
+                 .Where(c => c.AppointDate.Date == date.Date && c.DentistId == dentistId)
+                 .Include(a => a.Room)
+                 .Include(a => a.Patient)
+                 .Include(a => a.Service)
+                 .Include(a => a.Dentist)
+                 .ToListAsync();
+            Console.WriteLine(a);
+            return a;
         }
 
         public async Task<List<Appointment>> GetByPatientId(int id)
@@ -66,6 +69,10 @@ namespace ClinicRepositories
                 .Include(ap => ap.Service)
                 .Where(ap => ap.AppointDate.Date == targetDate.Date)
                 .ToListAsync();
+        }
+        public void SaveChanges()
+        {
+            _context.SaveChanges();
         }
     }
 }
