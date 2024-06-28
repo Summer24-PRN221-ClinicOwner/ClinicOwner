@@ -43,10 +43,13 @@ namespace ClinicServices
             if (updateDentist && updateRoom && updateAppointment)
             {
                 SendEmailToPatient(entity.PatientId, entity);
+                _dentistAvailabilityRepository.SaveChanges();
+                _roomAvailabilityRepository.SaveChanges();
+                _appointmentRepository.SaveChanges();
             }
             else
             {
-                throw new Exception("Fail to add new appointment");
+                throw new Exception("Fail to add new appointment!!");
             }
             return entity;
         }
@@ -71,9 +74,9 @@ namespace ClinicServices
             return await _appointmentRepository.GetByIdAsync(id);
         }
 
-        public Room GetRoomAvailable(DateTime date, int slotRequired)
+        public Room GetRoomAvailable(DateTime date, int slotRequired, int startSlot)
         {
-            return _roomAvailabilityRepository.GetAvailableRoomAsync(date, slotRequired);
+            return _roomAvailabilityRepository.GetAvailableRoomAsync(date, slotRequired, startSlot);
         }
 
         public async Task UpdateAsync(Appointment entity)
@@ -90,7 +93,7 @@ namespace ClinicServices
             var subject = "Your Appointment Details";
             var content = $"Dear {patient.Name},<br/><br/>" +
                           $"Here are the details of your upcoming appointment:<br/>" +
-                          $"<b>Appointment Date:</b> {details.AppointDate.Date}<br/>" +
+                          $"<b>Appointment Date:</b> {details.AppointDate.ToString("dd/MM/yyyy")}<br/>" +
                           $"<b>Service name:</b> {serv.Name}<br/>" +
                           $"<b>Dentist name:</b> {dentist.Name}<br/>" +
                           $"<b>Start Slot:</b> {startSlot.DisplayTime}<br/>" +

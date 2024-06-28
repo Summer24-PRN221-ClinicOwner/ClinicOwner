@@ -41,5 +41,9 @@ namespace ClinicRepositories
         {
             throw new NotImplementedException();
         }
+        public void SaveChanges()
+        {
+            _context.SaveChanges();
+        }
     }
 }

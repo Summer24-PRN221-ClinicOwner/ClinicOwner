@@ -32,6 +32,7 @@ namespace ClinicPresentationLayer.Pages.Dentist
         // To protect from overposting attacks, see https://aka.ms/RazorPagesCRUD
         public async Task<IActionResult> OnPostAsync()
         {
+            ModelState.Clear();
             if (!ModelState.IsValid)
             {
                 return Page();

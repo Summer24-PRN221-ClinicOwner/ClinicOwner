@@ -131,5 +131,14 @@ namespace BusinessObjects
             }
             return listSlot;
         }
+        public static bool IsAvaiForSlot(string availableString, int slotRequired, int startSlot)
+        {
+            var list = SlotDefiner.ConvertFromString(availableString);
+            for (int i = startSlot; i < startSlot + slotRequired; i++)
+            {
+                if (list.ElementAt(i - 1).IsAvailable == false) return false;
+            }
+            return true;
+        }
     }
 }
