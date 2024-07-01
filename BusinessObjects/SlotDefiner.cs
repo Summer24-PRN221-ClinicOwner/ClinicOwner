@@ -140,5 +140,12 @@ namespace BusinessObjects
             }
             return true;
         }
+        public static string GetSlotDisplayTime(Slot slot, int serviceDuration)
+        {
+            if (slot.Key < 6)
+                slot.DisplayTime = sequenceDisplayTime.ElementAt(slot.Key - 1) + " - " + sequenceDisplayTime.ElementAt(slot.Key + serviceDuration - 1);
+            else slot.DisplayTime = sequenceDisplayTime.ElementAt(slot.Key) + " - " + sequenceDisplayTime.ElementAt(slot.Key + serviceDuration);
+            return slot.DisplayTime;
+        }
     }
 }

@@ -15,7 +15,8 @@ namespace ClinicPresentationLayer.Pages.Appointment
 
         [BindProperty]
         public Service Service { get; set; } = default!;
-        public List<Service> Services { get; set; } = default!;
+        [BindProperty]
+        public  List<Service> Services { get; set; } = default!;
 
         [BindProperty]
         public BusinessObjects.Entities.Appointment Appointment { get; set; } = default!;
@@ -52,6 +53,7 @@ namespace ClinicPresentationLayer.Pages.Appointment
         public async Task<IActionResult> OnPostSubmitAsync()
         {
             User currentAcc = HttpContext.Session.GetObject<User>("UserAccount");
+            Services = await _serviceService.GetAllAsync();
             if (currentAcc == null)
             {
                 return RedirectToPage("/Login");
@@ -76,7 +78,7 @@ namespace ClinicPresentationLayer.Pages.Appointment
                 Appointment.EndSlot = Appointment.StartSlot + Service.Duration - 1;
 
                 var result = await _appointmentService.AddAsync(Appointment);
-
+                
                 if (result != null)
                 {
                     return RedirectToPage("/PatientHistory");
@@ -86,7 +88,8 @@ namespace ClinicPresentationLayer.Pages.Appointment
             {
                 // Log the exception for debugging and monitoring
                 Console.WriteLine(ex.Message);
-                ModelState.AddModelError("", "An error occurred while processing your request.");
+                TempData["ErrorMessage"] = ex.Message;
+                //ModelState.AddModelError("", "An error occurred while processing your request.");
                 // Optionally, return a specific error page or handle the error
             }
 

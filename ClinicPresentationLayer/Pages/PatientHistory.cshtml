@@ -19,7 +19,7 @@
         @foreach (var item in Model.Appointments)
         {
             <tr>
-                <td>@item.AppointDate</td>
+                <td>@item.AppointDate.ToString("dd/MM/yyyy")</td>
                 <td>@item.StartSlot</td>
                 <td>@item.EndSlot</td>
                 <td>@item.Room.RoomNumber</td>

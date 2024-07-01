@@ -28,7 +28,9 @@ namespace ClinicRepositories
 
             if (listDentist.Count == 0) return await _context.Dentists.Include(item => item.Services).Where(item => item.Services.Any(serv => serv.Id == serviceId)).ToListAsync();
             //Chưa có lịch - có thể làm
-            var result = await _context.Dentists.Include(item => item.Services).Include(item => item.DentistAvailabilities).Where(item => item.Services.Any(serv => serv.Id == serviceId) && item.DentistAvailabilities.Select(item => item.Day.Date == date.Date).ToList().Count == 0).ToListAsync();
+            var result = await _context.Dentists.Include(item => item.Services).Include(item => item.DentistAvailabilities).Where(item => item.Services.Any(serv => serv.Id == serviceId) 
+            && item.DentistAvailabilities.
+            Select(item => item.Day.Date == date.Date).ToList().Count == 0).ToListAsync();
 
             //Có lich - có thể làm
             listDentist = listDentist.Where(item => SlotDefiner.IsAvaiForSlot(item.AvailableSlots, slotRequired, startSlot)).ToList();
