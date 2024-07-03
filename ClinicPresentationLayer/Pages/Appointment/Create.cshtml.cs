@@ -86,13 +86,10 @@ namespace ClinicPresentationLayer.Pages.Appointment
             }
             catch (Exception ex)
             {
-                // Log the exception for debugging and monitoring
                 Console.WriteLine(ex.Message);
                 TempData["ErrorMessage"] = ex.Message;
-                //ModelState.AddModelError("", "An error occurred while processing your request.");
-                // Optionally, return a specific error page or handle the error
             }
-
+            Appointment = new BusinessObjects.Entities.Appointment();
             return Page();
         }
 

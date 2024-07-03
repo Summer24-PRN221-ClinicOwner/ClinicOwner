@@ -54,7 +54,7 @@
                 </div>
                 <div class="form-group">
                     <label asp-for="Appointment.AppointDate" class="control-label">Appointment Date</label>
-                    <input type="date" asp-for="Appointment.AppointDate" class="form-control" id="Appointment_AppointDate" onchange="updateAvailableSlots();" />
+                    <input type="date" min="@DateTime.Now.ToString("yyyy-MM-dd")" max="@DateTime.Now.AddYears(5).ToString("yyyy-MM-dd")" asp-for="Appointment.AppointDate" class="form-control" id="Appointment_AppointDate" onchange="updateAvailableSlots();" />
                     <span asp-validation-for="Appointment.AppointDate" class="text-danger"></span>
                 </div>
                 <div class="form-group">

@@ -93,21 +93,21 @@ builder.Services.AddSingleton(emailConfig);
 var app = builder.Build();
 
 // run the job ìf the job has not been run for the day
-//using (var scope = app.Services.CreateScope())
-//{
-//    var jobExecutionLogService = scope.ServiceProvider.GetRequiredService<IJobExecutionLogService>();
-//    var appointmentService = scope.ServiceProvider.GetRequiredService<IAppointmentService>();
-//    var emailSender = scope.ServiceProvider.GetRequiredService<IEmailSender>();
-//    var logger = scope.ServiceProvider.GetRequiredService<ILogger<AppointmentNotificationJob>>();
+using (var scope = app.Services.CreateScope())
+{
+    var jobExecutionLogService = scope.ServiceProvider.GetRequiredService<IJobExecutionLogService>();
+    var appointmentService = scope.ServiceProvider.GetRequiredService<IAppointmentService>();
+    var emailSender = scope.ServiceProvider.GetRequiredService<IEmailSender>();
+    var logger = scope.ServiceProvider.GetRequiredService<ILogger<AppointmentNotificationJob>>();
 
-//    var lastRun = await jobExecutionLogService.GetLastExecutionTimeAsync("AppointmentNotificationJob");
-//    var timeCheck = DateTime.UtcNow.AddHours(7).Date;
-//    if (lastRun == null || lastRun.Value.Date < timeCheck)
-//    {
-//        var job = new AppointmentNotificationJob(appointmentService, emailSender, logger, jobExecutionLogService);
-//        await job.Execute(null);
-//    }
-//}
+    var lastRun = await jobExecutionLogService.GetLastExecutionTimeAsync("AppointmentNotificationJob");
+    var timeCheck = DateTime.UtcNow.AddHours(7).Date;
+    if (lastRun == null || lastRun.Value.Date < timeCheck)
+    {
+        var job = new AppointmentNotificationJob(appointmentService, emailSender, logger, jobExecutionLogService);
+        await job.Execute(null);
+    }
+}
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())

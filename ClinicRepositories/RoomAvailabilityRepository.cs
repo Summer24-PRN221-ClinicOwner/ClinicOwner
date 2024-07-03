@@ -94,7 +94,7 @@ namespace ClinicRepositories
             }
             //neu ko co room da co lich return room dau tien khong co lich
             var result = _context.Rooms.Include(item => item.RoomAvailabilities).Where(item =>
-            item.RoomAvailabilities.Select(item => item.Day.Date == date.Date).ToList().Count == 0).ToList();
+            !item.RoomAvailabilities.Any(item=>item.Day.Date == date.Date)).ToList();
             if(result.Count != 0)
             {
                 return result.FirstOrDefault();
