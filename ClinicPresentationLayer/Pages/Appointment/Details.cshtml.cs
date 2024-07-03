@@ -7,16 +7,35 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using BusinessObjects.Entities;
 using ClinicRepositories;
+using ClinicServices.Interfaces;
 
 namespace ClinicPresentationLayer.Pages.Appointment
 {
     public class DetailsModel : PageModel
     {
-        private readonly ClinicRepositories.ClinicContext _context;
+        private readonly IAppointmentService _appointmentService;
 
-        public DetailsModel(ClinicRepositories.ClinicContext context)
+        public DetailsModel(IAppointmentService appointmentService)
         {
-            _context = context;
+            _appointmentService = appointmentService;
+        }
+
+        public string GetTimeFromSlot(int slot)
+        {
+            return slot switch
+            {
+                1 => "7:00",
+                2 => "8:00",
+                3 => "9:00",
+                4 => "10:00",
+                5 => "11:00",
+                6 => "13:00",
+                7 => "14:00",
+                8 => "15:00",
+                9 => "16:00",
+                10 => "17:00",
+                _ => "Invalid Slot"
+            };
         }
 
         public BusinessObjects.Entities.Appointment Appointment { get; set; } = default!;
@@ -28,7 +47,7 @@ namespace ClinicPresentationLayer.Pages.Appointment
                 return NotFound();
             }
 
-            var appointment = await _context.Appointments.FirstOrDefaultAsync(m => m.Id == id);
+            var appointment = await _appointmentService.GetAppointmentsByIdAsync(id.Value);
             if (appointment == null)
             {
                 return NotFound();

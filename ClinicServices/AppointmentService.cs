@@ -152,5 +152,15 @@ namespace ClinicServices
             return result;
         }
 
+        public async Task<Appointment> GetAppointmentsByIdAsync(int id)
+        {
+            var result = await _appointmentRepository.GetAppointmentsByIdAsync(id);
+            if (result == null)
+            {
+                throw new Exception($"No Appointment found");
+            }
+            return result;
+        }
+
     }
 }

@@ -15,5 +15,6 @@ namespace ClinicServices.Interfaces
         Task<AppointmentDentistSchedule> GetAppoinmentSchedule(int pageWeek, int dentistId);
         Task<List <Appointment>> GetAppoinmentHistoryAsync(int patientId);
         Task<List<Appointment>> GetAppointmentsBeforeDaysAsync(int days);
+        public Task<Appointment> GetAppointmentsByIdAsync(int id);
     }
 }
