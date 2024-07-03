@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using BusinessObjects.Entities;
 using ClinicRepositories;
 
-namespace ClinicPresentationLayer.Pages.Dentist
+namespace ClinicPresentationLayer.Pages.ProfileUser
 {
     public class CreateModel : PageModel
     {
@@ -21,24 +21,21 @@ namespace ClinicPresentationLayer.Pages.Dentist
 
         public IActionResult OnGet()
         {
-        ViewData["ClinicId"] = new SelectList(_context.Clinics, "Id", "Id");
-        ViewData["Id"] = new SelectList(_context.Users, "Id", "Id");
             return Page();
         }
 
         [BindProperty]
-        public BusinessObjects.Entities.Dentist Dentist { get; set; } = default!;
+        public User User { get; set; } = default!;
 
         // To protect from overposting attacks, see https://aka.ms/RazorPagesCRUD
         public async Task<IActionResult> OnPostAsync()
         {
-            ModelState.Clear();
             if (!ModelState.IsValid)
             {
                 return Page();
             }
 
-            _context.Dentists.Add(Dentist);
+            _context.Users.Add(User);
             await _context.SaveChangesAsync();
 
             return RedirectToPage("./Index");
