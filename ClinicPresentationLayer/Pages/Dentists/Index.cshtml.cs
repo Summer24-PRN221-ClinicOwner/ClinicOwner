@@ -13,7 +13,7 @@ using ClinicServices;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.BlazorIdentity.Pages.Manage;
 
-namespace ClinicPresentationLayer.Pages.Dentist
+namespace ClinicPresentationLayer.Pages.Dentists
 {
     public class IndexModel : PageModel
     {

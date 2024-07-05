@@ -15,47 +15,52 @@
             @Html.DisplayNameFor(model => model.Appointment.StartSlot)
         </dt>
         <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Appointment.StartSlot)
+            @Model.GetTimeFromSlot(Model.Appointment.StartSlot)
         </dd>
-        <dt class="col-sm-2">
+        @* <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.Appointment.Status)
         </dt>
         <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Appointment.Status)
+            @Html.DisplayFor(model => model.Appointment.Status) *@
         </dd>
         <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.Appointment.EndSlot)
         </dt>
         <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Appointment.EndSlot)
+            @Model.GetTimeFromSlot(Model.Appointment.EndSlot)
         </dd>
         <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.Appointment.Room)
         </dt>
         <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Appointment.Room.Id)
+            @Html.DisplayFor(model => model.Appointment.Room.RoomNumber)
         </dd>
         <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.Appointment.Dentist)
         </dt>
         <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Appointment.Dentist.Id)
+            @Html.DisplayFor(model => model.Appointment.Dentist.Name)
         </dd>
         <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.Appointment.Patient)
         </dt>
         <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Appointment.Patient.Id)
+            @Html.DisplayFor(model => model.Appointment.Patient.Name)
         </dd>
         <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.Appointment.Service)
         </dt>
         <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Appointment.Service.Id)
+            @Html.DisplayFor(model => model.Appointment.Service.Name)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Appointment.AppointDate)
+        </dt>
+        <dd class="col-sm-10">
+            @Model.Appointment.AppointDate.ToString("dd-MM-yyyy")
         </dd>
     </dl>
 </div>
 <div>
-    <a asp-page="./Edit" asp-route-id="@Model.Appointment.Id">Edit</a> |
-    <a asp-page="./Index">Back to List</a>
+    <a asp-page="./List">Back to List</a>
 </div>

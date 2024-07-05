@@ -21,6 +21,12 @@
     <div id="main-wrapper" class="show">
         <h1>Create Appointment</h1>
         <hr />
+        @if (TempData["ErrorMessage"] != null)
+        {
+            <div class="alert alert-danger">
+                <p>@TempData["ErrorMessage"]</p>
+            </div>
+        }
         <div class="row">
             <form id="combinedForm" method="post" asp-page-handler="Submit">
                 <div asp-validation-summary="ModelOnly" class="text-danger"></div>
@@ -74,20 +80,22 @@
         </div>
         <h5 class="mt-10    ">Relatived Services</h5>
         <div class="d-flex justify-content-between">
-            @foreach (var service in Model.Services)
-            {
-                <div class="service-box d-flex">
-                    <div>
-                        <h2>@service.Name</h2>
-                        <p>@service.Description</p>
-                        <p>@service.Cost?.ToString("C")</p>
-                        <p>Duration: @service.Duration</p>
-                        <a asp-page="./Appointment/Create" asp-route-id="@service.Id">Book Appointment</a>
+            @if (Model.Services != null){
+                @foreach (var service in Model.Services)
+                {
+                    <div class="service-box d-flex">
+                        <div>
+                            <h2>@service.Name</h2>
+                            <p>@service.Description</p>
+                            <p>@service.Cost?.ToString("C")</p>
+                            <p>Duration: @service.Duration</p>
+                            <a asp-page="./Appointment/Create" asp-route-id="@service.Id">Book Appointment</a>
+                        </div>
+                        <div>
+                            <img class="image-service" src="~/images/defaultImage.jpg" alt="Ảnh của dịch vụ @service.Name" />
+                        </div>
                     </div>
-                    <div>
-                        <img class="image-service" src="~/images/defaultImage.jpg" alt="Ảnh của dịch vụ @service.Name" />
-                    </div>
-                </div>
+                }
             }
         </div>
     </div>

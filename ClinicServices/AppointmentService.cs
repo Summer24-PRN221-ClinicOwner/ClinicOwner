@@ -11,23 +11,16 @@ namespace ClinicServices
         private readonly IRoomAvailabilityRepository _roomAvailabilityRepository;
         private readonly IAppointmentRepository _appointmentRepository;
         private readonly IDentistAvailabilityRepository _dentistAvailabilityRepository;
-        private readonly IPatientRepository _patientRepository;
         private readonly IDentistRepository _dentistRepository;
-        private readonly IRoomRepository _roomRepository;
-        private readonly IServiceRepository _serviceRepository;
         private readonly IEmailSender _emailSender;
 
         public AppointmentService(IAppointmentRepository iAppointmentRepository, IRoomAvailabilityRepository roomAvailabilityRepository,
-            IDentistAvailabilityRepository dentistAvailabilityRepository, IPatientRepository patientRepository,
-            IDentistRepository dentistRepository, IServiceRepository serviceRepository, IRoomRepository roomRepository, IEmailSender emailSender)
+            IDentistAvailabilityRepository dentistAvailabilityRepository, IDentistRepository dentistRepository, IEmailSender emailSender)
         {
             _appointmentRepository = iAppointmentRepository;
             _roomAvailabilityRepository = roomAvailabilityRepository;
             _dentistAvailabilityRepository = dentistAvailabilityRepository;
-            _patientRepository = patientRepository;
-            _serviceRepository = serviceRepository;
             _dentistRepository = dentistRepository;
-            _roomRepository = roomRepository;
             _emailSender = emailSender;
         }
 
@@ -42,13 +35,16 @@ namespace ClinicServices
             //send email about the appointment to the patient
             if (updateDentist && updateRoom && updateAppointment)
             {
-                SendEmailToPatient(entity.PatientId, entity);
                 _dentistAvailabilityRepository.SaveChanges();
                 _roomAvailabilityRepository.SaveChanges();
                 _appointmentRepository.SaveChanges();
+                await SendEmailToPatient(entity);
             }
             else
             {
+                _dentistAvailabilityRepository.Dispose();
+                _roomAvailabilityRepository.Dispose();
+                _appointmentRepository.Dispose();
                 throw new Exception("Fail to add new appointment!!");
             }
             return entity;
@@ -83,25 +79,33 @@ namespace ClinicServices
         {
             await _appointmentRepository.UpdateAsync(entity);
         }
-        public async Task SendEmailToPatient(int patientId, Appointment details)
+        public async Task SendEmailToPatient(Appointment appointmentId)
         {
-            Patient patient = await _patientRepository.GetByIdAsync(patientId);
-            Dentist dentist = await _dentistRepository.GetByIdAsync(details.DentistId);
-            Room room = await _roomRepository.GetByIdAsync(details.RoomId);
-            Service serv = await _serviceRepository.GetByIdAsync(details.ServiceId);
-            Slot startSlot = SlotDefiner.NewSlot(details.StartSlot);
+           var appointment = await _appointmentRepository.GetAppointmentsByIdAsync(appointmentId.Id);
+            if (appointment == null)
+            {
+                throw new Exception("Can not find appointment to send email");
+            }
+
+            Patient patient = appointment.Patient;
+            Dentist dentist = appointment.Dentist;
+            Room room = appointment.Room;
+            Service service = appointment.Service;
+            Slot startSlot = SlotDefiner.NewSlot(appointment.StartSlot);
+
             var subject = "Your Appointment Details";
             var content = $"Dear {patient.Name},<br/><br/>" +
                           $"Here are the details of your upcoming appointment:<br/>" +
-                          $"<b>Appointment Date:</b> {details.AppointDate.ToString("dd/MM/yyyy")}<br/>" +
-                          $"<b>Service name:</b> {serv.Name}<br/>" +
+                          $"<b>Appointment Date:</b> {appointment.AppointDate:dd/MM/yyyy}<br/>" +
+                          $"<b>Service name:</b> {service.Name}<br/>" +
                           $"<b>Dentist name:</b> {dentist.Name}<br/>" +
-                          $"<b>Start Slot:</b> {startSlot.DisplayTime}<br/>" +
+                          $"<b>Start Slot:</b> {SlotDefiner.GetSlotDisplayTime(startSlot, service.Duration)}<br/>" +
                           $"<b>Room ID:</b> {room.RoomNumber}<br/>" +
                           $"Thank you,<br/>";
+
             EmailAddress emailAddress = new() { Email = patient.Email, DisplayName = patient.Name };
-            EmailAddress patientEmail = emailAddress;
-            EmailService.Message message = new([patientEmail], subject, content);
+            EmailService.Message message = new(new List<EmailAddress> { emailAddress }, subject, content);
+
             await _emailSender.SendEmailAsync(message);
         }
 
@@ -129,9 +133,34 @@ namespace ClinicServices
 
         }
 
-        public Task<List<Appointment>> GetAppoinmentHistoryAsync(int patientId)
+        public async Task<List<Appointment>> GetAppoinmentHistoryAsync(int patientId)
         {
-            return _appointmentRepository.GetByPatientId(patientId);
+            var result = await _appointmentRepository.GetByPatientId(patientId);
+            if(result == null)
+            {
+                throw new Exception("No Appointment found!");
+            }
+            return result;
         }
+        public async Task<List<Appointment>> GetAppointmentsBeforeDaysAsync(int days)
+        {
+            var result = await _appointmentRepository.GetAppointmentsBeforeDaysAsync(days);
+            if (result == null)
+            {
+                throw new Exception($"No Appointment found for next {days} day(s)");
+            }
+            return result;
+        }
+
+        public async Task<Appointment> GetAppointmentsByIdAsync(int id)
+        {
+            var result = await _appointmentRepository.GetAppointmentsByIdAsync(id);
+            if (result == null)
+            {
+                throw new Exception($"No Appointment found");
+            }
+            return result;
+        }
+
     }
 }

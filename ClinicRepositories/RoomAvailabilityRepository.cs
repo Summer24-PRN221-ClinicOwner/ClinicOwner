@@ -7,8 +7,10 @@ namespace ClinicRepositories
 {
     public class RoomAvailabilityRepository : GenericRepository<RoomAvailability>, IRoomAvailabilityRepository
     {
+        private ClinicContext localContext;
         public RoomAvailabilityRepository() : base()
         {
+
         }
 
 
@@ -81,39 +83,48 @@ namespace ClinicRepositories
             return slots;
         }
 
-        public Room GetAvailableRoomAsync(DateTime date, int slotRequired, int startSlot)
+        public  Room GetAvailableRoomAsync(DateTime date, int slotRequired, int startSlot)
         {
-            List<RoomAvailability> item = _context.RoomAvailabilities.Include(item => item.Room).
-                Where(item => item.Day.Date == date.Date && item.AvailableSlots != "0000000000").ToList();
-            foreach (var room in item)
+            //Room co lich
+            List<RoomAvailability> listRoom = _context.RoomAvailabilities.Include(item => item.Room).
+            Where(item => item.Day.Date == date.Date && item.AvailableSlots != "0000000000").ToList();
+            foreach (var room in listRoom)
             {
                 if (SlotDefiner.IsAvaiForSlot(room.AvailableSlots, slotRequired, startSlot)) return room.Room;
             }
-
-            return null;
+            //neu ko co room da co lich return room dau tien khong co lich
+            var result = _context.Rooms.Include(item => item.RoomAvailabilities).Where(item =>
+            item.RoomAvailabilities.Select(item => item.Day.Date == date.Date).ToList().Count == 0).ToList();
+            if(result.Count != 0)
+            {
+                return result.FirstOrDefault();
+            }
+            else
+            {
+                throw new Exception("No room found");
+            }
         }
 
 
         public async Task<bool> UpdateAvaialeString(int roomId, DateTime date, int startSlot, int slotRequired)
         {
-            var item = await _context.RoomAvailabilities.FirstOrDefaultAsync(item => item.Day.Date == date && item.RoomId == roomId);
-            if (item == null)
-            {
-                item = new() { AvailableSlots = "1111111111", Day = date.Date, RoomId = roomId };
-                _context.RoomAvailabilities.Add(item);
-                _context.SaveChanges();
-            }
-            var slotList = SlotDefiner.ConvertFromString(item.AvailableSlots);
-
-            for (int i = startSlot; i < startSlot + slotRequired; i++)
-            {
-                if (slotList.ElementAt(startSlot - 1).IsAvailable == true) slotList.ElementAt(startSlot - 1).IsAvailable = false;
-                else return false;
-            }
-            item.AvailableSlots = SlotDefiner.ConvertToString(slotList);
+            localContext = new ClinicContext();
             try
             {
-                _context.SaveChanges();
+                var item = await localContext.RoomAvailabilities.FirstOrDefaultAsync(item => item.Day.Date == date && item.RoomId == roomId);
+                if (item == null)
+                {
+                    item = new() { AvailableSlots = "1111111111", Day = date.Date, RoomId = roomId };
+                    localContext.RoomAvailabilities.Add(item);
+                }
+                var slotList = SlotDefiner.ConvertFromString(item.AvailableSlots);
+
+                for (int i = startSlot; i < startSlot + slotRequired; i++)
+                {
+                    if (slotList.ElementAt(startSlot - 1).IsAvailable == true) slotList.ElementAt(startSlot - 1).IsAvailable = false;
+                    else return false;
+                }
+                item.AvailableSlots = SlotDefiner.ConvertToString(slotList);
             }
             catch (Exception e)
             {
@@ -123,7 +134,11 @@ namespace ClinicRepositories
         }
         public void SaveChanges()
         {
-            _context.SaveChanges();
+            localContext.SaveChanges();
+        }
+        public void Dispose()
+        {
+            localContext.Dispose();
         }
     }
 }
