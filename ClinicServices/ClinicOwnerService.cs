@@ -1,4 +1,5 @@
-﻿using BusinessObjects.Entities;
+﻿using BusinessObjects;
+using BusinessObjects.Entities;
 using ClinicRepositories.Interfaces;
 using ClinicServices.Interfaces;
 
@@ -38,6 +39,10 @@ namespace ClinicServices
         public async Task UpdateAsync(ClinicOwner entity)
         {
             await _clinicOwnerRepository.UpdateAsync(entity);
+        }
+        public List<ClinicReportDataObject> MakeClinicReport(DateTime startTime, DateTime endTime)
+        {
+            return _clinicOwnerRepository.GetClinicReport(startTime, endTime);
         }
     }
 }

@@ -1,13 +1,10 @@
-﻿using BusinessObjects.Entities;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using BusinessObjects;
+using BusinessObjects.Entities;
 
 namespace ClinicRepositories.Interfaces
 {
     public interface IClinicOwnerRepository : IGenericRepository<ClinicOwner>
     {
+        public List<ClinicReportDataObject> GetClinicReport(DateTime startDate, DateTime endDate);
     }
 }
