@@ -1,5 +1,4 @@
 using BusinessObjects.Entities;
-using ClinicPresentationLayer.Extension;
 using ClinicServices.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
@@ -31,6 +30,7 @@ namespace ClinicPresentationLayer.Pages
         [Required]
         public string Email { get; set; }
 
+
         public void OnGet()
         {
         }
@@ -41,8 +41,8 @@ namespace ClinicPresentationLayer.Pages
             {
                 return Page();
             }
-            User newUser = new() {Username = Username, Role = 2, Password = Password };
-             var check = await _patientService.AddAsync(new Patient { Email = Email, Name = Name }, newUser);
+            User newUser = new() { Username = Username, Role = 2, Password = Password };
+            var check = await _patientService.AddAsync(new Patient { Email = Email, Name = Name }, newUser);
             if (check != null)
             {
                 return RedirectToPage("/Login");

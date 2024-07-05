@@ -49,5 +49,9 @@ namespace ClinicRepositories
         {
             _context.SaveChanges();
         }
+        public void RemoveChange()
+        {
+            _context.
+        }
     }
 }
