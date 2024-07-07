@@ -44,5 +44,10 @@ namespace ClinicServices
         {
             return _clinicOwnerRepository.GetClinicReport(startTime, endTime);
         }
+
+        public ClinicReportDataObject MakeClinicReportTotal(DateTime startTime, DateTime endTime)
+        {
+            return _clinicOwnerRepository.GetClinicReportTotal(startTime, endTime);
+        }
     }
 }

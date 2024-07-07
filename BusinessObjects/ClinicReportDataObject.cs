@@ -8,12 +8,11 @@ namespace BusinessObjects
         public int MostAppointmentAmountOfDentist { get; set; }
         public List<Dentist> LeastAppointmentDentist { get; set; }
         public int LeastAppointmentAmountOfDentist { get; set; }
-        public int TotalAppointmentOfDentist { get; set; }
+        public int TotalAppointment { get; set; }
         public List<Service> MostPopularService { get; set; }
         public int MostAppointmentAmountOfService { get; set; }
         public List<Service> LeastPopularService { get; set; }
         public int LeastAppointmentAmountOfService { get; set; }
-        public int TotalAppointmentOfService { get; set; }
         public Dictionary<int, int> ReportDentistAppointment { get; set; }
         public Dictionary<int, int> ReportServicesAppointment { get; set; }
         public decimal TotalRevenue { get; set; }

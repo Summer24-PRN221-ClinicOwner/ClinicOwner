@@ -11,6 +11,7 @@ namespace ClinicServices.Interfaces
         Task UpdateAsync(ClinicOwner entity);
         Task DeleteAsync(int id);
         public List<ClinicReportDataObject> MakeClinicReport(DateTime startTime, DateTime endTime);
+        public ClinicReportDataObject MakeClinicReportTotal(DateTime startTime, DateTime endTime);
 
     }
 }

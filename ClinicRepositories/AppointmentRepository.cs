@@ -81,9 +81,5 @@ namespace ClinicRepositories
         {
             localContext.Dispose();
         }
-        public void RemoveChange()
-        {
-            _context.
-        }
     }
 }
