@@ -1,4 +1,6 @@
 using BusinessObjects;
+using BusinessObjects.Entities;
+using ClinicPresentationLayer.Extension;
 using ClinicServices;
 using ClinicServices.Interfaces;
 using Microsoft.AspNetCore.Mvc;
@@ -9,29 +11,38 @@ namespace ClinicPresentationLayer.Pages.Appointment
     public class ListModel : PageModel
     {
         private readonly IAppointmentService _appointmentService;
-        public ListModel(IAppointmentService appointmentService)
+        private readonly IDentistService _dentistService;
+        public ListModel(IAppointmentService appointmentService, IDentistService dentistService)
         {
             _appointmentService = appointmentService;
-
+            _dentistService = dentistService;
         }
         [BindProperty(SupportsGet = true)]
         public int PageWeek { get; set; } = 0;
         [BindProperty(SupportsGet = true)]
-        public int Id { get; set; } = 3;
+        public int Id { get; set; } = default;
+        [BindProperty(SupportsGet = true)]
+        public Dentist DentistName { get; set; }
         public AppointmentDentistSchedule AppointmentSchedule { get; set; }
         
         public async Task<IActionResult> OnGet()
         {
+            User currentAcc = HttpContext.Session.GetObject<User>("UserAccount");
+            if (currentAcc.Role != 1)
+            {
+                return RedirectToPage("/Privacy");
+            }
             try
         {
+                Id = currentAcc.Id;
                 Console.WriteLine(PageWeek);
                 AppointmentSchedule = await _appointmentService.GetAppoinmentSchedule(PageWeek, Id);
-                Console.WriteLine(AppointmentSchedule.Monday);
+                DentistName = await _dentistService.GetByIdAsync(Id);
+                //Console.WriteLine(AppointmentSchedule.Monday.);
                 return Page();
         }
         catch (Exception ex)
         {
-            // Handle exceptions (e.g., log, display error)
             return Page();  
         }
         }
