@@ -1,10 +1,12 @@
 ﻿@page
 @model ClinicPresentationLayer.Pages.Appointment.DetailsModel
-
+@using BusinessObjects
 @{
     ViewData["Title"] = "Details";
-}
 
+}
+<!-- CKEditor CDN -->
+<script src="https://cdn.ckeditor.com/ckeditor5/40.0.0/classic/ckeditor.js"></script>
 <h1>Details</h1>
 
 <div>
@@ -61,6 +63,35 @@
         </dd>
     </dl>
 </div>
+@if(@Model.CurrentUser.Role == @BusinessObjects.UserRoles.Dentist){
+<h1>Create Report</h1>
+
+<form method="post">
+    <div>
+        <label asp-for="Report.Name"></label>
+        <input asp-for="Report.Name" />
+    </div>
+    <div>
+        <label asp-for="Report.Data"></label>
+        <textarea asp-for="Report.Data" id="editor"></textarea>
+    </div>
+
+    <button type="submit">Save</button>
+</form>
+}
+@if(@Model.CurrentUser.Role == @BusinessObjects.UserRoles.Patient && @Model.Report.Data != null){
+<h4>Report for Appointment ID: @Model.Appointment.Id</h4>
+@Html.Raw(@Model.Report.Data) <!-- Replace with your report data property -->
+}
+
+
+<script>
+    ClassicEditor
+        .create(document.querySelector('#editor'))
+        .catch(error => {
+            console.error(error);
+        });
+</script>
 <div>
     <a asp-page="./List">Back to List</a>
 </div>

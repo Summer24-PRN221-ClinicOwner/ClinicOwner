@@ -1,5 +1,8 @@
 ﻿using BusinessObjects;
+using BusinessObjects.Entities;
 using ClinicPresentationLayer.Authorization;
+using ClinicPresentationLayer.Extension;
+using ClinicServices;
 using ClinicServices.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
@@ -10,10 +13,12 @@ namespace ClinicPresentationLayer.Pages.Appointment
     public class DetailsModel : PageModel
     {
         private readonly IAppointmentService _appointmentService;
+        private readonly IReportService _reportService;
 
-        public DetailsModel(IAppointmentService appointmentService)
+        public DetailsModel(IAppointmentService appointmentService, IReportService reportService)
         {
             _appointmentService = appointmentService;
+            _reportService = reportService;
         }
 
         public string GetTimeFromSlot(int slot)
@@ -33,16 +38,23 @@ namespace ClinicPresentationLayer.Pages.Appointment
                 _ => "Invalid Slot"
             };
         }
-
+        [BindProperty]
+        public Report Report { get; set; } = new Report();
+        public User CurrentUser { get; set; }
+        [BindProperty]
         public BusinessObjects.Entities.Appointment Appointment { get; set; } = default!;
-
+        public string DefaultTemplate { get; set; } = "";
         public async Task<IActionResult> OnGetAsync(int? id)
         {
             if (id == null)
             {
                 return NotFound();
             }
-
+            CurrentUser = HttpContext.Session.GetObject<User>("UserAccount");
+            if(CurrentUser == null)
+            {
+                return RedirectToPage("/Login");
+            }
             var appointment = await _appointmentService.GetAppointmentsByIdAsync(id.Value);
             if (appointment == null)
             {
@@ -51,8 +63,59 @@ namespace ClinicPresentationLayer.Pages.Appointment
             else
             {
                 Appointment = appointment;
+                if(CurrentUser.Id != Appointment.PatientId && CurrentUser.Id != Appointment.DentistId)
+                {
+                    return RedirectToPage("/Unauthorized");
+                } 
+                var content = $"<b>Patient Name:</b> {Appointment.Patient.Name},<br/><br/>" +
+                          $"<b>Appointment Date:</b> {Appointment.AppointDate:dd/MM/yyyy}<br/>" +
+                          $"<b>Service name:</b> {Appointment.Service.Name}<br/>" +
+                          $"<b>Room ID:</b> {Appointment.Room.RoomNumber}<br/>" +
+                          "<b>Diagnoses:</b> <ul>" +
+                              "<li>Diagnosis 1</li>" +
+                              "<li>Diagnosis 2</li>" +
+                              "<li>Diagnosis 3</li>" +
+                          "</ul><br/>" +
+                          "<b>Treatments:</b> <ul>" +
+                              "<li>Treatment 1</li>" +
+                              "<li>Treatment 2</li>" +
+                              "<li>Treatment 3</li>" +
+                          "</ul><br/>" +
+                        $"<b>Dentist name:</b> {Appointment.Dentist.Name}<br/>";
+                DefaultTemplate = content;
+                Report.Data = DefaultTemplate;
+                Report.AppointmentId = Appointment.Id;
             }
             return Page();
+        }
+        public async Task<IActionResult> OnPost()
+        {
+            if (!ModelState.IsValid)
+            {
+                return Page();
+            }
+            Report.AppointmentId = Appointment.Id;
+            Report.GeneratedDate = DateTime.UtcNow.AddHours(7);
+            var result = await _reportService.AddAsync(Report);
+            if (result == null)
+            {
+                ModelState.AddModelError("create_report_error", "Error when create report");
+                return Page();
+            }
+            else
+            {
+                try
+                {
+                    await _appointmentService.UpdateAppointmentStatus(Appointment.Id, (int)AppointmentStatus.Reported, null);
+                }
+                catch (Exception ex)
+                {
+                    ModelState.AddModelError("update_appointment_status_error", "Error when update status for appointment after create report");
+                    return Page();
+                }
+            }
+
+            return RedirectToPage("/Appointment/List");
         }
     }
 }

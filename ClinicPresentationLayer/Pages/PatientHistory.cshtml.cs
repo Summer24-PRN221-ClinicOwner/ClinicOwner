@@ -5,6 +5,9 @@ using ClinicPresentationLayer.Extension;
 using ClinicServices.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace ClinicPresentationLayer.Pages
 {
@@ -17,8 +20,12 @@ namespace ClinicPresentationLayer.Pages
         {
             _appointmentService = appointmentService;
         }
+
         [BindProperty]
         public List<BusinessObjects.Entities.Appointment> Appointments { get; set; } = new List<BusinessObjects.Entities.Appointment>();
+
+        [BindProperty(SupportsGet = true)]
+        public string StatusFilter { get; set; }
 
         public async Task<IActionResult> OnGetAsync()
         {
@@ -33,7 +40,19 @@ namespace ClinicPresentationLayer.Pages
             }
             var patientId = currentUser.Id;
 
-            Appointments = await _appointmentService.GetAppoinmentHistoryAsync(patientId);
+            var allAppointments = await _appointmentService.GetAppoinmentHistoryAsync(patientId);
+
+            if (!string.IsNullOrEmpty(StatusFilter))
+            {
+                Appointments = allAppointments
+                    .Where(a => a.Status.ToString().Equals(StatusFilter, System.StringComparison.OrdinalIgnoreCase))
+                    .ToList();
+            }
+            else
+            {
+                Appointments = allAppointments.ToList();
+            }
+
             return Page();
         }
     }

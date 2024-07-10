@@ -1,4 +1,5 @@
 ﻿@page
+@using BusinessObjects
 @model ClinicPresentationLayer.Pages.PatientHistoryModel
 <!DOCTYPE html>
 <html>
@@ -8,44 +9,64 @@
     <!-- Include any other necessary CSS or scripts -->
 </head>
 <body>
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Appointment date</th>
-                <th>Start Slot</th>
-                <th>End Slot</th>
-                <th>Room</th>
-                <th>Dentist</th>
-                <th>Patient</th>
-                <th>Service</th>
-                <th></th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var item in Model.Appointments)
-            {
+    <div class="container">
+        <h1>Patient History</h1>
+        
+        <form method="get" class="form-inline mb-3">
+            <div class="form-group mr-2">
+                <label for="statusFilter" class="mr-2">Filter by Status:</label>
+                <select id="statusFilter" name="statusFilter" class="form-control">
+                    <option value="">All</option>
+                    @foreach (var status in Enum.GetValues(typeof(AppointmentStatus)))
+                    {
+                        <option value="@((int)status)" selected="@((Model.StatusFilter ?? "") == ((int)status).ToString())">@status</option>
+                    }
+                </select>
+            </div>
+            <button type="submit" class="btn btn-primary">Filter</button>
+        </form>
+        
+        <table class="table">
+            <thead>
                 <tr>
-                    <td>@item.AppointDate.ToString("dd/MM/yyyy")</td>
-                    <td>@item.StartSlot</td>
-                    <td>@item.EndSlot</td>
-                    <td>@item.Room.RoomNumber</td>
-                    <td>@item.Dentist.Name</td>
-                    <td>@item.Patient.Name</td>
-                    <td>@item.Service.Name</td>
-                    <td>
-                        <button class="btn btn-primary" onclick="toggleReport('@item.Id')">Toggle Report</button>
-                        <div id="reportContent_@item.Id" style="display: none;">
-                            @if (item.Report != null)
-                            {
-                                <h4>Report for Appointment ID: @item.Id</h4>
-                                @Html.Raw(item.Report.Data) <!-- Replace with your report data property -->
-                            }
-                        </div>
-                    </td>
+                    <th>Appointment Date</th>
+                    <th>Start Slot</th>
+                    <th>End Slot</th>
+                    <th>Room</th>
+                    <th>Dentist</th>
+                    <th>Patient</th>
+                    <th>Service</th>
+                    <th>Status</th>
+                    <th></th>
                 </tr>
-            }
-        </tbody>
-    </table>
+            </thead>
+            <tbody>
+                @foreach (var item in Model.Appointments)
+                {
+                    <tr>
+                        <td>@item.AppointDate.ToString("dd/MM/yyyy")</td>
+                        <td>@item.StartSlot</td>
+                        <td>@item.EndSlot</td>
+                        <td>@item.Room.RoomNumber</td>
+                        <td>@item.Dentist.Name</td>
+                        <td>@item.Patient.Name</td>
+                        <td>@item.Service.Name</td>
+                        <td>@item.Status</td>
+                        <td>
+                            <button class="btn btn-primary" onclick="toggleReport('@item.Id')">Toggle Report</button>
+                            <div id="reportContent_@item.Id" style="display: none;">
+                                @if (item.Report != null)
+                                {
+                                    <h4>Report for Appointment ID: @item.Id</h4>
+                                    @Html.Raw(item.Report.Data) <!-- Replace with your report data property -->
+                                }
+                            </div>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
 
     <script>
         function toggleReport(appointmentId) {
