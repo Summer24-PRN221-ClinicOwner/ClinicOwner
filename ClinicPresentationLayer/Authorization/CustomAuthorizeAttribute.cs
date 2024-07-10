@@ -2,8 +2,7 @@
 using ClinicPresentationLayer.Extension;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
-using System.Linq;
-namespace ClinicPresentationLayer.Athorization
+namespace ClinicPresentationLayer.Authorization
 {
     public class CustomAuthorizeAttribute : Attribute, IPageFilter
     {
@@ -30,7 +29,7 @@ namespace ClinicPresentationLayer.Athorization
             }
         }
 
-            public void OnPageHandlerExecuting(PageHandlerExecutingContext context)
+        public void OnPageHandlerExecuting(PageHandlerExecutingContext context)
         {
             var user = context.HttpContext.Session.GetObject<User>("UserAccount");
 

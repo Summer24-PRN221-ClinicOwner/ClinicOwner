@@ -1,16 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using BusinessObjects;
+using ClinicPresentationLayer.Authorization;
+using ClinicServices.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.EntityFrameworkCore;
-using BusinessObjects.Entities;
-using ClinicRepositories;
-using ClinicServices.Interfaces;
 
 namespace ClinicPresentationLayer.Pages.Appointment
 {
+    [CustomAuthorize(UserRoles.Dentist, UserRoles.Patient)]
     public class DetailsModel : PageModel
     {
         private readonly IAppointmentService _appointmentService;

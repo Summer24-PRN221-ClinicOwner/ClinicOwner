@@ -1,13 +1,15 @@
+using BusinessObjects;
+using BusinessObjects.Entities;
+using ClinicPresentationLayer.Authorization;
+using ClinicServices.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using BusinessObjects.Entities;
-using ClinicServices.Interfaces;
-using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using BusinessObjects;
+using System.ComponentModel.DataAnnotations;
 
 namespace ClinicPresentationLayer.Pages.Dentists
 {
+    [CustomAuthorize(UserRoles.ClinicOwner)]
     public class IndexModel : PageModel
     {
         private readonly IDentistService _dentistService;

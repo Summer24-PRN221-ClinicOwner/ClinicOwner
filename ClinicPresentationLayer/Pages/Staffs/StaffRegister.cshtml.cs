@@ -1,11 +1,13 @@
+using BusinessObjects;
 using BusinessObjects.Entities;
+using ClinicPresentationLayer.Authorization;
 using ClinicServices.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using System.ComponentModel.DataAnnotations;
 
 namespace ClinicPresentationLayer.Pages
 {
+    [CustomAuthorize(UserRoles.Staff)]
     public class StaffRegisterModel : PageModel
     {
         private readonly IPatientService _patientService;
@@ -49,10 +51,15 @@ namespace ClinicPresentationLayer.Pages
                 return Page();
             }
             User newUser = new() { Username = Username, Role = 2, Password = Password };
-            Patient newPatient = new() { Email = Email, Name = Name, 
-                                        Address = Address, DateOfBirth = DateOfBirth,
-                                        Gender = Gender, Phone = Phone
-                                        };
+            Patient newPatient = new()
+            {
+                Email = Email,
+                Name = Name,
+                Address = Address,
+                DateOfBirth = DateOfBirth,
+                Gender = Gender,
+                Phone = Phone
+            };
             var check = await _patientService.StaffAddAsync(newPatient, newUser);
             if (check != null)
             {

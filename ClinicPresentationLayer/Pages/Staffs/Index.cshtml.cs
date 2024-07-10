@@ -1,13 +1,14 @@
 using BusinessObjects;
 using BusinessObjects.Entities;
+using ClinicPresentationLayer.Authorization;
 using ClinicServices.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using System.ComponentModel.DataAnnotations;
 
 namespace ClinicPresentationLayer.Pages.Staffs
 {
+    [CustomAuthorize(UserRoles.ClinicOwner)]
     public class IndexModel : PageModel
     {
         private readonly IUserService _userService;
@@ -43,7 +44,7 @@ namespace ClinicPresentationLayer.Pages.Staffs
             try
             {
                 Staffs = await _userService.GetAllStaffAsync();
-                bool isUsernameExisted =  await _userService.IsUsernameExisted(Username);
+                bool isUsernameExisted = await _userService.IsUsernameExisted(Username);
                 if (isUsernameExisted)
                 {
                     TempData["ErrorMessage"] = "Username already existed";

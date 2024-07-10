@@ -1,4 +1,6 @@
+using BusinessObjects;
 using BusinessObjects.Entities;
+using ClinicPresentationLayer.Authorization;
 using ClinicPresentationLayer.Extension;
 using ClinicServices.Interfaces;
 using Microsoft.AspNetCore.Mvc;
@@ -6,6 +8,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace ClinicPresentationLayer.Pages
 {
+    [CustomAuthorize(UserRoles.Patient)]
     public class PatientHistoryModel : PageModel
     {
         private readonly IAppointmentService _appointmentService;

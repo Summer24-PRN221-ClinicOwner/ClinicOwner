@@ -3,7 +3,7 @@ using BusinessObjects.Entities;
 using ClinicServices.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using System.Threading.Tasks;
+
 
 namespace ClinicPresentationLayer.Pages
 {
@@ -72,16 +72,16 @@ namespace ClinicPresentationLayer.Pages
             {
                 try
                 {
-                   await _appointmentService.UpdateAppointmentStatus(Appointment.Id, (int)AppointmentStatus.Reported, null);
+                    await _appointmentService.UpdateAppointmentStatus(Appointment.Id, (int)AppointmentStatus.Reported, null);
                 }
                 catch (Exception ex)
                 {
                     ModelState.AddModelError("update_appointment_status_error", "Error when update status for appointment after create report");
                     return Page();
                 }
-            } 
+            }
 
-            return RedirectToPage("/Appointment/List"); 
+            return RedirectToPage("/Appointment/List");
         }
     }
 }

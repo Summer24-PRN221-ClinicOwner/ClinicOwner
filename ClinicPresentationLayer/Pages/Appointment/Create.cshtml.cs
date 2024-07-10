@@ -1,6 +1,6 @@
 ﻿using BusinessObjects;
 using BusinessObjects.Entities;
-using ClinicPresentationLayer.Athorization;
+using ClinicPresentationLayer.Authorization;
 using ClinicPresentationLayer.Extension;
 using ClinicServices.Interfaces;
 using Microsoft.AspNetCore.Mvc;
@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace ClinicPresentationLayer.Pages.Appointment
 {
-    [CustomAuthorize(UserRoles.ClinicOwner, UserRoles.Patient, UserRoles.Dentist)]
+    [CustomAuthorize(UserRoles.Patient)]
     public class CreateModel : PageModel
     {
         private readonly IAppointmentService _appointmentService;
@@ -18,7 +18,7 @@ namespace ClinicPresentationLayer.Pages.Appointment
         [BindProperty]
         public Service Service { get; set; } = default!;
         [BindProperty]
-        public  List<Service> Services { get; set; } = default!;
+        public List<Service> Services { get; set; } = default!;
 
         [BindProperty]
         public BusinessObjects.Entities.Appointment Appointment { get; set; } = default!;
@@ -80,7 +80,7 @@ namespace ClinicPresentationLayer.Pages.Appointment
                 Appointment.EndSlot = Appointment.StartSlot + Service.Duration - 1;
 
                 var result = await _appointmentService.AddAsync(Appointment);
-                
+
                 if (result != null)
                 {
                     return RedirectToPage("/PatientHistory");
