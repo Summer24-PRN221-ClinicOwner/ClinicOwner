@@ -54,7 +54,7 @@
                 </div>
                 <div class="form-group">
                     <label asp-for="Appointment.AppointDate" class="control-label">Appointment Date</label>
-                    <input type="date" min="@DateTime.Now.ToString("yyyy-MM-dd")" max="@DateTime.Now.AddYears(5).ToString("yyyy-MM-dd")" asp-for="Appointment.AppointDate" class="form-control" id="Appointment_AppointDate" onchange="updateAvailableSlots()" />
+                    <input type="date" asp-for="Appointment.AppointDate" class="form-control" id="Appointment_AppointDate" onchange="updateAvailableSlots();" min="" min="@DateTime.Now.ToString("yyyy-MM-dd")" max="@DateTime.Now.AddYears(5).ToString("yyyy-MM-dd")" />
                     <span asp-validation-for="Appointment.AppointDate" class="text-danger"></span>
                 </div>
                 <div class="form-group">
@@ -77,10 +77,17 @@
                     <button type="submit" class="btn btn-primary">Submit Appointment</button>
                 </div>
             </form>
+            @if (!string.IsNullOrEmpty(Model.VnpayUrl))
+            {
+                <div class="form-group">
+                    <a href="@Model.VnpayUrl" class="btn btn-success">Pay with VNPay</a>
+                </div>
+            }
         </div>
-        <h5 class="mt-10    ">Relatived Services</h5>
+        <h5 class="mt-10">Related Services</h5>
         <div class="d-flex justify-content-between">
-            @if (Model.Services != null){
+            @if (Model.Services != null)
+            {
                 @foreach (var service in Model.Services)
                 {
                     <div class="service-box d-flex">
@@ -144,6 +151,11 @@
                 }
             });
         }
+
+        document.addEventListener('DOMContentLoaded', function () {
+            var today = new Date().toISOString().split('T')[0];
+            document.getElementById('Appointment_AppointDate').setAttribute('min', today);
+        });
     </script>
     <style>
         .container-fluid {

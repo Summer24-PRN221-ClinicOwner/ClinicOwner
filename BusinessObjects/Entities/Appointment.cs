@@ -14,6 +14,7 @@ public partial class Appointment
     public int StartSlot { get; set; }
 
     public int ServiceId { get; set; }
+    public int PaymentId { get; set; }
 
     public int RoomId { get; set; }
 
@@ -27,13 +28,15 @@ public partial class Appointment
 
     public DateTime ModifyDate { get; set; }
 
-    public virtual Dentist? Dentist { get; set; } = null!;
+    public virtual Dentist Dentist { get; set; } = null!;
 
-    public virtual Patient? Patient { get; set; } = null!;
+    public virtual Patient Patient { get; set; } = null!;
 
-    public virtual Room? Room { get; set; } = null!;
+    public virtual Payment Payments { get; set; } = null;
 
-    public virtual Service? Service { get; set; } = null!;
+    public virtual Report? Report { get; set; }
 
-    public virtual Report? Report { get; set; } = null!;
+    public virtual Room Room { get; set; } = null!;
+
+    public virtual Service Service { get; set; } = null!;
 }

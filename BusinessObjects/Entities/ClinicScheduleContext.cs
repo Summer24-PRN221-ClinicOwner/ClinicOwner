@@ -1,15 +1,16 @@
-﻿using BusinessObjects.Entities;
+﻿using System;
+using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 
-namespace ClinicRepositories;
+namespace BusinessObjects.Entities;
 
-public partial class ClinicContext : DbContext
+public partial class ClinicScheduleContext : DbContext
 {
-    public ClinicContext()
+    public ClinicScheduleContext()
     {
     }
 
-    public ClinicContext(DbContextOptions<ClinicContext> options)
+    public ClinicScheduleContext(DbContextOptions<ClinicScheduleContext> options)
         : base(options)
     {
     }
@@ -31,7 +32,9 @@ public partial class ClinicContext : DbContext
     public virtual DbSet<Notification> Notifications { get; set; }
 
     public virtual DbSet<Patient> Patients { get; set; }
+
     public virtual DbSet<Payment> Payments { get; set; }
+
     public virtual DbSet<Report> Reports { get; set; }
 
     public virtual DbSet<Room> Rooms { get; set; }
@@ -43,7 +46,8 @@ public partial class ClinicContext : DbContext
     public virtual DbSet<User> Users { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        => optionsBuilder.UseSqlServer("Server=(local);uid=sa;pwd=12345;database=ClinicSchedule; TrustServerCertificate = true;");
+#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see https://go.microsoft.com/fwlink/?LinkId=723263.
+        => optionsBuilder.UseSqlServer("Server=(local);uid=sa;pwd=12345;database=ClinicSchedule;TrustServerCertificate=true;");
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -59,8 +63,6 @@ public partial class ClinicContext : DbContext
 
             entity.HasIndex(e => e.ServiceId, "IX_Appointment_ServiceID");
 
-            entity.HasIndex(e => e.PaymentId, "IX_Appointment_PaymentId");
-
             entity.Property(e => e.Id).HasColumnName("ID");
             entity.Property(e => e.AppointDate).HasColumnType("datetime");
             entity.Property(e => e.CreateDate).HasColumnType("datetime");
@@ -72,22 +74,22 @@ public partial class ClinicContext : DbContext
 
             entity.HasOne(d => d.Dentist).WithMany(p => p.Appointments)
                 .HasForeignKey(d => d.DentistId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_Appointment_Dentist");
 
             entity.HasOne(d => d.Patient).WithMany(p => p.Appointments)
                 .HasForeignKey(d => d.PatientId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_Appointment_Patient");
 
             entity.HasOne(d => d.Room).WithMany(p => p.Appointments)
                 .HasForeignKey(d => d.RoomId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_Appointment_Room");
 
             entity.HasOne(d => d.Service).WithMany(p => p.Appointments)
                 .HasForeignKey(d => d.ServiceId)
-                .HasConstraintName("FK_Appointment_Service");
-
-            entity.HasOne(d => d.Payment).WithOne(p => p.Appointments)
-                .HasForeignKey(d => d.ServiceId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_Appointment_Service");
         });
 
@@ -263,20 +265,45 @@ public partial class ClinicContext : DbContext
                 .HasMaxLength(1)
                 .IsUnicode(false);
             entity.Property(e => e.Name).HasMaxLength(50);
+            entity.Property(e => e.Phone).HasMaxLength(10);
 
             entity.HasOne(d => d.IdNavigation).WithOne(p => p.Patient)
                 .HasForeignKey<Patient>(d => d.Id)
                 .HasConstraintName("FK_Patient_User");
         });
 
+        modelBuilder.Entity<Payment>(entity =>
+        {
+            entity.HasKey(e => e.PaymentId).HasName("PK__Payment__9B556A38106F487E");
+
+            entity.ToTable("Payment");
+
+            entity.Property(e => e.Amount).HasColumnType("decimal(18, 2)");
+            entity.Property(e => e.PaymentDate).HasColumnType("datetime");
+            entity.Property(e => e.PaymentStatus).HasMaxLength(20);
+            entity.Property(e => e.TransactionId).HasMaxLength(50);
+
+            entity.HasOne(d => d.Appointment).WithMany(p => p.Payments)
+                .HasForeignKey(d => d.AppointmentId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK__Payment__Appoint__4F47C5E3");
+        });
+
         modelBuilder.Entity<Report>(entity =>
         {
             entity.ToTable("Report");
 
+            entity.HasIndex(e => e.AppointmentId, "IX_Report_AppointmentID").IsUnique();
+
             entity.Property(e => e.Id).HasColumnName("ID");
+            entity.Property(e => e.AppointmentId).HasColumnName("AppointmentID");
             entity.Property(e => e.Data).HasMaxLength(500);
             entity.Property(e => e.GeneratedDate).HasColumnType("datetime");
             entity.Property(e => e.Name).HasMaxLength(50);
+
+            entity.HasOne(d => d.Appointment).WithOne(p => p.Report)
+                .HasForeignKey<Report>(d => d.AppointmentId)
+                .HasConstraintName("FK_Appointment_Report");
         });
 
         modelBuilder.Entity<Room>(entity =>
@@ -301,6 +328,7 @@ public partial class ClinicContext : DbContext
             entity.HasIndex(e => e.RoomId, "IX_RoomAvailability_RoomID");
 
             entity.Property(e => e.Id).HasColumnName("ID");
+            entity.Property(e => e.AvailableSlots).HasMaxLength(10);
             entity.Property(e => e.Day).HasColumnType("datetime");
             entity.Property(e => e.RoomId).HasColumnName("RoomID");
 

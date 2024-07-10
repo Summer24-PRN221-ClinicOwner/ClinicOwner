@@ -28,6 +28,9 @@ builder.Services.AddScoped<IDentistAvailabilityRepository, DentistAvailabilityRe
 builder.Services.AddScoped<IDentistService, DentistService>();
 builder.Services.AddScoped<IDentistRepository, DentistRepository>();
 
+builder.Services.AddScoped<IPaymentService, PaymentService>();
+builder.Services.AddScoped<IPaymentRepository, PaymentRepository>();
+
 builder.Services.AddScoped<ILicenseService, LicenseService>();
 builder.Services.AddScoped<ILicenseRepository, LicenseRepository>();
 
