@@ -1,17 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using BusinessObjects;
+using ClinicPresentationLayer.Authorization;
+using ClinicServices.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using BusinessObjects.Entities;
-using ClinicRepositories;
-using ClinicServices.Interfaces;
 
 namespace ClinicPresentationLayer.Pages.Room
 {
+    [CustomAuthorize(UserRoles.ClinicOwner)]
     public class EditModel : PageModel
     {
         private readonly IRoomService _roomService;
@@ -20,7 +17,7 @@ namespace ClinicPresentationLayer.Pages.Room
         public EditModel(IRoomService roomService, IClinicService clinicService)
         {
             _roomService = roomService;
-            _clinicService = clinicService; 
+            _clinicService = clinicService;
         }
 
         [BindProperty]

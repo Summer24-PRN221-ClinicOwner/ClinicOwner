@@ -24,11 +24,11 @@ namespace ClinicRepositories
         public async Task<List<Dentist>> GetDentistAvailabilityAsync(DateTime date, int startSlot, int slotRequired, int serviceId)
         {
             //Querry list of available dentist
-            var listDentist = await _context.DentistAvailabilities.Include(item => item.Dentist).ThenInclude(item => item.Services).Where(item => item.Day.Date == date.Date).ToListAsync();
+            var listDentist = await _context.DentistAvailabilities.Include(item => item.Dentist).ThenInclude(item => item.Services).Include(item => item.Dentist.IdNavigation).Where(item => item.Day.Date == date.Date).ToListAsync();
 
             if (listDentist.Count == 0) return await _context.Dentists.Include(item => item.Services).Where(item => item.Services.Any(serv => serv.Id == serviceId)).ToListAsync();
             //Chưa có lịch - có thể làm
-            var result = await _context.Dentists.Include(item => item.Services).Include(item => item.DentistAvailabilities).Where(item => item.Services.Any(serv => serv.Id == serviceId) 
+            var result = await _context.Dentists.Include(item => item.Services).Include(item => item.DentistAvailabilities).Include(item => item.IdNavigation).Where(item => item.Services.Any(serv => serv.Id == serviceId)
             && item.DentistAvailabilities.
             Select(item => item.Day.Date == date.Date).ToList().Count == 0).ToListAsync();
 
@@ -38,7 +38,7 @@ namespace ClinicRepositories
 
             //Có thể làm
             result.AddRange(listDentist.Select(item => item.Dentist).Where(item => item.Services.Any(serv => serv.Id == serviceId)).ToList());
-            return result;
+            return result.Where(item => item.IdNavigation.Status == 1).ToList();
         }
 
         public async Task<bool> UpdateAvaialeString(int dentistId, DateTime date, int startSlot, int slotRequired)

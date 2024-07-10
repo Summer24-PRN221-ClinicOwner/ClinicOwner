@@ -1,18 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using BusinessObjects;
+using ClinicPresentationLayer.Authorization;
+using ClinicServices.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.EntityFrameworkCore;
-using BusinessObjects.Entities;
-using ClinicRepositories;
-using ClinicServices.Interfaces;
-using ClinicServices;
 using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace ClinicPresentationLayer.Pages.Room
 {
+    [CustomAuthorize(UserRoles.ClinicOwner)]
     public class IndexModel : PageModel
     {
         private readonly IRoomService _roomService;
@@ -25,14 +20,14 @@ namespace ClinicPresentationLayer.Pages.Room
 
         [BindProperty]
         public BusinessObjects.Entities.Room Room { get; set; } = default!;
-        public IList<BusinessObjects.Entities.Room> Rooms { get; set; }= default!;
+        public IList<BusinessObjects.Entities.Room> Rooms { get; set; } = default!;
 
         public async Task OnGetAsync()
         {
             Rooms = await _roomService.GetAllAsync();
             var clinicList = await _clinicService.GetAllAsync();
             ViewData["ClinicId"] = new SelectList(clinicList, "Id", "Name");
-            
+
         }
         public async Task<IActionResult> OnPostAsync()
         {

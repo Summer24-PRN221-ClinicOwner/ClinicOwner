@@ -1,16 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.EntityFrameworkCore;
+﻿using BusinessObjects;
 using BusinessObjects.Entities;
-using ClinicRepositories;
+using ClinicPresentationLayer.Authorization;
 using ClinicServices.Interfaces;
+using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace ClinicPresentationLayer.Pages.ProfileUser
 {
+    [CustomAuthorize(UserRoles.ClinicOwner)]
     public class IndexModel : PageModel
     {
         private readonly IUserService _userService;
@@ -20,7 +16,7 @@ namespace ClinicPresentationLayer.Pages.ProfileUser
             _userService = userService;
         }
 
-        public IList<User> User { get;set; } = default!;
+        public IList<User> User { get; set; } = default!;
 
         public async Task OnGetAsync()
         {
