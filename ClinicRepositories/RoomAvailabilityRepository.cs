@@ -25,10 +25,10 @@ namespace ClinicRepositories
         {
             List<Slot> slots = SlotDefiner.ConvertFromString("0000000000");
             //Querry list of available room
-            List<RoomAvailability> list = await GetAllAsync();
+            List<RoomAvailability> list = [.. _context.RoomAvailabilities.Include(item => item.Room)];
             list = list.Where(
                     item => item.Day.Date == date.Date
-                ).ToList();
+                && item.Room.Status == 1).ToList();
             if (list.Count != 0)
             {
                 List<RoomAvailability> tmplist = new List<RoomAvailability>();
@@ -83,19 +83,19 @@ namespace ClinicRepositories
             return slots;
         }
 
-        public  Room GetAvailableRoomAsync(DateTime date, int slotRequired, int startSlot)
+        public Room GetAvailableRoomAsync(DateTime date, int slotRequired, int startSlot)
         {
             //Room co lich
             List<RoomAvailability> listRoom = _context.RoomAvailabilities.Include(item => item.Room).
-            Where(item => item.Day.Date == date.Date && item.AvailableSlots != "0000000000").ToList();
+            Where(item => item.Day.Date == date.Date && item.AvailableSlots != "0000000000" && item.Room.Status == 1).ToList();
             foreach (var room in listRoom)
             {
                 if (SlotDefiner.IsAvaiForSlot(room.AvailableSlots, slotRequired, startSlot)) return room.Room;
             }
             //neu ko co room da co lich return room dau tien khong co lich
             var result = _context.Rooms.Include(item => item.RoomAvailabilities).Where(item =>
-            !item.RoomAvailabilities.Any(item=>item.Day.Date == date.Date)).ToList();
-            if(result.Count != 0)
+            !item.RoomAvailabilities.Any(item => item.Day.Date == date.Date) && item.Status == 1).ToList();
+            if (result.Count != 0)
             {
                 return result.FirstOrDefault();
             }
