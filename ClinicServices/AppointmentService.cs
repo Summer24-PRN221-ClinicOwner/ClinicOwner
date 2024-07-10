@@ -215,16 +215,6 @@ namespace ClinicServices
                     }
                     return next == AppointmentStatus.Done || next == AppointmentStatus.Absent;
 
-        public async Task<Appointment> GetAppointmentsByIdAsync(int id)
-        {
-            var result = await _appointmentRepository.GetAppointmentsByIdAsync(id);
-            if (result == null)
-            {
-                throw new Exception($"No Appointment found");
-            }
-            return result;
-        }
-
                 case AppointmentStatus.ReScheduled:
                     if (next == AppointmentStatus.ReScheduled)
                     {
@@ -247,6 +237,15 @@ namespace ClinicServices
                 default:
                     return false;
             }
+        }
+        public async Task<Appointment> GetAppointmentsByIdAsync(int id)
+        {
+            var result = await _appointmentRepository.GetAppointmentsByIdAsync(id);
+            if (result == null)
+            {
+                throw new Exception($"No Appointment found");
+            }
+            return result;
         }
     }
 }
