@@ -1,0 +1,92 @@
+﻿@page
+@model ClinicPresentationLayer.Pages.ClinicReportModel
+@{
+}
+
+<h1>Clinic Report</h1>
+<form method="post">
+    @if (Model.ModelState.Any(state => state.Value.Errors.Count > 0))
+    {
+        <div class="alert alert-danger" role="alert">
+            Please enter valid dates for the report.
+        </div>
+    }
+    <div class="form-group">
+        <label for="startDate">Start Date:</label>
+        <input type="date" class="form-control" id="startDate" name="startDate" asp-for="StartDate" required min="2024-01-01" max="2025-12-31">
+    </div>
+    <div class="form-group">
+        <label for="endDate">End Date:</label>
+        <input type="date" class="form-control" id="endDate" name="endDate" asp-for="EndDate" required min="2024-01-01" max="2025-12-31">
+    </div>
+    <button type="submit" class="btn btn-primary">Generate Report</button>
+</form>
+
+@if (Model.ReportData != null && Model.ReportData.Any())
+{
+    <h2>Report Details</h2>
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>Date</th>
+                <th>Total Appointments</th>
+                <th>Most Appointments (Dentist)</th>
+                <th>Least Appointments (Dentist)</th>
+                <th>Most Appointments (Service)</th>
+                <th>Least Appointments (Service)</th>
+                <th>Total Revenue</th>
+                <th>Revenue Per Appointment</th>
+                <th>Revenue Per Customer</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var reportItem in Model.ReportData)
+            {
+                <tr class="@(reportItem == Model.ReportData.Last() ? "table-success" : "")">
+                    <td>@reportItem.Date?.ToString("dd-MM-yyyy")</td>
+                    <td>@reportItem.TotalAppointment</td>
+                    <td>
+                        <h6>@reportItem.MostAppointmentAmountOfDentist Appointment(s)</h6>
+                        <ul>
+                            @foreach (var dentist in reportItem.MostAppointmentDentist)
+                            {
+                                <li>@dentist.Name</li>
+                            }
+                        </ul>
+                    </td>
+                    <td>
+                        <h6>@reportItem.LeastAppointmentAmountOfDentist Appointment(s)</h6>
+                        <ul>
+                            @foreach (var dentist in reportItem.LeastAppointmentDentist)
+                            {
+                                <li>@dentist.Name</li>
+                            }
+                        </ul>
+                    </td>
+                    <td>
+                        <h6>@reportItem.MostAppointmentAmountOfService Appointment(s)</h6>
+                        <ul>
+                            @foreach (var service in reportItem.MostPopularService)
+                            {
+                                <li>@service.Name</li>
+                            }
+                        </ul>
+                    </td>
+                    <td>
+                        <h6>@reportItem.LeastAppointmentAmountOfService Appointment(s)</h6>
+                        <ul>
+                            @foreach (var service in reportItem.LeastPopularService)
+                            {
+                                <li>@service.Name</li>
+                            }
+                        </ul>
+                    </td>
+                    <td>@reportItem.TotalRevenue</td>
+                    <td>@reportItem.RevenuePerAppointment</td>
+                    <td>@reportItem.RevenuePerCustomer</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+    
+}
