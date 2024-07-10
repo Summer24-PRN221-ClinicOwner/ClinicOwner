@@ -15,13 +15,23 @@ namespace BusinessObjects
         Waiting,
         Canceled,
         ReScheduled,
-        Done,
+        Checkin,
         Absent,
         Reported
     }
     public enum RoomStatus
     {
-        Open,
-        Closed
+        Closed,
+        Open
+    }
+    public enum ServiceStatus
+    {
+        Unavailable,
+        Available
+    }
+    public enum UserStatus
+    {
+        Disabled,
+        Active
     }
 }

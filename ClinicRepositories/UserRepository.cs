@@ -13,7 +13,9 @@ namespace ClinicRepositories
 
         public async Task<User?> GetUserByUsernamePass(string username, string password)
         {
-             return await _context.Users.FirstOrDefaultAsync(item => item.Username == username && item.Password == password);
+             return await _context.Users
+                .Where(u => u.Status == (int)UserStatus.Active)
+                .FirstOrDefaultAsync(item => item.Username == username && item.Password == password);
         }
         public async Task<User?> GetUserByUsername(string username)
         {

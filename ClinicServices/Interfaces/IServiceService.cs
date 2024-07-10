@@ -11,6 +11,7 @@ namespace ClinicServices.Interfaces
 	public interface IServiceService
 	{
         Task<List<Service>> GetAllAsync();
+        Task<List<Service>> GetAllAvailAsync();
         Task<Service> GetByIdAsync(int id);
         Task<Service> AddAsync(Service entity);
         Task UpdateAsync(Service entity);

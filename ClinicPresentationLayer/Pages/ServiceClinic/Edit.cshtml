@@ -34,14 +34,13 @@
                 <input asp-for="Service.Duration" class="form-control" />
                 <span asp-validation-for="Service.Duration" class="text-danger"></span>
             </div>
-            <div class="form-group">
-                <label asp-for="Service.Rank" class="control-label"></label>
-                <input asp-for="Service.Rank" class="form-control" />
-                <span asp-validation-for="Service.Rank" class="text-danger"></span>
-            </div>
+            
             <div class="form-group">
                 <label asp-for="Service.Status" class="control-label"></label>
-                <input asp-for="Service.Status" class="form-control" />
+                <select asp-for="Service.Status" class="form-control">
+                    <option value="1">Available</option>
+                    <option value="0">Unavailable</option>
+                </select>
                 <span asp-validation-for="Service.Status" class="text-danger"></span>
             </div>
             <div class="form-group">

@@ -213,7 +213,7 @@ namespace ClinicServices
                     {
                         return newDate.HasValue;
                     }
-                    return next == AppointmentStatus.Done || next == AppointmentStatus.Absent;
+                    return next == AppointmentStatus.Checkin || next == AppointmentStatus.Absent;
 
                 case AppointmentStatus.ReScheduled:
                     if (next == AppointmentStatus.ReScheduled)
@@ -224,9 +224,9 @@ namespace ClinicServices
                     {
                         return (appointmentDate - DateTime.Now).TotalDays >= 3;
                     }
-                    return next == AppointmentStatus.Done || next == AppointmentStatus.Absent;
+                    return next == AppointmentStatus.Checkin || next == AppointmentStatus.Absent;
 
-                case AppointmentStatus.Done:
+                case AppointmentStatus.Checkin:
                     return next == AppointmentStatus.Reported;
 
                 case AppointmentStatus.Absent:

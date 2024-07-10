@@ -25,7 +25,12 @@ namespace ClinicServices
 
         public async Task<List<Service>> GetAllAsync()
         {
-            return await _repository.GetAllService();
+          return await _repository.GetAllAsync();
+        }
+
+        public async Task<List<Service>> GetAllAvailAsync()
+        {
+            return await _repository.GetAllAvailService();
         }
 
         public async Task<Service> GetByIdAsync(int id)

@@ -44,6 +44,7 @@ namespace ClinicPresentationLayer.Pages
             }
             else
             {
+               TempData["ErrorMessage"] = "Invalid username or password.";
                 return Page();
             }
         }

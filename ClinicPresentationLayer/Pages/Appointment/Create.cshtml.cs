@@ -32,7 +32,7 @@ namespace ClinicPresentationLayer.Pages.Appointment
 
         public async Task<IActionResult> OnGet(int id)
         {
-            Services = await _serviceService.GetAllAsync();
+            Services = await _serviceService.GetAllAvailAsync();
             User currentAcc = HttpContext.Session.GetObject<User>("UserAccount");
             if (currentAcc == null)
             {
@@ -48,6 +48,13 @@ namespace ClinicPresentationLayer.Pages.Appointment
                 // Handle scenario where service with given id was not found
                 return NotFound();
             }
+            else
+            {
+                if(Service.Status == (int)ServiceStatus.Unavailable)
+                {
+                    return RedirectToPage("/MainPage");
+                }
+            }
 
             return Page();
         }
@@ -55,7 +62,7 @@ namespace ClinicPresentationLayer.Pages.Appointment
         public async Task<IActionResult> OnPostSubmitAsync()
         {
             User currentAcc = HttpContext.Session.GetObject<User>("UserAccount");
-            Services = await _serviceService.GetAllAsync();
+            Services = await _serviceService.GetAllAvailAsync();
             if (currentAcc == null)
             {
                 return RedirectToPage("/Login");

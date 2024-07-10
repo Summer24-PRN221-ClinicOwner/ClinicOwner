@@ -20,7 +20,7 @@ namespace ClinicPresentationLayer.Pages
         public List<Service> Services { get; set; } = default!;
         public async Task<IActionResult> OnGet()
         {
-            Services = await _service.GetAllAsync();
+            Services = await _service.GetAllAvailAsync();
             return Page();
         }
     }

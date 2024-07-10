@@ -9,6 +9,7 @@ namespace ClinicRepositories.Interfaces
 {
     public interface IServiceRepository : IGenericRepository<Service>
     {
+        Task<List<Service>> GetAllAvailService();
         Task<List<Service>> GetAllService();
     }
 }
