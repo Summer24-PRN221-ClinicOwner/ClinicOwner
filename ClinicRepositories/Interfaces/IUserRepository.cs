@@ -11,5 +11,7 @@ namespace ClinicRepositories.Interfaces
     {
         Task<User?> GetUserByUsernamePass(string username, string password);
         Task<User?> GetUserByUsername(string username);
+        Task<bool> IsUsernameExisted(string username);
+        Task<List<User>> GetAllStaffs();
     }
 }

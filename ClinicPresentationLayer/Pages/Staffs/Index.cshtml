@@ -1,6 +1,5 @@
 ﻿@page
-@model ClinicPresentationLayer.Pages.Dentists.IndexModel
-
+@model ClinicPresentationLayer.Pages.Staffs.IndexModel
 @{
     ViewData["Title"] = "Index";
 }
@@ -8,7 +7,7 @@
 <h1>Index</h1>
 
 <p>
-    <a href="#" id="create-new-dentist-link">Create New Dentist</a>
+    <a href="#" id="create-new-dentist-link">Create New Staff</a>
 </p>
 @if (TempData["ErrorMessage"] != null)
 {
@@ -22,29 +21,17 @@
             <th>ID</th>
             <th>Username</th>
             <th>Password</th>
-            <th>Name</th>
-            <th>Phone</th>
-            <th>Email</th>
-            <th>Clinic</th>
-
             <th>Action</th>
         </tr>
     </thead>
     <tbody>
-        @foreach (var item in Model.Dentists)
+        @foreach (var item in Model.Staffs)
         {
             <tr>
                 <td>@item.Id</td>
-                <td>@item.IdNavigation.Username</td>
-                <td>@item.IdNavigation.Password</td>
-                <td>@item.Name</td>
-                <td>@item.Phone</td>
-                <td>@item.Email</td>
-                <td>@item.Clinic.Name</td>
-
-                <td>
-                    <a asp-page="./Edit" asp-route-id="@item.Id">Edit</a> |
-                    <a asp-page="./Details" asp-route-id="@item.Id">Details</a> |
+                <td>@item.Username</td>
+                <td>@item.Password</td>
+                <td>|
                     <a asp-page="./Delete" asp-route-id="@item.Id">Delete</a>
                 </td>
             </tr>
@@ -65,34 +52,6 @@
                     <label asp-for="Password" class="control-label"></label>
                     <input asp-for="Password" class="form-control" type="password" />
                     <span asp-validation-for="Password" class="text-danger"></span>
-                </div>
-            </td>
-            <td>
-                <div class="form-group">
-                    <label asp-for="Dentist.Name" class="control-label"></label>
-                    <input asp-for="Dentist.Name" class="form-control" />
-                    <span asp-validation-for="Dentist.Name" class="text-danger"></span>
-                </div>
-            </td>
-            <td>
-                <div class="form-group">
-                    <label asp-for="Dentist.Phone" class="control-label"></label>
-                    <input asp-for="Dentist.Phone" class="form-control" />
-                    <span asp-validation-for="Dentist.Phone" class="text-danger"></span>
-                </div>
-            </td>
-            <td>
-                <div class="form-group">
-                    <label asp-for="Dentist.Email" class="control-label"></label>
-                    <input asp-for="Dentist.Email" class="form-control" />
-                    <span asp-validation-for="Dentist.Email" class="text-danger"></span>
-                </div>
-            </td>
-            <td>
-                <div class="form-group">
-                    <label asp-for="Dentist.ClinicId" class="control-label"></label>
-                    <select asp-for="Dentist.ClinicId" class="form-control" asp-items="ViewBag.ClinicId"></select>
-                    <span asp-validation-for="Dentist.ClinicId" class="text-danger"></span>
                 </div>
             </td>
             <td>

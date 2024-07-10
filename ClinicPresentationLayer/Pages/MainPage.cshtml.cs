@@ -1,5 +1,6 @@
+using BusinessObjects;
 using BusinessObjects.Entities;
-using ClinicPresentationLayer.Extension;
+using ClinicPresentationLayer.Athorization;
 using ClinicServices.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
@@ -10,6 +11,7 @@ namespace ClinicPresentationLayer.Pages
     {
         private readonly IServiceService _service;
 
+        [CustomAuthorize(UserRoles.ClinicOwner, UserRoles.Patient, UserRoles.Dentist)]
         public MainPageModel(IServiceService service)
         {
             _service = service;

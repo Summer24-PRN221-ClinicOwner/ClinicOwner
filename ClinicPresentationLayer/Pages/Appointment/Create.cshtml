@@ -54,12 +54,12 @@
                 </div>
                 <div class="form-group">
                     <label asp-for="Appointment.AppointDate" class="control-label">Appointment Date</label>
-                    <input type="date" min="@DateTime.Now.ToString("yyyy-MM-dd")" max="@DateTime.Now.AddYears(5).ToString("yyyy-MM-dd")" asp-for="Appointment.AppointDate" class="form-control" id="Appointment_AppointDate" onchange="updateAvailableSlots();" />
+                    <input type="date" min="@DateTime.Now.ToString("yyyy-MM-dd")" max="@DateTime.Now.AddYears(5).ToString("yyyy-MM-dd")" asp-for="Appointment.AppointDate" class="form-control" id="Appointment_AppointDate" onchange="updateAvailableSlots()" />
                     <span asp-validation-for="Appointment.AppointDate" class="text-danger"></span>
                 </div>
                 <div class="form-group">
                     <label asp-for="Appointment.StartSlot" class="control-label">Start Slot</label>
-                    <select id="appointment-slots-partial" asp-for="Appointment.StartSlot" class="form-control" onchange="updateAvailableDentists();">
+                    <select id="appointment-slots-partial" asp-for="Appointment.StartSlot" class="form-control" onchange="updateAvailableDentists()">
                         @* Populate slots dynamically based on appointment date and service *@
                         @await Html.PartialAsync("_SlotPartial", new List<Slot>())
                     </select>

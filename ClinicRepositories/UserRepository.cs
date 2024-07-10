@@ -1,4 +1,5 @@
 ﻿using BusinessObjects.Entities;
+using BusinessObjects;
 using ClinicRepositories.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
@@ -18,5 +19,16 @@ namespace ClinicRepositories
         {
             return await _context.Users.FirstOrDefaultAsync(item => item.Username == username);
         }
+
+        public async Task<bool> IsUsernameExisted(string username)
+        {
+            return await _context.Users.AnyAsync(item => item.Username == username);
+        }
+
+        public async Task<List<User>> GetAllStaffs()
+        {
+            return await _context.Users.Where(item => item.Role == UserRoles.Staff).ToListAsync();
+        }
+
     }
 }

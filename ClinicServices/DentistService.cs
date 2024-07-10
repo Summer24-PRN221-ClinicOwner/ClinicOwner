@@ -1,4 +1,5 @@
 ﻿using BusinessObjects.Entities;
+using ClinicRepositories;
 using ClinicRepositories.Interfaces;
 using ClinicServices.Interfaces;
 
@@ -17,10 +18,18 @@ namespace ClinicServices
 
         public async Task<Dentist> AddAsync(Dentist entity, User userAccount)
         {
-            userAccount.Status = 1;
-            var newAccount = await _userService.AddAsync(userAccount);
-            entity.Id = newAccount.Id;
-            return await _repository.AddAsync(entity);
+            if(!await _userService.IsUsernameExisted(userAccount.Username))
+            {
+                userAccount.Status = 1;
+                var newAccount = await _userService.AddAsync(userAccount);
+                entity.Id = newAccount.Id;
+                return await _repository.AddAsync(entity);
+            }
+            else
+            {
+                throw new Exception($"Username: {userAccount.Username} already existed");
+            }
+            
         }
 
         public async Task DeleteAsync(int id)

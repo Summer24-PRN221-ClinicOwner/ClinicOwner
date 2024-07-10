@@ -1,4 +1,5 @@
 ﻿@page
+@using System.Globalization
 @model ClinicPresentationLayer.Pages.MainPageModel
 @{
 }
@@ -13,7 +14,7 @@
                     <div>
                         <h2>@service.Name</h2>
                         <p>@service.Description</p>
-                        <p>@service.Cost?.ToString("C")</p>
+                        <p>@service.Cost?.ToString("C", new CultureInfo("vi-VN"))</p>
                         <p>Duration: @service.Duration</p>
                         <a asp-page="./Appointment/Create" asp-route-id="@service.Id">Book Appointment</a>
                     </div>

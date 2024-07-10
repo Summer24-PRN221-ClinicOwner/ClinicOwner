@@ -1,5 +1,6 @@
 ﻿using BusinessObjects;
 using BusinessObjects.Entities;
+using ClinicPresentationLayer.Athorization;
 using ClinicPresentationLayer.Extension;
 using ClinicServices.Interfaces;
 using Microsoft.AspNetCore.Mvc;
@@ -7,6 +8,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace ClinicPresentationLayer.Pages.Appointment
 {
+    [CustomAuthorize(UserRoles.ClinicOwner, UserRoles.Patient, UserRoles.Dentist)]
     public class CreateModel : PageModel
     {
         private readonly IAppointmentService _appointmentService;
@@ -88,8 +90,11 @@ namespace ClinicPresentationLayer.Pages.Appointment
             {
                 Console.WriteLine(ex.Message);
                 TempData["ErrorMessage"] = ex.Message;
+                OnGetAvailableSlotsPartial(Appointment.AppointDate, Service.Duration);
+                OnGetAvailableDentistsPartial(Appointment.AppointDate, Appointment.StartSlot, Service.Duration, Service.Id);
+                //Appointment = new BusinessObjects.Entities.Appointment();
+                return RedirectToPage("/Appointment/Create", new { id = Service.Id });
             }
-            Appointment = new BusinessObjects.Entities.Appointment();
             return Page();
         }
 

@@ -12,8 +12,8 @@ namespace ClinicServices.QuartzService
     {
         private readonly IAppointmentService _appointmentService;
         private readonly IEmailSender _emailSender;
-        private readonly ILogger<AppointmentNotificationJob> _logger;
         private readonly IJobExecutionLogService _jobExecutionLogService;
+        private readonly ILogger<AppointmentNotificationJob> _logger;
 
         public AppointmentNotificationJob(IAppointmentService appointmentService, IEmailSender emailSender, ILogger<AppointmentNotificationJob> logger, IJobExecutionLogService jobExecutionLogService)
         {
@@ -27,20 +27,24 @@ namespace ClinicServices.QuartzService
         {
             try
             {
-                // Fetch appointments that are scheduled for 3 days from now
                 var appointments = await _appointmentService.GetAppointmentsBeforeDaysAsync(3);
-
-                foreach (var appointment in appointments)
+                if (appointments != null)
                 {
-                    // Send email notification to the patient
-                    await SendEmailToPatientAsync(appointment);
+                    foreach (var appointment in appointments)
+                    {
+                        // Send email notification to the patient
+                        await SendEmailToPatientAsync(appointment);
+                    }
+                    var executionTime = DateTime.UtcNow.AddHours(7);
+                    await _jobExecutionLogService.LogExecutionTimeAsync("AppointmentNotificationJob", executionTime);
+
+                    _logger.LogInformation("Appointment notifications sent successfully.");
+                }
+                else
+                {
+                    _logger.LogInformation("No Appointments to send notification.");
                 }
 
-                // Log execution time
-                var executionTime = DateTime.UtcNow.AddHours(7);
-                await _jobExecutionLogService.LogExecutionTimeAsync("AppointmentNotificationJob", executionTime);
-
-                _logger.LogInformation("Appointment notifications sent successfully.");
             }
             catch (Exception ex)
             {

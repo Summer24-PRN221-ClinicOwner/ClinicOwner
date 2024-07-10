@@ -89,6 +89,12 @@ public partial class ClinicContext : DbContext
                 .HasForeignKey(d => d.ServiceId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_Appointment_Service");
+            entity.HasOne(a => a.Report)
+                .WithOne(r => r.Appointment)
+                .HasForeignKey<Report>(r => r.AppointmentId)
+                .OnDelete(DeleteBehavior.Cascade)
+                .HasConstraintName("FK_Appointment_Report")
+                .IsRequired(false);
         });
 
         modelBuilder.Entity<Clinic>(entity =>
@@ -278,6 +284,7 @@ public partial class ClinicContext : DbContext
             entity.Property(e => e.Data).HasMaxLength(500);
             entity.Property(e => e.GeneratedDate).HasColumnType("datetime");
             entity.Property(e => e.Name).HasMaxLength(50);
+            entity.Property(e => e.AppointmentId).HasColumnName("AppointmentID");
         });
 
         modelBuilder.Entity<Room>(entity =>

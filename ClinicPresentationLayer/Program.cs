@@ -73,7 +73,7 @@ builder.Services.AddQuartz(q =>
 builder.Services.AddTransient<AppointmentNotificationJob>(); // Register the job as transient
 builder.Services.AddQuartzHostedService(options =>
 {
-    // wait for the job to complete
+    // wait for the job to complete gracefully when app shutdown
     options.WaitForJobsToComplete = true;
 });
 //end of set up Quartz background task scheduler
@@ -92,7 +92,7 @@ var emailConfig = configuration.GetSection("EmailConfiguration")
 builder.Services.AddSingleton(emailConfig);
 var app = builder.Build();
 
-// run the job ìf the job has not been run for the day
+//run the job ìf the job has not been run for the day
 using (var scope = app.Services.CreateScope())
 {
     var jobExecutionLogService = scope.ServiceProvider.GetRequiredService<IJobExecutionLogService>();

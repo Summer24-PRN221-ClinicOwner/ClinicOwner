@@ -16,5 +16,7 @@ namespace ClinicServices.Interfaces
         Task<User> AddAsync(User entity);
         Task UpdateAsync(User entity);
         Task DeleteAsync(int id);
+        Task<bool> IsUsernameExisted(string username);
+        Task<List<User>> GetAllStaffAsync();
     }
 }

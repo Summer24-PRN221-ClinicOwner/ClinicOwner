@@ -48,5 +48,15 @@ namespace ClinicServices
         {
             return await _repository.GetUserByUsername(username);
         }
+
+        public async Task<bool> IsUsernameExisted(string username)
+        {
+            return await _repository.IsUsernameExisted(username);
+        }
+
+        public async Task<List<User>> GetAllStaffAsync()
+        {
+            return await _repository.GetAllStaffs();
+        }
     }
 }

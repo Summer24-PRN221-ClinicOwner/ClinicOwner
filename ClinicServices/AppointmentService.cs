@@ -3,6 +3,7 @@ using BusinessObjects.Entities;
 using ClinicRepositories.Interfaces;
 using ClinicServices.EmailService;
 using ClinicServices.Interfaces;
+using System.Net.NetworkInformation;
 
 namespace ClinicServices
 {
@@ -67,7 +68,7 @@ namespace ClinicServices
 
         public async Task<Appointment> GetByIdAsync(int id)
         {
-            return await _appointmentRepository.GetByIdAsync(id);
+            return await _appointmentRepository.GetAppointmentsByIdAsync(id);
         }
 
         public Room GetRoomAvailable(DateTime date, int slotRequired, int startSlot)
@@ -135,14 +136,18 @@ namespace ClinicServices
 
         public async Task<List<Appointment>> GetAppoinmentHistoryAsync(int patientId)
         {
-            var result = await _appointmentRepository.GetByPatientId(patientId);
-            if(result == null)
+            try
             {
-                throw new Exception("No Appointment found!");
+                var result = await _appointmentRepository.GetByPatientId(patientId);
+                return result;
             }
-            return result;
+            catch (Exception ex)
+            {
+                throw new Exception("Error when get appointment history", ex);
+            }
+
         }
-        public async Task<List<Appointment>> GetAppointmentsBeforeDaysAsync(int days)
+            public async Task<List<Appointment>> GetAppointmentsBeforeDaysAsync(int days)
         {
             var result = await _appointmentRepository.GetAppointmentsBeforeDaysAsync(days);
             if (result == null)
@@ -152,5 +157,86 @@ namespace ClinicServices
             return result;
         }
 
+        public async Task<bool> UpdateAppointmentStatus(int appointId, int newStatus, DateTime? newDate)
+        {
+            var appointment = await _appointmentRepository.GetByIdAsync(appointId);
+            if (appointment == null)
+            {
+                throw new Exception("Can not found appointment");
+            }
+            if(IsValidStatusTransition(appointment.Status, newStatus, appointment.AppointDate, newDate))
+            {
+                if (newStatus == (int)AppointmentStatus.ReScheduled)
+                {
+                    appointment.AppointDate = newDate.Value;
+                }
+                appointment.ModifyDate = DateTime.UtcNow.AddHours(7);
+                appointment.Status = newStatus;
+                try
+                {
+                    await _appointmentRepository.UpdateAsync(appointment);
+                    return true;
+                }catch (Exception ex)
+                {
+                    throw new Exception("Failed to update appointment.", ex);
+                }
+            }
+            else
+            {
+                throw new Exception("Invalid status transition");
+            }
+        }
+        private bool IsValidStatusTransition(int currentStatus, int newStatus, DateTime appointmentDate, DateTime? newDate)
+        {
+            if (!Enum.IsDefined(typeof(AppointmentStatus), currentStatus))
+            {
+                return false;
+            }
+
+            // Validate new newStatus
+            if (!Enum.IsDefined(typeof(AppointmentStatus), newStatus))
+            {
+                return false;
+            }
+            AppointmentStatus current = (AppointmentStatus)currentStatus;
+            AppointmentStatus next = (AppointmentStatus)newStatus;
+
+            switch (current)
+            {
+                case AppointmentStatus.Waiting:
+                    if (next == AppointmentStatus.Canceled)
+                    {
+                        // Can only cancel if at least 3 days before the appointment date
+                        return (appointmentDate.Date - DateTime.Now.Date).TotalDays >= 3;
+                    }
+                    if (next == AppointmentStatus.ReScheduled)
+                    {
+                        return newDate.HasValue;
+                    }
+                    return next == AppointmentStatus.Done || next == AppointmentStatus.Absent;
+
+                case AppointmentStatus.ReScheduled:
+                    if (next == AppointmentStatus.ReScheduled)
+                    {
+                        return false;
+                    }
+                    if (next == AppointmentStatus.Canceled)
+                    {
+                        return (appointmentDate - DateTime.Now).TotalDays >= 3;
+                    }
+                    return next == AppointmentStatus.Done || next == AppointmentStatus.Absent;
+
+                case AppointmentStatus.Done:
+                    return next == AppointmentStatus.Reported;
+
+                case AppointmentStatus.Absent:
+                case AppointmentStatus.Canceled:
+                case AppointmentStatus.Reported:
+                    return false;
+
+                default:
+                    return false;
+            }
+        }
     }
 }

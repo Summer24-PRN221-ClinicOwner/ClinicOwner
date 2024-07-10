@@ -47,18 +47,25 @@ namespace ClinicRepositories
                                 .Include(ap => ap.Dentist)
                                 .Include(ap => ap.Service)
                                 .Include(ap => ap.Patient)
+                                .Include(ap => ap.Report)
                                 .Where(ap => ap.PatientId == id)
                                 .ToListAsync();
             return result;
         }
         public async Task<Appointment> GetAppointmentsByIdAsync(int id)
         {
-            return await _context.Appointments
+            var result = await _context.Appointments
                                  .Include(a => a.Patient)
                                  .Include(a => a.Dentist)
                                  .Include(a => a.Room)
                                  .Include(a => a.Service)
+                                 .Include(a=> a.Report)
                                  .FirstOrDefaultAsync(ap => ap.Id == id);
+            if(result == null)
+            {
+                throw new Exception("No appointment found");
+            }
+            return result;
         }
 
         public async Task<List<Appointment>> GetAppointmentsBeforeDaysAsync(int days)

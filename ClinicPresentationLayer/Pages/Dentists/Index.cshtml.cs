@@ -1,17 +1,10 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.EntityFrameworkCore;
 using BusinessObjects.Entities;
-using ClinicRepositories;
 using ClinicServices.Interfaces;
 using System.ComponentModel.DataAnnotations;
-using ClinicServices;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.BlazorIdentity.Pages.Manage;
+using BusinessObjects;
 
 namespace ClinicPresentationLayer.Pages.Dentists
 {
@@ -34,8 +27,8 @@ namespace ClinicPresentationLayer.Pages.Dentists
         [DataType(DataType.Password)]
         public string Password { get; set; }
         [BindProperty]
-        public BusinessObjects.Entities.Dentist Dentist { get; set; } = default!;
-        public IList<BusinessObjects.Entities.Dentist> Dentists { get; set; } = default!;
+        public Dentist Dentist { get; set; } = default!;
+        public IList<Dentist> Dentists { get; set; } = default!;
 
         public async Task OnGetAsync()
         {
@@ -46,22 +39,31 @@ namespace ClinicPresentationLayer.Pages.Dentists
         }
         public async Task<IActionResult> OnPostAsync()
         {
-            //ModelState.Clear();
             if (!ModelState.IsValid)
             {
                 return Page();
             }
-            User newUser = new() { Username = Username, Role = 1, Password = Password };
+            try
+            {
+                Dentists = await _dentistService.GetAllAsync();
+                User newUser = new() { Username = Username, Role = UserRoles.Dentist, Password = Password };
 
-            var result = await _dentistService.AddAsync(Dentist, newUser);
-            if (result != null)
-            {
-                return RedirectToPage("./Index");
+                var result = await _dentistService.AddAsync(Dentist, newUser);
+                if (result != null)
+                {
+                    return RedirectToPage("./Index");
+                }
+                else
+                {
+                    return Page();
+                }
             }
-            else
+            catch (Exception ex)
             {
+                TempData["ErrorMessage"] = ex.Message;
                 return Page();
             }
+
         }
     }
 }
