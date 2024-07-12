@@ -58,6 +58,7 @@ namespace ClinicServices
 
         public Task UpdateAsync(Patient entity)
         {
+            if (!_repository.InformationIsUnique(entity.Phone, entity.Email)) throw new Exception("Email or password is duplicated!");
             return _repository.UpdateAsync(entity);
         }
 
