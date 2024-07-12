@@ -5,6 +5,7 @@ using ClinicServices;
 using ClinicServices.EmailService;
 using ClinicServices.Interfaces;
 using ClinicServices.QuartzService;
+using ClinicServices.VNPayService;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Quartz;
 var builder = WebApplication.CreateBuilder(args);
@@ -59,6 +60,10 @@ builder.Services.AddScoped<IJobExecutionLogService, JobExecutionLogService>();
 builder.Services.AddSession();
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddDistributedMemoryCache();
+
+
+builder.Services.AddHttpClient();
+builder.Services.AddTransient<VnPayService>();
 
 //begin of set up Quartz background task scheduler
 builder.Services.AddQuartz(q =>

@@ -1,4 +1,5 @@
-﻿using ClinicRepositories.Interfaces;
+﻿using BusinessObjects.Entities;
+using ClinicRepositories.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
 namespace ClinicRepositories

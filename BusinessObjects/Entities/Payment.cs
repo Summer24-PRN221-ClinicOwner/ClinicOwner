@@ -5,9 +5,7 @@ namespace BusinessObjects.Entities;
 
 public partial class Payment
 {
-    public int PaymentId { get; set; }
-
-    public int AppointmentId { get; set; }
+    public int Id { get; set; }
 
     public decimal Amount { get; set; }
 
@@ -17,5 +15,5 @@ public partial class Payment
 
     public string? TransactionId { get; set; }
 
-    public virtual Appointment Appointment { get; set; } = null!;
+    public virtual ICollection<Appointment> Appointments { get; set; } = new List<Appointment>();
 }

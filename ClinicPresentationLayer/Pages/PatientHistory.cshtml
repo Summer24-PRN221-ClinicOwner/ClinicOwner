@@ -38,6 +38,7 @@
                     <th>Service</th>
                     <th>Status</th>
                     <th></th>
+                    <th>Cancell Appointment</th>
                 </tr>
             </thead>
             <tbody>
@@ -61,6 +62,9 @@
                                     @Html.Raw(item.Report.Data) <!-- Replace with your report data property -->
                                 }
                             </div>
+                        </td>
+                        <td>
+                                <a href="/Refund?Id=@item.Id" type="submit" class="btn btn-danger">Cancel</a>
                         </td>
                     </tr>
                 }

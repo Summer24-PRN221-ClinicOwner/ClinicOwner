@@ -33,6 +33,8 @@ public partial class ClinicContext : DbContext
 
     public virtual DbSet<Patient> Patients { get; set; }
 
+    public virtual DbSet<Payment> Payments { get; set; }
+
     public virtual DbSet<Report> Reports { get; set; }
 
     public virtual DbSet<Room> Rooms { get; set; }
@@ -45,7 +47,7 @@ public partial class ClinicContext : DbContext
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see https://go.microsoft.com/fwlink/?LinkId=723263.
-        => optionsBuilder.UseSqlServer("Server=(local);uid=sa;pwd=12345;database=ClinicSchedule; TrustServerCertificate = true;");
+        => optionsBuilder.UseSqlServer("Server=(local);uid=sa;pwd=12345;database=ClinicSchedule;TrustServerCertificate=true;");
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -67,6 +69,7 @@ public partial class ClinicContext : DbContext
             entity.Property(e => e.DentistId).HasColumnName("DentistID");
             entity.Property(e => e.ModifyDate).HasColumnType("datetime");
             entity.Property(e => e.PatientId).HasColumnName("PatientID");
+            entity.Property(e => e.PaymentId).HasColumnName("PaymentID");
             entity.Property(e => e.RoomId).HasColumnName("RoomID");
             entity.Property(e => e.ServiceId).HasColumnName("ServiceID");
 
@@ -80,6 +83,10 @@ public partial class ClinicContext : DbContext
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_Appointment_Patient");
 
+            entity.HasOne(d => d.Payment).WithMany(p => p.Appointments)
+                .HasForeignKey(d => d.PaymentId)
+                .HasConstraintName("FK_Appointment_Payment");
+
             entity.HasOne(d => d.Room).WithMany(p => p.Appointments)
                 .HasForeignKey(d => d.RoomId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
@@ -89,12 +96,6 @@ public partial class ClinicContext : DbContext
                 .HasForeignKey(d => d.ServiceId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_Appointment_Service");
-            entity.HasOne(a => a.Report)
-                .WithOne(r => r.Appointment)
-                .HasForeignKey<Report>(r => r.AppointmentId)
-                .OnDelete(DeleteBehavior.Cascade)
-                .HasConstraintName("FK_Appointment_Report")
-                .IsRequired(false);
         });
 
         modelBuilder.Entity<Clinic>(entity =>
@@ -276,15 +277,34 @@ public partial class ClinicContext : DbContext
                 .HasConstraintName("FK_Patient_User");
         });
 
+        modelBuilder.Entity<Payment>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PK__Payment__9B556A38FE40E232");
+
+            entity.ToTable("Payment");
+
+            entity.Property(e => e.Id).HasColumnName("ID");
+            entity.Property(e => e.Amount).HasColumnType("decimal(18, 2)");
+            entity.Property(e => e.PaymentDate).HasColumnType("datetime");
+            entity.Property(e => e.PaymentStatus).HasMaxLength(20);
+            entity.Property(e => e.TransactionId).HasMaxLength(50);
+        });
+
         modelBuilder.Entity<Report>(entity =>
         {
             entity.ToTable("Report");
 
+            entity.HasIndex(e => e.AppointmentId, "IX_Report_AppointmentID").IsUnique();
+
             entity.Property(e => e.Id).HasColumnName("ID");
+            entity.Property(e => e.AppointmentId).HasColumnName("AppointmentID");
             entity.Property(e => e.Data).HasMaxLength(500);
             entity.Property(e => e.GeneratedDate).HasColumnType("datetime");
             entity.Property(e => e.Name).HasMaxLength(50);
-            entity.Property(e => e.AppointmentId).HasColumnName("AppointmentID");
+
+            entity.HasOne(d => d.Appointment).WithOne(p => p.Report)
+                .HasForeignKey<Report>(d => d.AppointmentId)
+                .HasConstraintName("FK_Appointment_Report");
         });
 
         modelBuilder.Entity<Room>(entity =>

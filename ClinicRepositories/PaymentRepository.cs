@@ -18,12 +18,12 @@ namespace ClinicRepositories
         public async Task SavePaymentAsync(Payment payment)
         {
             // Check if the appointment exists
-            var appointmentExists = await _context.Appointments.AnyAsync(a => a.Id == payment.AppointmentId);
-            if (!appointmentExists)
-            {
-                throw new InvalidOperationException("Appointment does not exist.");
-                // Or handle this scenario as per your application's requirements
-            }
+            //var appointmentExists = await _context.Appointments.AnyAsync(a => a.Id == payment.);
+            //if (!appointmentExists)
+            //{
+            //    throw new InvalidOperationException("Appointment does not exist.");
+            //    // Or handle this scenario as per your application's requirements
+            //}
             _context.Payments.Add(payment);
             await _context.SaveChangesAsync();
         }

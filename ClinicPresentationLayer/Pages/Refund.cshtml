@@ -1,0 +1,17 @@
+﻿@page
+@model ClinicPresentationLayer.Pages.RefundModel
+@{
+    ViewData["Title"] = "Refund Payment";
+}
+
+<h2>Refund Payment</h2>
+
+<form method="post">
+    <input type="hidden" name="appointmentId" value="@Model.AppointmentId" />
+    <button type="submit">Refund</button>
+</form>
+
+@if (TempData["RefundMessage"] != null)
+{
+    <p>@TempData["RefundMessage"]</p>
+}
