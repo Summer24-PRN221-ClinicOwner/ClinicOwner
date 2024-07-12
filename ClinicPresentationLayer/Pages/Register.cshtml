@@ -38,6 +38,11 @@
                                 <input asp-for="Email" class="form-control" />
                                 <span asp-validation-for="Email" class="text-danger"></span>
                             </div>
+                        <div class="form-group">
+                            <label asp-for="Phone" class="control-label"></label>
+                            <input id="phone" asp-for="Phone" type="text" maxlength="10" class="form-control" />
+                            <span asp-validation-for="Phone" class="text-danger"></span>
+                        </div>
                             <button type="submit" class="btn btn-primary">Register</button>
                         </form>
                 </div>
@@ -45,4 +50,15 @@
         </div>
     </div>
 </body>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const phoneInput = document.getElementById("phone");
 
+            phoneInput.addEventListener("keypress", function (event) {
+                // Check if the character is not a number (0-9), backspace, or delete
+                if (!/\d|[\b]/.test(event.key)) {
+                    event.preventDefault(); // Prevent the invalid character from being entered
+                }
+            });
+        });
+</script>

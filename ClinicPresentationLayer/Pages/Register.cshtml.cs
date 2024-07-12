@@ -29,7 +29,9 @@ namespace ClinicPresentationLayer.Pages
         [BindProperty]
         [Required]
         public string Email { get; set; }
-
+        [BindProperty]
+        [Required]
+        public string Phone { get; set; }
 
         public void OnGet()
         {
@@ -42,7 +44,7 @@ namespace ClinicPresentationLayer.Pages
                 return Page();
             }
             User newUser = new() { Username = Username, Role = 2, Password = Password };
-            var check = await _patientService.AddAsync(new Patient { Email = Email, Name = Name }, newUser);
+            var check = await _patientService.AddAsync(new Patient { Email = Email, Name = Name, Phone = Phone }, newUser);
             if (check != null)
             {
                 return RedirectToPage("/Login");

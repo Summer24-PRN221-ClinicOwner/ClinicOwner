@@ -18,6 +18,7 @@ namespace ClinicServices
         public async Task<Patient> AddAsync(Patient entity, User userAccount)
         {
             var existingUser = await _userService.GetByUsernameAsync(userAccount.Username);
+            if (!_repository.InformationIsUnique(entity.Phone, entity.Email)) throw new Exception("Email or Phone is duplicated!");
             if (existingUser != null)
             {
                 throw new Exception("A user with the same username already exists.");
