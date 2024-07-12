@@ -8,5 +8,10 @@ namespace ClinicRepositories
         public PatientRepository() : base()
         {
         }
+
+        public bool InformationIsUnique(string phone, string email)
+        {
+            return !_context.Patients.Any(item => item.Phone == phone || item.Email == email);
+        }
     }
 }

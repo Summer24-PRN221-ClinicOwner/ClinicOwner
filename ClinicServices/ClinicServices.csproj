@@ -7,6 +7,12 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="VnPayRefundService\**" />
+    <EmbeddedResource Remove="VnPayRefundService\**" />
+    <None Remove="VnPayRefundService\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="MailKit" Version="4.6.0" />
     <PackageReference Include="Microsoft.Extensions.Http" Version="8.0.0" />
     <PackageReference Include="Quartz" Version="3.10.0" />
@@ -17,10 +23,6 @@
   <ItemGroup>
     <ProjectReference Include="..\BusinessObjects\BusinessObjects.csproj" />
     <ProjectReference Include="..\ClinicRepositories\ClinicRepositories.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="VnPayRefundService\" />
   </ItemGroup>
 
 </Project>
