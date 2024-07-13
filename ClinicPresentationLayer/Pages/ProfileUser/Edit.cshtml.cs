@@ -11,6 +11,7 @@ using ClinicRepositories;
 using ClinicServices.Interfaces;
 using System.Transactions;
 using ClinicPresentationLayer.Extension;
+using System.ComponentModel.DataAnnotations;
 
 namespace ClinicPresentationLayer.Pages.ProfileUser
 {
@@ -37,6 +38,8 @@ namespace ClinicPresentationLayer.Pages.ProfileUser
         public ClinicOwner ClinicOwner { get; set; } = default!;
         [BindProperty]
         public Dentist Dentist { get; set; } = default!;
+        [Range(typeof(DateTime), "1930-01-01", "2014-12-31", ErrorMessage = "Date of Birth must be between 1930 and 2014.")]
+        public DateTime DateOfBirth { get; set; }
 
         public async Task<IActionResult> OnGetAsync(int? id)
         {

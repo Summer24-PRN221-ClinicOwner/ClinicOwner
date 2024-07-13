@@ -33,9 +33,14 @@
                     <input asp-for="Patient.Name" class="form-control" />
                     <span asp-validation-for="Patient.Name" class="text-danger"></span>
                 </div>
-                <div class="form-group">
+                @* <div class="form-group">
                     <label asp-for="Patient.DateOfBirth" class="control-label"></label>
                     <input type="date" asp-for="Patient.DateOfBirth" class="form-control" />
+                    <span asp-validation-for="Patient.DateOfBirth" class="text-danger"></span>
+                </div> *@
+                <div class="form-group">
+                    <label asp-for="Patient.DateOfBirth" class="control-label"></label>
+                    <input asp-for="Patient.DateOfBirth" class="form-control" type="date" min="1950-01-01" max="2014-12-31" />
                     <span asp-validation-for="Patient.DateOfBirth" class="text-danger"></span>
                 </div>
                 <div class="form-group">
@@ -82,7 +87,7 @@
                 </div>
                 <div class="form-group">
                     <label asp-for="ClinicOwner.Phone" class="control-label"></label>
-                    <input asp-for="ClinicOwner.Phone" class="form-control" />
+                    <input id="phone" maxlength="10" ClinicOwner.Phone" class="form-control" />
                     <span asp-validation-for="ClinicOwner.Phone" class="text-danger"></span>
                 </div>
                 <div class="form-group">
@@ -121,3 +126,15 @@
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
 }
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const phoneInput = document.getElementById("phone");
+
+        phoneInput.addEventListener("keypress", function (event) {
+            // Check if the character is not a number (0-9), backspace, or delete
+            if (!/\d|[\b]/.test(event.key)) {
+                event.preventDefault(); // Prevent the invalid character from being entered
+            }
+        });
+    });
+</script>

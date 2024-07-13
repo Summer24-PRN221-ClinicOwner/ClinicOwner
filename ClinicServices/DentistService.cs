@@ -1,5 +1,4 @@
 ﻿using BusinessObjects.Entities;
-using ClinicRepositories;
 using ClinicRepositories.Interfaces;
 using ClinicServices.Interfaces;
 
@@ -18,7 +17,7 @@ namespace ClinicServices
 
         public async Task<Dentist> AddAsync(Dentist entity, User userAccount)
         {
-            if(!await _userService.IsUsernameExisted(userAccount.Username))
+            if (!await _userService.IsUsernameExisted(userAccount.Username))
             {
                 userAccount.Status = 1;
                 var newAccount = await _userService.AddAsync(userAccount);
@@ -29,7 +28,7 @@ namespace ClinicServices
             {
                 throw new Exception($"Username: {userAccount.Username} already existed");
             }
-            
+
         }
 
         public async Task DeleteAsync(int id)
@@ -49,6 +48,7 @@ namespace ClinicServices
 
         public async Task UpdateAsync(Dentist entity)
         {
+            if (!_repository.InformationIsUnique(entity.Phone, entity.Email)) throw new Exception("Email or password is duplicated!");
             await _repository.UpdateAsync(entity);
         }
     }
