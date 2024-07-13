@@ -78,9 +78,8 @@ namespace ClinicPresentationLayer.Pages
 					PaymentDate = DateTime.UtcNow.AddHours(7),
 					TransactionId = vnp_TxnRef
 				};
-				await _paymentService.AddAsync(payment);
-				appointment.PaymentId = payment.Id;
-                await _appointmentService.AddAsync(appointment);
+				
+                await _appointmentService.AddAsync(appointment, payment);
 				return RedirectToPage("/PatientHistory");
 			}
 			else
