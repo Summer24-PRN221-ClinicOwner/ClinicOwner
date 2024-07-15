@@ -1,10 +1,5 @@
 ﻿using BusinessObjects;
 using Microsoft.AspNetCore.Http;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ClinicServices.VNPayService
 {
@@ -12,6 +7,7 @@ namespace ClinicServices.VNPayService
     {
         string CreatePaymentUrl(PaymentInformationModel model, HttpContext context);
         PaymentResponseModel PaymentExecute(IQueryCollection collections);
-        Task<string> RefundPaymentAsync(string transactionId, decimal amount, string orderInfo);
+        Task<string> RefundPaymentAsync(string transactionId, decimal amount, string orderInfo, DateTime transactionDate);
+
     }
 }

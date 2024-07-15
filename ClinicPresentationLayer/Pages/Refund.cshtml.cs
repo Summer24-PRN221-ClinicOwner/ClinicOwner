@@ -1,9 +1,7 @@
-using System.Threading.Tasks;
 using ClinicServices.Interfaces;
 using ClinicServices.VNPayService;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.Extensions.Logging;
 
 namespace ClinicPresentationLayer.Pages
 {
@@ -32,20 +30,8 @@ namespace ClinicPresentationLayer.Pages
                 _logger.LogError("Appointment not found.");
                 return RedirectToPage("/Error");
             }
-            AppointmentId = appointment.Id;
-            return Page();
-        }
-        public async Task<IActionResult> OnPostAsync(int appointmentId)
-        {
-            var appointment = await _appointmentService.GetByIdAsync(appointmentId);
-            if (appointment == null)
-            {
-                TempData["ErrorMessage"] = "Appointment not found.";
-                _logger.LogError("Appointment not found.");
-                return RedirectToPage("/Error");
-            }
 
-            var payment = await _paymentService.GetByIdAsync(appointment.PaymentId?? throw new Exception("Invalid Payment Id"));
+            var payment = await _paymentService.GetByIdAsync(appointment.PaymentId ?? throw new Exception("Invalid Payment Id"));
             if (payment == null)
             {
                 TempData["ErrorMessage"] = "Payment not found.";
@@ -53,7 +39,7 @@ namespace ClinicPresentationLayer.Pages
                 return RedirectToPage("/Error");
             }
 
-            var refundResult = await _vnPayService.RefundPaymentAsync(payment.TransactionId, payment.Amount, "Refund request");
+            var refundResult = await _vnPayService.RefundPaymentAsync(payment.TransactionId, payment.Amount, "Refund request", appointment.CreateDate);
             TempData["RefundMessage"] = refundResult;
 
             return RedirectToPage("/PatientHistory");

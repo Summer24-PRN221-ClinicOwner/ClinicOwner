@@ -187,5 +187,9 @@ namespace ClinicRepositories
                 RevenuePerCustomer = CalculateRevenuePerCustomer(dailyAppointments)
             };
         }
+        public bool InformationIsUnique(string phone, string email)
+        {
+            return !_context.Dentists.Any(item => item.Phone == phone || item.Email == email);
+        }
     }
 }
