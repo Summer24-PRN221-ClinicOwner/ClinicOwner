@@ -1,9 +1,11 @@
-﻿using BusinessObjects.Entities;
+﻿using BusinessObjects;
+using BusinessObjects.Entities;
 using ClinicRepositories;
 using ClinicRepositories.Interfaces;
 using ClinicServices;
 using ClinicServices.EmailService;
 using ClinicServices.Interfaces;
+using ClinicServices.MomoService;
 using ClinicServices.QuartzService;
 using ClinicServices.VNPayService;
 using Microsoft.AspNetCore.Mvc.RazorPages;
@@ -32,6 +34,8 @@ builder.Services.AddScoped<IDentistRepository, DentistRepository>();
 builder.Services.AddScoped<IPaymentService, PaymentService>();
 builder.Services.AddScoped<IPaymentRepository, PaymentRepository>();
 
+builder.Services.AddScoped<IMomoService, MomoService>();
+
 builder.Services.AddScoped<ILicenseService, LicenseService>();
 builder.Services.AddScoped<ILicenseRepository, LicenseRepository>();
 
@@ -56,6 +60,8 @@ builder.Services.AddScoped<IRoomService, RoomService>();
 builder.Services.AddScoped<IEmailSender, EmailSender>();
 builder.Services.AddScoped<User>();
 builder.Services.AddScoped<IJobExecutionLogService, JobExecutionLogService>();
+
+builder.Services.Configure<MomoOptionModel>(builder.Configuration.GetSection("MomoAPI"));
 
 builder.Services.AddSession();
 builder.Services.AddHttpContextAccessor();

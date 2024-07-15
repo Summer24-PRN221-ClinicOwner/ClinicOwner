@@ -187,5 +187,10 @@ namespace ClinicRepositories
                 RevenuePerCustomer = CalculateRevenuePerCustomer(dailyAppointments)
             };
         }
+
+        public bool InformationIsUnique(string phone, string email)
+        {
+            throw new NotImplementedException();
+        }
     }
 }
