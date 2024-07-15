@@ -102,7 +102,7 @@ namespace ClinicServices.VNPayService
             var responseContent = await response.Content.ReadAsStringAsync();
             var jsonResponse = JObject.Parse(responseContent);
 
-            Sif(jsonResponse["vnp_ResponseCode"].ToString() == "00")
+            if (jsonResponse["vnp_ResponseCode"].ToString() == "00")
             {
                 return "Refund successful.";
             }
