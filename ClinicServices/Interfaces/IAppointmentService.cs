@@ -7,7 +7,7 @@ namespace ClinicServices.Interfaces
     {
         Task<List<Appointment>> GetAllAsync();
         Task<Appointment> GetByIdAsync(int id);
-        Task<Appointment> AddAsync(Appointment entity);
+        Task<Appointment> AddAsync(Appointment entity, Payment payment);
         Task UpdateAsync(Appointment entity);
         Task DeleteAsync(int id);
         Task<List<Slot>> GetAvailableSlotAsync(DateTime date, int slotRequired);

@@ -62,5 +62,12 @@ namespace ClinicServices
             return _repository.UpdateAsync(entity);
         }
 
+        public async Task<Patient> FindPatientAsync(string searchTerm)
+        {
+            var PatientList = await _repository.GetAllAsync();
+            var patient = PatientList.FirstOrDefault(p => p.Email.Contains(searchTerm) || p.Phone.Contains(searchTerm));
+            return patient;
+        }
+
     }
 }
