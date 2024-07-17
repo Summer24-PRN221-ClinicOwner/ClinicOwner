@@ -59,8 +59,11 @@
                     {
                         <a class="nav-link active" aria-current="page" href="/Appointment/List">Appointment</a>
                     }
+                    @if (@user.Role == 2)
+                    {
+                        <a class="nav-link" href="/PatientHistory">History</a>
+                    }
                 }
-                <a class="nav-link" href="#">Link</a>
                 <a class="nav-link" href="#">Dropdown</a>
                 <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">Disabled</a>
             </div>
