@@ -6,12 +6,24 @@
 
 <h2>Refund Payment</h2>
 
-<form method="post">
-    <input type="hidden" name="appointmentId" value="@Model.AppointmentId" />
-    <button type="submit">Refund</button>
-</form>
-
-@if (TempData["RefundMessage"] != null)
+@if (TempData["ErrorMessage"] != null)
 {
-    <p>@TempData["RefundMessage"]</p>
+    <div class="alert alert-danger" role="alert">
+        @TempData["ErrorMessage"]
+    </div>
 }
+else
+{
+    <form method="post">
+        <input type="hidden" name="appointmentId" value="@Model.AppointmentId" />
+        <button type="submit">Refund</button>
+    </form>
+
+    @if (TempData["RefundMessage"] != null)
+    {
+        <div class="alert alert-success" role="alert">
+            @TempData["RefundMessage"]
+        </div>
+    }
+}
+

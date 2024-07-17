@@ -1,4 +1,5 @@
 using System.Threading.Tasks;
+using BusinessObjects;
 using ClinicServices.Interfaces;
 using ClinicServices.VNPayService;
 using Microsoft.AspNetCore.Mvc;
@@ -30,7 +31,23 @@ namespace ClinicPresentationLayer.Pages
             {
                 TempData["ErrorMessage"] = "Appointment not found.";
                 _logger.LogError("Appointment not found.");
-                return RedirectToPage("/Error");
+                return Page();
+            }
+            try
+            {
+                var isUpdated = await _appointmentService.UpdateAppointmentStatus(appointment.Id, (int)AppointmentStatus.Canceled, null);
+                if (!isUpdated)
+                {
+                    TempData["ErrorMessage"] = "Failed to update appointment status.";
+                    _logger.LogError("Failed to update appointment status.");
+                    return Page();
+                }
+            }
+            catch (Exception ex)
+            {
+                TempData["ErrorMessage"] = ex.Message;
+                _logger.LogError(ex, "Failed to update appointment status.");
+                return Page();
             }
             AppointmentId = appointment.Id;
             return Page();
