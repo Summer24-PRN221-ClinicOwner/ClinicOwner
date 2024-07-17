@@ -26,6 +26,8 @@ namespace ClinicRepositories
             List<Slot> slots = SlotDefiner.ConvertFromString("0000000000");
             //Querry list of available room
             List<RoomAvailability> list = [.. _context.RoomAvailabilities.Include(item => item.Room)];
+            if (_context.Rooms.Any(item => item.Status == 1 && !item.RoomAvailabilities.Any(item => item.Day.Date == date.Date))) return SlotDefiner.ConvertFromString("1111111111");
+
             list = list.Where(
                     item => item.Day.Date == date.Date
                 && item.Room.Status == 1).ToList();
@@ -121,7 +123,7 @@ namespace ClinicRepositories
 
                 for (int i = startSlot; i < startSlot + slotRequired; i++)
                 {
-                    if (slotList.ElementAt(startSlot - 1).IsAvailable == true) slotList.ElementAt(startSlot - 1).IsAvailable = false;
+                    if (slotList.ElementAt(i - 1).IsAvailable == true) slotList.ElementAt(i - 1).IsAvailable = false;
                     else return false;
                 }
                 item.AvailableSlots = SlotDefiner.ConvertToString(slotList);

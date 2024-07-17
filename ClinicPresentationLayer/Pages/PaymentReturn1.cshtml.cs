@@ -50,14 +50,14 @@ namespace ClinicPresentationLayer.Pages
             {
                 var payment = new Payment
                 {
-                    Amount = decimal.Parse(amount) / 100, 
+                    Amount = decimal.Parse(amount), 
                     PaymentStatus = "Paid",
                     PaymentDate = DateTime.UtcNow.AddHours(7),
                     TransactionId = transId
                 };
-                await _paymentService.AddAsync(payment);
-                appointment.PaymentId = payment.Id;
-                await _appointmentService.AddAsync(appointment);
+                //await _paymentService.AddAsync(payment);
+                //appointment.PaymentId = payment.Id;
+                await _appointmentService.AddAsync(appointment, payment);
                 return Page();
             }
             else

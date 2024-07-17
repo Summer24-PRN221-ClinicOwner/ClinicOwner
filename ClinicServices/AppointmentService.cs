@@ -14,18 +14,21 @@ namespace ClinicServices
         private readonly IDentistAvailabilityRepository _dentistAvailabilityRepository;
         private readonly IDentistRepository _dentistRepository;
         private readonly IEmailSender _emailSender;
+        private readonly IPaymentService _paymentService;
 
         public AppointmentService(IAppointmentRepository iAppointmentRepository, IRoomAvailabilityRepository roomAvailabilityRepository,
-            IDentistAvailabilityRepository dentistAvailabilityRepository, IDentistRepository dentistRepository, IEmailSender emailSender)
+            IDentistAvailabilityRepository dentistAvailabilityRepository, IDentistRepository dentistRepository, IEmailSender emailSender
+            , IPaymentService paymentService)
         {
             _appointmentRepository = iAppointmentRepository;
             _roomAvailabilityRepository = roomAvailabilityRepository;
             _dentistAvailabilityRepository = dentistAvailabilityRepository;
             _dentistRepository = dentistRepository;
             _emailSender = emailSender;
+            _paymentService = paymentService;
         }
 
-        public async Task<Appointment> AddAsync(Appointment entity)
+        public async Task<Appointment> AddAsync(Appointment entity, Payment payment)
         {
 
             //update dentist available
@@ -36,9 +39,13 @@ namespace ClinicServices
             //send email about the appointment to the patient
             if (updateDentist && updateRoom && updateAppointment)
             {
+
                 _dentistAvailabilityRepository.SaveChanges();
                 _roomAvailabilityRepository.SaveChanges();
+                await _paymentService.AddAsync(payment);
+                entity.PaymentId = payment.Id;
                 _appointmentRepository.SaveChanges();
+
                 await SendEmailToPatient(entity);
             }
             else

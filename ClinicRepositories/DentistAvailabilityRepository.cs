@@ -29,8 +29,7 @@ namespace ClinicRepositories
             if (listDentist.Count == 0) return await _context.Dentists.Include(item => item.Services).Where(item => item.Services.Any(serv => serv.Id == serviceId)).ToListAsync();
             //Chưa có lịch - có thể làm
             var result = await _context.Dentists.Include(item => item.Services).Include(item => item.DentistAvailabilities).Include(item => item.IdNavigation).Where(item => item.Services.Any(serv => serv.Id == serviceId)
-            && item.DentistAvailabilities.
-            Select(item => item.Day.Date == date.Date).ToList().Count == 0).ToListAsync();
+            && !item.DentistAvailabilities.Any(item => item.Day.Date == date)).ToListAsync();
 
             //Có lich - có thể làm
             listDentist = listDentist.Where(item => SlotDefiner.IsAvaiForSlot(item.AvailableSlots, slotRequired, startSlot)).ToList();
@@ -57,7 +56,7 @@ namespace ClinicRepositories
 
                 for (int i = startSlot; i < startSlot + slotRequired; i++)
                 {
-                    if (slotList.ElementAt(startSlot - 1).IsAvailable == true) slotList.ElementAt(startSlot - 1).IsAvailable = false;
+                    if (slotList.ElementAt(i - 1).IsAvailable == true) slotList.ElementAt(i - 1).IsAvailable = false;
                     else return false;
                 }
                 item.AvailableSlots = SlotDefiner.ConvertToString(slotList);
