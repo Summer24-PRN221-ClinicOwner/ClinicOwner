@@ -7,7 +7,7 @@ namespace ClinicServices.VNPayService
     {
         string CreatePaymentUrl(PaymentInformationModel model, HttpContext context);
         PaymentResponseModel PaymentExecute(IQueryCollection collections);
-        Task<string> RefundPaymentAsync(string transactionId, decimal amount, string orderInfo, DateTime transactionDate);
+        Task<string> RefundPaymentAsync(string transactionId, decimal amount, string orderInfo, DateTime transactionDate, string transactionNo);
 
     }
 }

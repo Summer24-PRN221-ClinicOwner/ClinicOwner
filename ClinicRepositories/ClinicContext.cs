@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using BusinessObjects.Entities;
+﻿using BusinessObjects.Entities;
 using Microsoft.EntityFrameworkCore;
 
 namespace ClinicRepositories;
@@ -289,6 +287,7 @@ public partial class ClinicScheduleContext : DbContext
             entity.Property(e => e.PaymentDate).HasColumnType("datetime");
             entity.Property(e => e.PaymentStatus).HasMaxLength(20);
             entity.Property(e => e.TransactionId).HasMaxLength(50);
+            entity.Property(e => e.TransactionNo).HasMaxLength(8);
         });
 
         modelBuilder.Entity<Report>(entity =>

@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace ClinicPresentationLayer.Pages
 {
-    [CustomAuthorize(UserRoles.Dentist)]
+    [CustomAuthorize(UserRoles.ClinicOwner)]
     public class ClinicReportModel : PageModel
     {
         private readonly IClinicOwnerService _clinicOwnerService;
