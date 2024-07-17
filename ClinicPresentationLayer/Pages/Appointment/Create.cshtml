@@ -74,15 +74,24 @@
                     <span asp-validation-for="Appointment.DentistId" class="text-danger"></span>
                 </div>
                 <div class="form-group">
-                    <button type="submit" class="btn btn-primary">Submit Appointment</button>
+                    <label asp-for="PaymentMethod" class="control-label">Payment Method</label>
+                    <select asp-for="PaymentMethod" class="form-control">
+                        <option value="" selected disabled>Select Payment Method</option>
+                        <option value="vnpay">VNPay</option>
+                        <option value="momo">MoMo</option>
+                    </select>
+                    <span asp-validation-for="PaymentMethod" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <button type="submit" class="btn btn-primary">Submit Retainer Fee Appointment</button>
                 </div>
             </form>
-            @if (!string.IsNullOrEmpty(Model.VnpayUrl))
+            @* @if (!string.IsNullOrEmpty(Model.VnpayUrl))
             {
                 <div class="form-group">
                     <a href="@Model.VnpayUrl" class="btn btn-success">Pay with VNPay</a>
                 </div>
-            }
+            } *@
         </div>
         <h5 class="mt-10">Related Services</h5>
         <div class="d-flex justify-content-between">

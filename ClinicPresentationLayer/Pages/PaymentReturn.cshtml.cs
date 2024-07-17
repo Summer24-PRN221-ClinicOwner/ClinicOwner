@@ -71,13 +71,14 @@ namespace ClinicPresentationLayer.Pages
                 {
                     Amount = vnp_Amount / 100, // Assuming vnp_Amount is in the smallest currency unit (like cents)
                     PaymentStatus = "Paid",
-                    TransactionNo = vnp_TransactionNo,
                     PaymentDate = DateTime.UtcNow.AddHours(7),
                     TransactionId = vnp_TxnRef
                 };
-
+                //await _paymentService.AddAsync(payment);
+                //appointment.PaymentId = payment.Id;
                 await _appointmentService.AddAsync(appointment, payment);
-                return RedirectToPage("/PatientHistory");
+                return Page();
+                //return RedirectToPage("/PatientHistory");
             }
             else
             {
@@ -86,5 +87,55 @@ namespace ClinicPresentationLayer.Pages
                 return RedirectToPage("/Appointment/Create", new { id = appointment.ServiceId });
             }
         }
+
+        //public async Task<IActionResult> OnGetAsync(
+        //    string partnerCode,
+        //    string accessKey,
+        //    string requestId,
+        //    string amount,
+        //    string orderId,
+        //    string orderInfo,
+        //    string orderType,
+        //    string transId,
+        //    string message,
+        //    string localMessage,
+        //    string responseTime,
+        //    string errorCode,
+        //    string payType,
+        //    string extraData,
+        //    string signature)
+        //{
+        //    _logger.LogInformation("OnGetAsync has been triggered.");
+        //    var appointmentJson = TempData["Appointment"] as string;
+        //    var appointment = JsonConvert.DeserializeObject<BusinessObjects.Entities.Appointment>(appointmentJson);
+
+        //    if (appointment == null)
+        //    {
+        //        TempData["ErrorMessage"] = "Appointment not found.";
+        //        _logger.LogError("Appointment not found.");
+        //        return RedirectToPage("/Error");
+        //    }
+
+        //    if (errorCode == "0") // Payment success
+        //    {
+        //        var payment = new Payment
+        //        {
+        //            Amount = decimal.Parse(amount) / 100, // Assuming amount is in the smallest currency unit (like cents)
+        //            PaymentStatus = "Paid",
+        //            PaymentDate = DateTime.UtcNow.AddHours(7),
+        //            TransactionId = transId
+        //        };
+        //        await _paymentService.AddAsync(payment);
+        //        appointment.PaymentId = payment.Id;
+        //        await _appointmentService.AddAsync(appointment);
+        //        return Page();
+        //    }
+        //    else
+        //    {
+        //        TempData["ErrorMessage"] = "Payment failed. Please try again.";
+        //        _logger.LogError("Payment failed with error code: " + errorCode);
+        //        return RedirectToPage("/Error");
+        //    }
+        //}
     }
 }
