@@ -56,7 +56,7 @@ namespace ClinicRepositories
 
                 for (int i = startSlot; i < startSlot + slotRequired; i++)
                 {
-                    if (slotList.ElementAt(startSlot - 1).IsAvailable == true) slotList.ElementAt(startSlot - 1).IsAvailable = false;
+                    if (slotList.ElementAt(i - 1).IsAvailable == true) slotList.ElementAt(i - 1).IsAvailable = false;
                     else return false;
                 }
                 item.AvailableSlots = SlotDefiner.ConvertToString(slotList);

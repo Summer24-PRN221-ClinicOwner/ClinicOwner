@@ -3,12 +3,7 @@ using ClinicPresentationLayer.Extension.Libraries;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json.Linq;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
-using System.Net.Http;
 
 
 namespace ClinicServices.VNPayService
@@ -60,15 +55,14 @@ namespace ClinicServices.VNPayService
             return response;
         }
 
-        public async Task<string> RefundPaymentAsync(string transactionId, decimal amount, string orderInfo)
+        public async Task<string> RefundPaymentAsync(string transactionId, decimal amount, string orderInfo, DateTime transactionDate, string transactionNo)
         {
             var vnpay = new VnPayLibrary();
             string requestId = Guid.NewGuid().ToString();
             string version = "2.1.0";
             string command = "refund";
-            string tmnCode = _configuration["Vnpay:TmnCode"];
+            string tmnCode = _configuration["VnPay:TmnCode"];
             string transactionType = "02"; // Assuming full refund
-            string transactionDate = DateTime.UtcNow.AddHours(7).ToString("yyyyMMddHHmmss");
             string createBy = "Admin"; // Replace with the actual user performing the refund
             string createDate = DateTime.UtcNow.AddHours(7).ToString("yyyyMMddHHmmss");
             string ipAddr = "192.168.1.66"; // Replace with actual IP address if necessary
@@ -80,15 +74,16 @@ namespace ClinicServices.VNPayService
             vnpay.AddRequestData("vnp_TransactionType", transactionType);
             vnpay.AddRequestData("vnp_TxnRef", transactionId);
             vnpay.AddRequestData("vnp_Amount", ((int)(amount * 100)).ToString());
-            vnpay.AddRequestData("vnp_TransactionDate", transactionDate);
+            vnpay.AddRequestData("vnp_TransactionDate", transactionDate.ToString("yyyyMMddHHmmss"));
             vnpay.AddRequestData("vnp_CreateBy", createBy);
             vnpay.AddRequestData("vnp_CreateDate", createDate);
             vnpay.AddRequestData("vnp_IpAddr", ipAddr);
             vnpay.AddRequestData("vnp_OrderInfo", orderInfo);
+            vnpay.AddRequestData("vnp_TransactionNo", transactionNo);// Thêm Trường vào DB !!!! NHỚ SỬA SECURE HASH
 
             // Generate checksum
             string secretKey = _configuration["VnPay:HashSecret"];
-            string data = $"{requestId}|{version}|{command}|{tmnCode}|{transactionType}|{transactionId}|{((int)(amount * 100)).ToString()}|{transactionDate}|{createBy}|{createDate}|{ipAddr}|{orderInfo}";
+            string data = $"{requestId}|{version}|{command}|{tmnCode}|{transactionType}|{transactionId}|{((int)(amount * 100)).ToString()}|{transactionNo}|{transactionDate.ToString("yyyyMMddHHmmss")}|{createBy}|{createDate}|{ipAddr}|{orderInfo}";
             string secureHash = VnPayLibrary.HmacSHA512(secretKey, data);
             vnpay.AddRequestData("vnp_SecureHash", secureHash);
 
@@ -98,9 +93,10 @@ namespace ClinicServices.VNPayService
             {
                 jsonContent[item.Key] = item.Value;
             }
-
+            var check = jsonContent.ToString();
             var client = _httpClientFactory.CreateClient();
             var content = new StringContent(jsonContent.ToString(), Encoding.UTF8, "application/json");
+            var check2 = content;
             var response = await client.PostAsync("https://sandbox.vnpayment.vn/merchant_webapi/api/transaction", content);
 
             var responseContent = await response.Content.ReadAsStringAsync();
@@ -115,6 +111,84 @@ namespace ClinicServices.VNPayService
                 return $"Refund failed: {jsonResponse["vnp_ResponseMessage"]}";
             }
         }
+
+        public async Task<PaymentResponseModel> GetTransactionInfor(string transactionId, string orderInfo, DateTime transactionDate)
+        {
+            var vnpay = new VnPayLibrary();
+            string requestId = Guid.NewGuid().ToString();
+            string version = "2.1.0";
+            string command = "querydr";
+            string tmnCode = _configuration["VnPay:TmnCode"];
+            string createDate = DateTime.UtcNow.AddHours(7).ToString("yyyyMMddHHmmss");
+            string ipAddr = "192.168.1.66"; // Replace with actual IP address if necessary
+
+            vnpay.AddRequestData("vnp_RequestId", requestId);
+            vnpay.AddRequestData("vnp_Version", version);
+            vnpay.AddRequestData("vnp_Command", command);
+            vnpay.AddRequestData("vnp_TmnCode", tmnCode);
+            vnpay.AddRequestData("vnp_TxnRef", transactionId);
+            vnpay.AddRequestData("vnp_TransactionDate", transactionDate.ToString("yyyyMMddHHmmss"));
+            vnpay.AddRequestData("vnp_CreateDate", createDate);
+            vnpay.AddRequestData("vnp_IpAddr", ipAddr);
+            vnpay.AddRequestData("vnp_OrderInfo", orderInfo);
+
+            // Generate checksum
+            string secretKey = _configuration["VnPay:HashSecret"];
+            string data = $"{requestId}|{version}|{command}|{tmnCode}|{transactionId}|{transactionDate.ToString("yyyyMMddHHmmss")}|{createDate}|{ipAddr}|{orderInfo}";
+            string secureHash = VnPayLibrary.HmacSHA512(secretKey, data);
+            vnpay.AddRequestData("vnp_SecureHash", secureHash);
+
+            // Convert to JSON
+            var jsonContent = new JObject();
+            foreach (var item in vnpay.GetRequestData())
+            {
+                jsonContent[item.Key] = item.Value;
+            }
+            var client = _httpClientFactory.CreateClient();
+            var content = new StringContent(jsonContent.ToString(), Encoding.UTF8, "application/json");
+            var response = await client.PostAsync("https://sandbox.vnpayment.vn/merchant_webapi/api/transaction", content);
+
+            var responseContent = await response.Content.ReadAsStringAsync();
+            var responseModel = new PaymentResponseModel();
+            var jsonResponse = JObject.Parse(responseContent);
+            if (responseModel.vnp_ResponseCode == "00")
+            {
+                responseModel.Status = "Success";
+                responseModel.Message = "Transaction successful";
+            }
+            else
+            {
+                responseModel.Status = "Failed";
+                throw new Exception();
+            }
+            try
+            {
+                // Deserialize the JSON response into a dictionary
+                var responseObject = jsonResponse;
+
+                // Populate PaymentResponseModel object from response data
+                responseModel.vnp_Amount = Convert.ToDecimal(responseObject["vnp_Amount"]);
+                responseModel.vnp_BankCode = responseObject["vnp_BankCode"].ToString();
+                responseModel.vnp_ResponseId = responseObject["vnp_ResponseId"].ToString();
+                responseModel.vnp_TxnRef = Guid.Parse(responseObject["vnp_TxnRef"].ToString());
+                responseModel.vnp_OrderInfo = responseObject["vnp_OrderInfo"].ToString();
+                responseModel.vnp_PayDate = DateTime.ParseExact(responseObject["vnp_PayDate"].ToString(), "yyyyMMddHHmmss", null);
+                responseModel.vnp_Command = responseObject["vnp_Command"].ToString();
+                responseModel.vnp_ResponseCode = responseObject["vnp_ResponseCode"].ToString();
+                responseModel.vnp_TmnCode = responseObject["vnp_TmnCode"].ToString();
+                responseModel.vnp_TransactionNo = responseObject["vnp_TransactionNo"].ToString();
+                responseModel.vnp_TransactionStatus = responseObject["vnp_TransactionStatus"].ToString();
+                responseModel.vnp_SecureHash = responseObject["vnp_SecureHash"].ToString();
+
+                // Set additional properties based on response code (optional)
+
+                return responseModel;
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+        }
+
     }
 }
-

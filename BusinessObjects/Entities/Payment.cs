@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace BusinessObjects.Entities;
+﻿namespace BusinessObjects.Entities;
 
 public partial class Payment
 {
@@ -14,6 +11,7 @@ public partial class Payment
     public DateTime PaymentDate { get; set; }
 
     public string? TransactionId { get; set; }
+    public string? TransactionNo { get; set; }
 
     public virtual ICollection<Appointment> Appointments { get; set; } = new List<Appointment>();
 }
