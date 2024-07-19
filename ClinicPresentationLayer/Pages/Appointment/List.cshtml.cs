@@ -61,6 +61,11 @@ namespace ClinicPresentationLayer.Pages.Appointment
             }
             return RedirectToPage(new { PageWeek });
         }
+        public IActionResult OnGetCurrent()
+        {
+            PageWeek = 0;
+            return RedirectToPage(new { PageWeek });
+        }
         public string[,] Schedule { get; set; } = new string[10, 7];
 
     }

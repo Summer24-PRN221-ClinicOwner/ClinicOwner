@@ -1,3 +1,4 @@
+using BusinessObjects;
 using BusinessObjects.Entities;
 using ClinicServices.Interfaces;
 using Microsoft.AspNetCore.Mvc;
@@ -51,7 +52,7 @@ namespace ClinicPresentationLayer.Pages
                 var payment = new Payment
                 {
                     Amount = decimal.Parse(amount), 
-                    PaymentStatus = "Paid",
+                    PaymentStatus = PaymentStatus.PAID,
                     PaymentDate = DateTime.UtcNow.AddHours(7),
                     TransactionId = transId
                 };

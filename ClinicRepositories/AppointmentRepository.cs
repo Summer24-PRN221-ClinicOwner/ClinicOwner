@@ -60,6 +60,7 @@ namespace ClinicRepositories
                                  .Include(a => a.Room)
                                  .Include(a => a.Service)
                                  .Include(a=> a.Report)
+                                 .Include(a=> a.Payment)
                                  .FirstOrDefaultAsync(ap => ap.Id == id);
             if(result == null)
             {

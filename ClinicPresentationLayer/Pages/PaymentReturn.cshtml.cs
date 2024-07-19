@@ -1,3 +1,4 @@
+using BusinessObjects;
 using BusinessObjects.Entities;
 using ClinicServices.Interfaces;
 using Microsoft.AspNetCore.Mvc;
@@ -70,7 +71,7 @@ namespace ClinicPresentationLayer.Pages
                 var payment = new Payment
                 {
                     Amount = vnp_Amount / 100, // Assuming vnp_Amount is in the smallest currency unit (like cents)
-                    PaymentStatus = "Paid",
+                    PaymentStatus = PaymentStatus.PAID,
                     PaymentDate = DateTime.UtcNow.AddHours(7),
                     TransactionId = vnp_TxnRef
                 };

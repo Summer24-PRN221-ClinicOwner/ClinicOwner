@@ -102,14 +102,7 @@ namespace ClinicServices.VNPayService
             var responseContent = await response.Content.ReadAsStringAsync();
             var jsonResponse = JObject.Parse(responseContent);
 
-            if (jsonResponse["vnp_ResponseCode"].ToString() == "00")
-            {
-                return "Refund successful.";
-            }
-            else
-            {
-                return $"Refund failed: {jsonResponse["vnp_ResponseMessage"]}";
-            }
+            return jsonResponse["vnp_ResponseCode"].ToString();
         }
 
         public async Task<PaymentResponseModel> GetTransactionInfor(string transactionId, string orderInfo, DateTime transactionDate)

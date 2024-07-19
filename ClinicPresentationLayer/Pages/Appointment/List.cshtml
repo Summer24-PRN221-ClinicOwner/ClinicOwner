@@ -8,6 +8,7 @@
     <h1>Clinic Schedule</h1>
     <div>
         <a asp-page="./List" asp-route-PageWeek="@(Model.PageWeek - 1)" class="btn btn-primary">Last Week</a>
+        <a asp-page="./List" asp-route-PageWeek="0" class="btn btn-primary">Current Week</a>
         <a asp-page="./List" asp-route-PageWeek="@(Model.PageWeek + 1)" class="btn btn-primary">Next Week</a>
     </div>
     <h1>Schedule of Dentist : <span style="color: red;">@Model.DentistName.Name</h1>

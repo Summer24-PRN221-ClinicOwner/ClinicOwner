@@ -17,5 +17,7 @@ namespace ClinicServices.Interfaces
         Task<List<Appointment>> GetAppointmentsBeforeDaysAsync(int days);
         Task<bool> UpdateAppointmentStatus(int appointId, int Status, DateTime? newDate);
         public Task<Appointment> GetAppointmentsByIdAsync(int id);
+        Task<bool> IsValidStatusTransition(int currentStatus, int newStatus, DateTime createDate, string paymenStatus, DateTime? newDate);
+        Task<List<Appointment>> GetAppointmentsOfTodayAsync();
     }
 }

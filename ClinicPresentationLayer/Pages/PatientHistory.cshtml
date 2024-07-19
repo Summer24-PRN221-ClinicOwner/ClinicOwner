@@ -23,6 +23,15 @@
                     }
                 </select>
             </div>
+            <div class="form-group mr-2">
+                <label for="pageSize" class="mr-2">Page Size:</label>
+                <select id="pageSize" name="pageSize" class="form-control" onchange="this.form.submit()">
+                    <option value="5" selected="@(Model.PageSize == 5)">5</option>
+                    <option value="10" selected="@(Model.PageSize == 10)">10</option>
+                    <option value="20" selected="@(Model.PageSize == 20)">20</option>
+                    <option value="50" selected="@(Model.PageSize == 50)">50</option>
+                </select>
+            </div>
             <button type="submit" class="btn btn-primary">Filter</button>
         </form>
         
@@ -52,35 +61,40 @@
                         <td>@item.Dentist.Name</td>
                         <td>@item.Patient.Name</td>
                         <td>@item.Service.Name</td>
-                        <td>@item.Status</td>
+                        <td>@Enum.GetName(typeof(AppointmentStatus), item.Status)</td>
+
                         <td>
-                            <button class="btn btn-primary" onclick="toggleReport('@item.Id')">Toggle Report</button>
-                            <div id="reportContent_@item.Id" style="display: none;">
-                                @if (item.Report != null)
-                                {
-                                    <h4>Report for Appointment ID: @item.Id</h4>
-                                    @Html.Raw(item.Report.Data) <!-- Replace with your report data property -->
-                                }
-                            </div>
+                            <a class="btn btn-primary" href="/Appointment/Details?Id=@item.Id">View Details</a>
                         </td>
                         <td>
-                            <button class="btn btn-danger" onclick="confirmCancellation('@item.Id')">Cancel</button>
+                            @if (item.Status != (int)AppointmentStatus.Canceled)
+                            {
+                                <button class="btn btn-danger" onclick="confirmCancellation('@item.Id')">Cancel</button>
+                            }
                         </td>
                     </tr>
                 }
             </tbody>
         </table>
+        <nav aria-label="Page navigation">
+            <ul class="pagination justify-content-center">
+                <li class="page-item @(Model.PageNumber == 1 ? "disabled" : "")">
+                    <a class="page-link" href="?pageNumber=@(Model.PageNumber - 1)&pageSize=@Model.PageSize&statusFilter=@Model.StatusFilter">Previous</a>
+                </li>
+                @for (int i = 1; i <= Model.TotalPages; i++)
+                {
+                    <li class="page-item @(Model.PageNumber == i ? "active" : "")">
+                        <a class="page-link" href="?pageNumber=@i&pageSize=@Model.PageSize&statusFilter=@Model.StatusFilter">@i</a>
+                    </li>
+                }
+                <li class="page-item @(Model.PageNumber == Model.TotalPages ? "disabled" : "")">
+                    <a class="page-link" href="?pageNumber=@(Model.PageNumber + 1)&pageSize=@Model.PageSize&statusFilter=@Model.StatusFilter">Next</a>
+                </li>
+            </ul>
+        </nav>
     </div>
 
     <script>
-        function toggleReport(appointmentId) {
-            var reportDiv = document.getElementById(`reportContent_${appointmentId}`);
-            if (reportDiv.style.display === 'none') {
-                reportDiv.style.display = 'block';
-            } else {
-                reportDiv.style.display = 'none';
-            }
-        }
         function confirmCancellation(appointmentId) {
             $('#confirmCancelModal').modal('show');
 
