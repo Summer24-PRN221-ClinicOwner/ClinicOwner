@@ -38,7 +38,7 @@
                     <th>Service</th>
                     <th>Status</th>
                     <th></th>
-                   @*  <th>Cancell Appointment</th> *@
+                    <th></th>
                 </tr>
             </thead>
             <tbody>
@@ -63,9 +63,9 @@
                                 }
                             </div>
                         </td>
-                        @* <td>
-                                <a href="/Refund?Id=@item.Id" type="submit" class="btn btn-danger">Cancel</a>
-                        </td> *@
+                        <td>
+                            <button class="btn btn-danger" onclick="confirmCancellation('@item.Id')">Cancel</button>
+                        </td>
                     </tr>
                 }
             </tbody>
@@ -81,6 +81,33 @@
                 reportDiv.style.display = 'none';
             }
         }
+        function confirmCancellation(appointmentId) {
+            $('#confirmCancelModal').modal('show');
+
+            $('#confirmCancelBtn').click(function () {
+                window.location.href = `/Refund?Id=${appointmentId}`;
+            });
+        }
     </script>
+    <!-- Confirmation Modal -->
+    <div class="modal fade" id="confirmCancelModal" tabindex="-1" role="dialog" aria-labelledby="confirmCancelModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="confirmCancelModalLabel">Confirm Appointment Cancellation</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    Are you sure you want to cancel this appointment?
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-danger" id="confirmCancelBtn">Confirm Cancellation</button>
+                </div>
+            </div>
+        </div>
+    </div>
 </body>
 </html>

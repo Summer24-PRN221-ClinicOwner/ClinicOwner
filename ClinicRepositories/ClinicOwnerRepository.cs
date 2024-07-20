@@ -182,14 +182,15 @@ namespace ClinicRepositories
         LeastAppointmentAmountOfService = minServiceAppointmentCount,
         MostAppointmentAmountOfService = maxServiceAppointmentCount,
 
-        TotalRevenue = CalculateTotalRevenue(dailyAppointments),
-        RevenuePerAppointment = CalculateRevenuePerAppointment(dailyAppointments),
-        RevenuePerCustomer = CalculateRevenuePerCustomer(dailyAppointments)
-      };
+                TotalRevenue = CalculateTotalRevenue(dailyAppointments),
+                RevenuePerAppointment = CalculateRevenuePerAppointment(dailyAppointments),
+                RevenuePerCustomer = CalculateRevenuePerCustomer(dailyAppointments)
+            };
+        }
+
+        public bool InformationIsUnique(string phone, string email)
+        {
+            return !_context.ClinicOwners.Any(item => item.Phone == phone || item.Email == email);
+        }
     }
-    public bool InformationIsUnique(string phone, string email)
-    {
-      return !_context.Dentists.Any(item => item.Phone == phone || item.Email == email);
-    }
-  }
 }
