@@ -245,6 +245,20 @@ namespace ClinicServices
                     return false;
             }
         }
+        public async Task<int> GetAppointmentCountAsync()
+        {
+            return await _appointmentRepository.GetAppointmentCountAsync();
+        }
+
+        public async Task<int> GetTodayAppointmentCountAsync()
+        {
+            return await _appointmentRepository.GetTodayAppointmentCountAsync();
+        }
+
+        public async Task<decimal> GetTodayTotalEarningsAsync()
+        {
+            return await _appointmentRepository.GetTodayTotalEarningsAsync();
+        }
         public async Task<Appointment> GetAppointmentsByIdAsync(int id)
         {
             var result = await _appointmentRepository.GetAppointmentsByIdAsync(id);

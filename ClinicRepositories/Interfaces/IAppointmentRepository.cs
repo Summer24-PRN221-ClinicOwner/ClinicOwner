@@ -11,5 +11,8 @@ namespace ClinicRepositories.Interfaces
         public Task<List<Appointment>> GetAppointmentsBeforeDaysAsync(int days);
         public void SaveChanges();
         public void Dispose();
+        Task<int> GetAppointmentCountAsync();
+        Task<int> GetTodayAppointmentCountAsync();
+        Task<decimal> GetTodayTotalEarningsAsync();
     }
 }
