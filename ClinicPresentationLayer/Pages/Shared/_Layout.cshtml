@@ -66,6 +66,10 @@
                     {
                         <a class="nav-link" href="/PatientHistory">History</a>
                     }
+                    @if (@user.Role == 0)
+                    {
+                        <a class="nav-link" href="/ClinicReport">Clinic Report</a>
+                    }
                 }
                 <a class="nav-link" href="#">Dropdown</a>
                 <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">Disabled</a>
