@@ -1,14 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using BusinessObjects.Entities;
+using ClinicPresentationLayer.Extension;
+using ClinicServices.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.EntityFrameworkCore;
-using BusinessObjects.Entities;
-using ClinicRepositories;
-using ClinicServices.Interfaces;
-using ClinicPresentationLayer.Extension;
 
 namespace ClinicPresentationLayer.Pages.ProfileUser
 {
@@ -32,26 +26,33 @@ namespace ClinicPresentationLayer.Pages.ProfileUser
         public ClinicOwner ClinicOwner { get; set; } = default!;
         [BindProperty]
         public Dentist Dentist { get; set; } = default!;
+        public License NewLicense { get; set; } = new License(); // Initialize
+
         public async Task<IActionResult> OnGetAsync(int? id)
         {
             if (id == null)
             {
                 return NotFound();
             }
-			User currentAcc = HttpContext.Session.GetObject<User>("UserAccount");
+            User currentAcc = HttpContext.Session.GetObject<User>("UserAccount");
+
+            if (currentAcc == null)
+            {
+                return RedirectToPage("/Login");
+            }
+            if (currentAcc.Id != id && currentAcc.Role == 2)
+            {
+                return RedirectToPage("/Privacy");
+            }
+            else if (currentAcc.Id != id && currentAcc.Role == 1)
+            {
+                return RedirectToPage("/Privacy");
+            }
             var user = await _userService.GetByIdAsync(id.Value);
             var patient = await _patientService.GetByIdAsync(id.Value);
-            var dentist = await _dentistService.GetByIdAsync(id.Value);
+            var dentist = _dentistService.GetDentistById(id.Value);
             var owner = await _clinicalOwnerService.GetByIdAsync(id.Value);
-            if (currentAcc == null)
-			{
-				return RedirectToPage("/Login");
-			}
-			else if (currentAcc.Id != id && currentAcc.Role == 2)
-			{
-				return RedirectToPage("/Privacy");
-			}
-            else if (currentAcc.Id != id)
+            if (currentAcc.Id != id)
             {
                 if (currentAcc.Role == 1)
                 {
@@ -74,5 +75,6 @@ namespace ClinicPresentationLayer.Pages.ProfileUser
             }
             return Page();
         }
+
     }
 }

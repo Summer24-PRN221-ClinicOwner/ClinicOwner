@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace BusinessObjects.Entities;
+﻿namespace BusinessObjects.Entities;
 
 public partial class Dentist
 {

@@ -16,7 +16,11 @@ namespace ClinicRepositories
                  .Include(de => de.IdNavigation)
                  .Include(de => de.Clinic)
                  .ToListAsync();
+        }
 
+        public Dentist GetDentistById(int id)
+        {
+            return _context.Dentists.Include(item => item.Licenses).Include(item => item.Services).FirstOrDefault(item => item.Id == id) ?? throw new Exception("404 Dentist Not Found");
         }
         public bool InformationIsUnique(string phone, string email)
         {

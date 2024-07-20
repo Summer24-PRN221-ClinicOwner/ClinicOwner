@@ -40,7 +40,6 @@ namespace ClinicPresentationLayer.Pages
             }
             var refundResult = await _vnPayService.RefundPaymentAsync(payment.TransactionId, payment.Amount, "Refund request", appointment.CreateDate, payment.TransactionNo);
             TempData["RefundMessage"] = refundResult;
-
             return RedirectToPage("/PatientHistory");
         }
     }
