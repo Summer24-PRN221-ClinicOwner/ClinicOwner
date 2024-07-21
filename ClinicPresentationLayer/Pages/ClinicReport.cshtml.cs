@@ -28,6 +28,8 @@ namespace ClinicPresentationLayer.Pages
         public int TotalTodayAppoinemt { get; set; }
         [BindProperty]
         public decimal TotalEarnToday { get; set; }
+        [BindProperty]
+        public decimal TotalTomorrowAppointment { get; set; }
 
         public async Task OnGet()
         {
@@ -36,6 +38,7 @@ namespace ClinicPresentationLayer.Pages
             TotalAppointment = await _appointmentService.GetAppointmentCountAsync();
             TotalTodayAppoinemt = await _appointmentService.GetTodayAppointmentCountAsync();
             TotalEarnToday = await _appointmentService.GetTodayTotalEarningsAsync();
+            TotalTomorrowAppointment = await _appointmentService.GetTomorrowAppointmentAsync();
             Console.WriteLine(TotalEarnToday);
         }
 
@@ -50,6 +53,7 @@ namespace ClinicPresentationLayer.Pages
             TotalAppointment = await _appointmentService.GetAppointmentCountAsync();
             TotalTodayAppoinemt = await _appointmentService.GetTodayAppointmentCountAsync();
             TotalEarnToday = await _appointmentService.GetTodayTotalEarningsAsync();
+            TotalTomorrowAppointment = await _appointmentService.GetTomorrowAppointmentAsync();
 
             return Page();
         }

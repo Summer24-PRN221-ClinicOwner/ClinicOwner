@@ -72,7 +72,8 @@ namespace ClinicPresentationLayer.Pages
                     Amount = vnp_Amount / 100, // Assuming vnp_Amount is in the smallest currency unit (like cents)
                     PaymentStatus = "Paid",
                     PaymentDate = DateTime.UtcNow.AddHours(7),
-                    TransactionId = vnp_TxnRef
+                    TransactionId = vnp_TxnRef,
+                    TransactionNo = vnp_TransactionNo,
                 };
                 //await _paymentService.AddAsync(payment);
                 //appointment.PaymentId = payment.Id;

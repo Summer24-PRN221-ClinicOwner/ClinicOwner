@@ -103,6 +103,13 @@ namespace ClinicRepositories
             return totalEarnings;
         }
 
+        public async Task<int> GetTomorrowAppointmentAsync()
+        {
+            var tomorrow = DateTime.Today.AddDays(1);
+            var todayDate = await _context.Appointments.CountAsync(a => a.AppointDate.Date == tomorrow.Date);
+            return todayDate;
+        }
+
         public void SaveChanges()
         {
             localContext.SaveChanges();

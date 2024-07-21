@@ -14,5 +14,6 @@ namespace ClinicRepositories.Interfaces
         Task<int> GetAppointmentCountAsync();
         Task<int> GetTodayAppointmentCountAsync();
         Task<decimal> GetTodayTotalEarningsAsync();
+        Task<int> GetTomorrowAppointmentAsync();
     }
 }

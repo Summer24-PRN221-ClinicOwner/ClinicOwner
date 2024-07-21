@@ -268,5 +268,10 @@ namespace ClinicServices
             }
             return result;
         }
+
+        public Task<int> GetTomorrowAppointmentAsync()
+        {
+            return _appointmentRepository.GetTomorrowAppointmentAsync();
+        }
     }
 }
