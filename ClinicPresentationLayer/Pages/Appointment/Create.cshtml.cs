@@ -107,7 +107,7 @@ namespace ClinicPresentationLayer.Pages.Appointment
                 vnpay.AddRequestData("vnp_Version", "2.1.0");
                 vnpay.AddRequestData("vnp_Command", "pay");
                 vnpay.AddRequestData("vnp_TmnCode", _configuration["Vnpay:TmnCode"]);
-                vnpay.AddRequestData("vnp_Amount", ((int)(Service.Cost * 100) * 50 / 100).ToString());
+                vnpay.AddRequestData("vnp_Amount", ((int)(Service.Cost * 100)).ToString());
                 vnpay.AddRequestData("vnp_CreateDate", Appointment.CreateDate.ToString("yyyyMMddHHmmss"));
                 vnpay.AddRequestData("vnp_CurrCode", "VND");
                 vnpay.AddRequestData("vnp_IpAddr", HttpContext.Connection.RemoteIpAddress.ToString());

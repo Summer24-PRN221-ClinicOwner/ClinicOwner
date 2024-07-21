@@ -1,4 +1,8 @@
 {
+<<<<<<< HEAD
   "AppointmentNotificationJob": "2024-07-21T17:34:02.2753528Z",
   "AppointmentStatusCleanupJob": "2024-07-21T17:34:02.2558594Z"
+=======
+  "AppointmentNotificationJob": "2024-07-21T15:42:46.40337Z"
+>>>>>>> dc6c496b2fd0a1041c97bbe82eca870bb61f8921
 }

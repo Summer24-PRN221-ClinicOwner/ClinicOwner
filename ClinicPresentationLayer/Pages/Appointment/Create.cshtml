@@ -78,7 +78,7 @@
                     <select asp-for="PaymentMethod" class="form-control">
                         <option value="" selected disabled>Select Payment Method</option>
                         <option value="vnpay">VNPay</option>
-                        <option value="momo">MoMo</option>
+                        @* <option value="momo">MoMo</option> *@
                     </select>
                     <span asp-validation-for="PaymentMethod" class="text-danger"></span>
                 </div>
