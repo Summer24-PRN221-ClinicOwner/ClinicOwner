@@ -29,16 +29,17 @@ namespace ClinicServices.QuartzService
                 {
                     foreach (var appointment in appointments)
                     {
-                        // Update appointment status to Absent if the status is still Waiting
-                        //if (appointment.Status == (int)AppointmentStatus.Waiting)
-                        //{
-                        //    appointment.Status = (int)AppointmentStatus.Absent;
-                        //    await _appointmentService.UpdateAppointmentStatus(appointment.Id, (int)AppointmentStatus.Absent, null);
-                        //}
+                        //Update appointment status to Absent if the status is still Waiting
+                        if (appointment.Status == (int)AppointmentStatus.Waiting)
+                        {
+                            //appointment.Status = (int)AppointmentStatus.Absent;
+                            await _appointmentService.UpdateAppointmentStatus(appointment.Id, (int)AppointmentStatus.Absent, null);
+                        }
                     }
                     var executionTime = DateTime.UtcNow.AddHours(7);
                     await _jobExecutionLogService.LogExecutionTimeAsync("AppointmentStatusCleanupJob", executionTime);
-                    _logger.LogInformation("Appointment status cleanup completed successfully.");
+                    _logger.LogInformation($"Appointment status cleanup completed successfully for:");
+                    _logger.LogInformation($"{appointments.Count} appointments");
                 }
                 else
                 {

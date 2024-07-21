@@ -55,14 +55,13 @@ namespace ClinicServices.VNPayService
             return response;
         }
 
-        public async Task<string> RefundPaymentAsync(string transactionId, decimal amount, string orderInfo, DateTime transactionDate, string transactionNo)
+        public async Task<string> RefundPaymentAsync(string transactionId, decimal amount, string orderInfo, DateTime transactionDate, string transactionNo, string transactionType)
         {
             var vnpay = new VnPayLibrary();
             string requestId = Guid.NewGuid().ToString();
             string version = "2.1.0";
             string command = "refund";
             string tmnCode = _configuration["VnPay:TmnCode"];
-            string transactionType = "02"; // Assuming full refund
             string createBy = "Admin"; // Replace with the actual user performing the refund
             string createDate = DateTime.UtcNow.AddHours(7).ToString("yyyyMMddHHmmss");
             string ipAddr = "192.168.1.66"; // Replace with actual IP address if necessary

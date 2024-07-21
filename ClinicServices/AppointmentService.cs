@@ -4,6 +4,7 @@ using ClinicRepositories.Interfaces;
 using ClinicServices.EmailService;
 using ClinicServices.Interfaces;
 using System.Net.NetworkInformation;
+using System.Transactions;
 
 namespace ClinicServices
 {
@@ -175,6 +176,20 @@ namespace ClinicServices
             {
                 throw new Exception("Can not found payment for appointment");
             }
+            string newPaymentStatus = appointment.Payment.PaymentStatus;
+            switch ((AppointmentStatus)newStatus)
+            {
+                case AppointmentStatus.Canceled:
+                    if (appointment.Payment.PaymentStatus == PaymentStatus.PAID)
+                    {
+                        newPaymentStatus = PaymentStatus.REFUNDED;
+                    }
+                    else if (appointment.Payment.PaymentStatus == PaymentStatus.CHECKOUT)
+                    {
+                        newPaymentStatus = PaymentStatus.CHECKOUT_REFUNDED;
+                    }
+                    break;
+            }
             if (await IsValidStatusTransition(appointment.Status, newStatus, appointment.CreateDate,appointment.Payment.PaymentStatus, newDate))
             {
                 if (newStatus == (int)AppointmentStatus.ReScheduled)
@@ -183,13 +198,22 @@ namespace ClinicServices
                 }
                 appointment.ModifyDate = DateTime.UtcNow.AddHours(7);
                 appointment.Status = newStatus;
-                try
+                using (var scope = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled))
                 {
-                    await _appointmentRepository.UpdateAsync(appointment);
-                    return true;
-                }catch (Exception ex)
-                {
-                    throw new Exception("Failed to update appointment.", ex);
+                    try
+                    {
+                        await _appointmentRepository.UpdateAsync(appointment);
+                        if (newStatus == (int)AppointmentStatus.Canceled && newPaymentStatus != appointment.Payment.PaymentStatus)
+                        {
+                            await _paymentService.UpdateStatus(appointment.Payment.Id, newPaymentStatus);
+                        }
+                        scope.Complete();
+                        return true;
+                    }
+                    catch (Exception ex)
+                    {
+                        throw new Exception("Failed to update appointment or payment status.", ex);
+                    }
                 }
             }
             else

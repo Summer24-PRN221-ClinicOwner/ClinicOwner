@@ -48,7 +48,16 @@ namespace ClinicPresentationLayer.Pages
                 _logger.LogError("Payment not found.");
                 return RedirectToPage("/Error");
             }
-            var refundResult = await _vnPayService.RefundPaymentAsync(payment.TransactionId, payment.Amount, "Refund request", appointment.CreateDate, payment.TransactionNo);
+            string transactionType = "02";
+            decimal refundAmount = payment.Amount;
+            if ((appointment.AppointDate.Date - DateTime.Now.Date).TotalDays == 0)
+            {
+                transactionType = "03";
+                refundAmount = refundAmount/2;
+
+            }
+            
+            var refundResult = await _vnPayService.RefundPaymentAsync(payment.TransactionId, refundAmount, "Refund request", appointment.CreateDate, payment.TransactionNo, transactionType);
             if(refundResult == "00")
             {
                 try

@@ -1,3 +1,4 @@
+using BusinessObjects;
 using BusinessObjects.Entities;
 using ClinicPresentationLayer.Extension;
 using ClinicServices.Interfaces;
@@ -40,6 +41,22 @@ namespace ClinicPresentationLayer.Pages
             if (check != null)
             {
                 HttpContext.Session.SetObject("UserAccount", check);
+                if(check.Role == UserRoles.Patient)
+                {
+                    return RedirectToPage("/MainPage");
+                }
+                if(check.Role == UserRoles.Staff)
+                {
+                    return RedirectToPage("/Staffs/Main");
+                }
+                if(check.Role == UserRoles.Dentist)
+                {
+                    return RedirectToPage("/Appointment/List");
+                }
+                if(check.Role == UserRoles.ClinicOwner)
+                {
+                    return RedirectToPage("/ClinicReport");
+                }
                 return RedirectToPage("/MainPage");
             }
             else
