@@ -288,6 +288,20 @@ namespace ClinicServices
         {
             return await _appointmentRepository.GetTodayTotalEarningsAsync();
         }
+        public async Task<int> GetAppointmentCountAsync()
+        {
+            return await _appointmentRepository.GetAppointmentCountAsync();
+        }
+
+        public async Task<int> GetTodayAppointmentCountAsync()
+        {
+            return await _appointmentRepository.GetTodayAppointmentCountAsync();
+        }
+
+        public async Task<decimal> GetTodayTotalEarningsAsync()
+        {
+            return await _appointmentRepository.GetTodayTotalEarningsAsync();
+        }
         public async Task<Appointment> GetAppointmentsByIdAsync(int id)
         {
             var result = await _appointmentRepository.GetAppointmentsByIdAsync(id);
@@ -298,17 +312,21 @@ namespace ClinicServices
             return result;
         }
 
-<<<<<<< HEAD
+
         public async Task<List<Appointment>> GetAppointmentsOfTodayAsync()
         {
             var appointList = await _appointmentRepository.GetAllAsync();
             var result =  appointList.Where(x=> x.AppointDate.Date == DateTime.Now.Date).ToList();
             return result;
-=======
+
         public Task<int> GetTomorrowAppointmentAsync()
         {
             return _appointmentRepository.GetTomorrowAppointmentAsync();
->>>>>>> dc6c496b2fd0a1041c97bbe82eca870bb61f8921
+        }
+
+        public Task<int> GetTomorrowAppointmentAsync()
+        {
+            return _appointmentRepository.GetTomorrowAppointmentAsync();
         }
     }
 }
