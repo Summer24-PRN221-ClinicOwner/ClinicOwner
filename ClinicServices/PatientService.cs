@@ -35,6 +35,7 @@ namespace ClinicServices
             {
                 throw new Exception("A user with the same username already exists.");
             }
+            if (!_repository.InformationIsUnique(entity.Phone, entity.Email)) throw new Exception("Email or phone is duplicated!");
             userAccount.Status = 1;
             var newAccount = await _userService.AddAsync(userAccount);
             entity.Id = newAccount.Id;
@@ -58,7 +59,7 @@ namespace ClinicServices
 
         public Task UpdateAsync(Patient entity)
         {
-            if (!_repository.InformationIsUnique(entity.Phone, entity.Email)) throw new Exception("Email or password is duplicated!");
+            if (!_repository.InformationIsUnique(entity.Phone, entity.Email)) throw new Exception("Email or phone is duplicated!");
             return _repository.UpdateAsync(entity);
         }
 

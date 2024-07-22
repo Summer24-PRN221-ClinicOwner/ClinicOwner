@@ -4,6 +4,7 @@ using ClinicRepositories.Interfaces;
 using ClinicServices.EmailService;
 using ClinicServices.Interfaces;
 using System.Net.NetworkInformation;
+using System.Transactions;
 
 namespace ClinicServices
 {
@@ -159,19 +160,37 @@ namespace ClinicServices
             var result = await _appointmentRepository.GetAppointmentsBeforeDaysAsync(days);
             if (result == null)
             {
-                throw new Exception($"No Appointment found for next {days} day(s)");
+                throw new Exception($"No Appointment found for new {days} day(s)");
             }
             return result;
         }
 
         public async Task<bool> UpdateAppointmentStatus(int appointId, int newStatus, DateTime? newDate)
         {
-            var appointment = await _appointmentRepository.GetByIdAsync(appointId);
+            var appointment = await _appointmentRepository.GetAppointmentsByIdAsync(appointId);
             if (appointment == null)
             {
                 throw new Exception("Can not found appointment");
             }
-            if(IsValidStatusTransition(appointment.Status, newStatus, appointment.AppointDate, newDate))
+            if (appointment.Payment == null)
+            {
+                throw new Exception("Can not found payment for appointment");
+            }
+            string newPaymentStatus = appointment.Payment.PaymentStatus;
+            switch ((AppointmentStatus)newStatus)
+            {
+                case AppointmentStatus.Canceled:
+                    if (appointment.Payment.PaymentStatus == PaymentStatus.PAID)
+                    {
+                        newPaymentStatus = PaymentStatus.REFUNDED;
+                    }
+                    else if (appointment.Payment.PaymentStatus == PaymentStatus.CHECKOUT)
+                    {
+                        newPaymentStatus = PaymentStatus.CHECKOUT_REFUNDED;
+                    }
+                    break;
+            }
+            if (await IsValidStatusTransition(appointment.Status, newStatus, appointment.CreateDate,appointment.Payment.PaymentStatus, newDate))
             {
                 if (newStatus == (int)AppointmentStatus.ReScheduled)
                 {
@@ -179,13 +198,22 @@ namespace ClinicServices
                 }
                 appointment.ModifyDate = DateTime.UtcNow.AddHours(7);
                 appointment.Status = newStatus;
-                try
+                using (var scope = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled))
                 {
-                    await _appointmentRepository.UpdateAsync(appointment);
-                    return true;
-                }catch (Exception ex)
-                {
-                    throw new Exception("Failed to update appointment.", ex);
+                    try
+                    {
+                        await _appointmentRepository.UpdateAsync(appointment);
+                        if (newStatus == (int)AppointmentStatus.Canceled && newPaymentStatus != appointment.Payment.PaymentStatus)
+                        {
+                            await _paymentService.UpdateStatus(appointment.Payment.Id, newPaymentStatus);
+                        }
+                        scope.Complete();
+                        return true;
+                    }
+                    catch (Exception ex)
+                    {
+                        throw new Exception("Failed to update appointment or payment status.", ex);
+                    }
                 }
             }
             else
@@ -193,7 +221,7 @@ namespace ClinicServices
                 throw new Exception("Invalid status transition");
             }
         }
-        private bool IsValidStatusTransition(int currentStatus, int newStatus, DateTime appointmentDate, DateTime? newDate)
+        public async Task<bool> IsValidStatusTransition(int currentStatus, int newStatus, DateTime createDate, string paymentStatus, DateTime? newDate)
         {
             if (!Enum.IsDefined(typeof(AppointmentStatus), currentStatus))
             {
@@ -206,35 +234,36 @@ namespace ClinicServices
                 return false;
             }
             AppointmentStatus current = (AppointmentStatus)currentStatus;
-            AppointmentStatus next = (AppointmentStatus)newStatus;
+            AppointmentStatus @new = (AppointmentStatus)newStatus;
 
             switch (current)
             {
                 case AppointmentStatus.Waiting:
-                    if (next == AppointmentStatus.Canceled)
+                    if (@new == AppointmentStatus.Canceled)
                     {
-                        // Can only cancel if at least 3 days before the appointment date
-                        return (appointmentDate.Date - DateTime.Now.Date).TotalDays >= 3;
+                        // ngay kham xa so voi now, tinh = date, cung ngay tao 
+                        return (createDate.Date - DateTime.Now.Date).TotalDays < 1;
                     }
-                    if (next == AppointmentStatus.ReScheduled)
+                    if (@new == AppointmentStatus.ReScheduled)
                     {
                         return newDate.HasValue;
                     }
-                    return next == AppointmentStatus.Checkin || next == AppointmentStatus.Absent;
+                    return @new == AppointmentStatus.Checkin || @new == AppointmentStatus.Absent;
 
                 case AppointmentStatus.ReScheduled:
-                    if (next == AppointmentStatus.ReScheduled)
+                    if (@new == AppointmentStatus.ReScheduled)
                     {
                         return false;
                     }
-                    if (next == AppointmentStatus.Canceled)
+                    if (@new == AppointmentStatus.Canceled)
                     {
-                        return (appointmentDate - DateTime.Now).TotalDays >= 3;
+                        return (createDate - DateTime.Now).TotalDays >= 3;
                     }
-                    return next == AppointmentStatus.Checkin || next == AppointmentStatus.Absent;
+                    return @new == AppointmentStatus.Checkin || @new == AppointmentStatus.Absent;
 
                 case AppointmentStatus.Checkin:
-                    return next == AppointmentStatus.Reported;
+
+                    return @new == AppointmentStatus.Reported;
 
                 case AppointmentStatus.Absent:
                 case AppointmentStatus.Canceled:
@@ -259,6 +288,7 @@ namespace ClinicServices
         {
             return await _appointmentRepository.GetTodayTotalEarningsAsync();
         }
+ 
         public async Task<Appointment> GetAppointmentsByIdAsync(int id)
         {
             var result = await _appointmentRepository.GetAppointmentsByIdAsync(id);
@@ -269,6 +299,12 @@ namespace ClinicServices
             return result;
         }
 
+        public async Task<List<Appointment>> GetAppointmentsOfTodayAsync()
+        {
+            var appointList = await _appointmentRepository.GetAllAsync();
+            var result = appointList.Where(x => x.AppointDate.Date == DateTime.Now.Date).ToList();
+            return result;
+        }
         public Task<int> GetTomorrowAppointmentAsync()
         {
             return _appointmentRepository.GetTomorrowAppointmentAsync();

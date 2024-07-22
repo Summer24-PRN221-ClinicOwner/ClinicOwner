@@ -27,6 +27,13 @@ namespace ClinicPresentationLayer.Pages
         [BindProperty(SupportsGet = true)]
         public string StatusFilter { get; set; }
 
+        [BindProperty(SupportsGet = true)]
+        public int PageNumber { get; set; } = 1;
+
+        [BindProperty(SupportsGet = true)]
+        public int PageSize { get; set; } = 10;
+
+        public int TotalPages { get; set; }
         public async Task<IActionResult> OnGetAsync()
         {
             User currentUser = HttpContext.Session.GetObject<User>("UserAccount");
@@ -44,13 +51,20 @@ namespace ClinicPresentationLayer.Pages
 
             if (!string.IsNullOrEmpty(StatusFilter))
             {
+                TotalPages = (int)Math.Ceiling(allAppointments.Count / (double)PageSize);
                 Appointments = allAppointments
                     .Where(a => a.Status.ToString().Equals(StatusFilter, System.StringComparison.OrdinalIgnoreCase))
+                    .Skip((PageNumber - 1) * PageSize)
+                    .Take(PageSize)
                     .ToList();
             }
             else
             {
-                Appointments = allAppointments.ToList();
+                TotalPages = (int)Math.Ceiling(allAppointments.Count / (double)PageSize);
+                Appointments = allAppointments
+                    .Skip((PageNumber - 1) * PageSize)
+                    .Take(PageSize)
+                    .ToList();
             }
 
             return Page();

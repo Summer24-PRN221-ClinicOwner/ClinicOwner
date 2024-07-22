@@ -51,5 +51,13 @@ namespace ClinicServices
             if (!_repository.InformationIsUnique(entity.Phone, entity.Email)) throw new Exception("Email or password is duplicated!");
             await _repository.UpdateAsync(entity);
         }
+        public Dentist GetDentistById(int id)
+        {
+            return _repository.GetDentistById(id);
+        }
+        public void UpdateDentistServices(Dentist dentist)
+        {
+            _repository.UpdateDentistServices(dentist);
+        }
     }
 }

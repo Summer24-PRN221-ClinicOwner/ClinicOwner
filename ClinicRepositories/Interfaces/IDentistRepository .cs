@@ -6,6 +6,8 @@ namespace ClinicRepositories.Interfaces
     {
         Task<List<Dentist>> GetDentistsAsync();
         public bool InformationIsUnique(string phone, string email);
+        public Dentist GetDentistById(int id);
+        public bool UpdateDentistServices(Dentist dentist);
 
     }
 }

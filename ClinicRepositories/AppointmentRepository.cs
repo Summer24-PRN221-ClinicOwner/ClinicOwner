@@ -35,6 +35,7 @@ namespace ClinicRepositories
                  .Include(a => a.Patient)
                  .Include(a => a.Service)
                  .Include(a => a.Dentist)
+                 .OrderByDescending(a => a.CreateDate)
                  .ToListAsync();
             Console.WriteLine(a);
             return a;
@@ -49,6 +50,7 @@ namespace ClinicRepositories
                                 .Include(ap => ap.Patient)
                                 .Include(ap => ap.Report)
                                 .Where(ap => ap.PatientId == id)
+                                .OrderByDescending(a => a.CreateDate)
                                 .ToListAsync();
             return result;
         }
@@ -60,6 +62,7 @@ namespace ClinicRepositories
                                  .Include(a => a.Room)
                                  .Include(a => a.Service)
                                  .Include(a=> a.Report)
+                                 .Include(a=> a.Payment)
                                  .FirstOrDefaultAsync(ap => ap.Id == id);
             if(result == null)
             {

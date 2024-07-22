@@ -25,6 +25,7 @@ namespace ClinicPresentationLayer.Pages
         public int AppointmentId { get; set; }
         public async Task<IActionResult> OnGetAsync(int Id)
         {
+            //check status cua appoint va payment truoc khi vao trang
             var appointment = await _appointmentService.GetByIdAsync(Id);
             if (appointment == null)
             {
@@ -32,22 +33,13 @@ namespace ClinicPresentationLayer.Pages
                 _logger.LogError("Appointment not found.");
                 return Page();
             }
-            try
+            else if(!await _appointmentService.IsValidStatusTransition(appointment.Status, (int)AppointmentStatus.Canceled, appointment.CreateDate, appointment.Payment.PaymentStatus, null))
             {
-                var isUpdated = await _appointmentService.UpdateAppointmentStatus(appointment.Id, (int)AppointmentStatus.Canceled, null);
-                if (!isUpdated)
-                {
-                    TempData["ErrorMessage"] = "Failed to update appointment status.";
-                    _logger.LogError("Failed to update appointment status.");
-                    return Page();
-                }
-            }
-            catch (Exception ex)
-            {
-                TempData["ErrorMessage"] = ex.Message;
-                _logger.LogError(ex, "Failed to update appointment status.");
+                TempData["ErrorMessage"] = "Appointment status and payment status is invalid.";
+                _logger.LogError("Appointment status and payment status is invalid.");
                 return Page();
             }
+            
 
             var payment = await _paymentService.GetByIdAsync(appointment.PaymentId ?? throw new Exception("Invalid Payment Id"));
             if (payment == null)
@@ -56,9 +48,37 @@ namespace ClinicPresentationLayer.Pages
                 _logger.LogError("Payment not found.");
                 return RedirectToPage("/Error");
             }
-            var refundResult = await _vnPayService.RefundPaymentAsync(payment.TransactionId, payment.Amount, "Refund request", appointment.CreateDate, payment.TransactionNo);
-            TempData["RefundMessage"] = refundResult;
+            string transactionType = "02";
+            decimal refundAmount = payment.Amount;
+            if ((appointment.AppointDate.Date - DateTime.Now.Date).TotalDays == 0)
+            {
+                transactionType = "03";
+                refundAmount = refundAmount/2;
 
+            }
+            
+            var refundResult = await _vnPayService.RefundPaymentAsync(payment.TransactionId, refundAmount, "Refund request", appointment.CreateDate, payment.TransactionNo, transactionType);
+            if(refundResult == "00")
+            {
+                try
+                {
+                    var isUpdated = await _appointmentService.UpdateAppointmentStatus(appointment.Id, (int)AppointmentStatus.Canceled, null);
+                    if (!isUpdated)
+                    {
+                        TempData["ErrorMessage"] = "Failed to update appointment status.";
+                        _logger.LogError("Failed to update appointment status.");
+                        return Page();
+                    }
+                }
+
+                catch (Exception ex)
+                {
+                    TempData["ErrorMessage"] = ex.Message;
+                    _logger.LogError(ex, "Failed to update appointment status.");
+                    return Page();
+                }
+            }
+            TempData["RefundMessage"] = refundResult;
             return RedirectToPage("/PatientHistory");
         }
     }

@@ -34,4 +34,11 @@ namespace BusinessObjects
         Disabled,
         Active
     }
+    public static class PaymentStatus
+    {
+        public const string PAID= "Paid";
+        public const string CHECKOUT= "Checkout";
+        public const string REFUNDED= "Refunded";
+        public const string CHECKOUT_REFUNDED= "Checkout_Refunded";
+    }
 }

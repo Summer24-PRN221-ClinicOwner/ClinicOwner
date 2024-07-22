@@ -1,12 +1,11 @@
-﻿@page
-@using BusinessObjects
-@using BusinessObjects.Entities
-@model ClinicPresentationLayer.Pages.StaffRegisterModel
+﻿ @page
+@using BusinessObjects;
+@using BusinessObjects.Entities;
+@model ClinicPresentationLayer.Pages.Staffs.MainModel
 @{
 }
 <body class="auth">
     <div id="main-wrapper" class="show">
-        <!-- Register page -->
         <div class="login-tabib">
             <div>
                 <div class="text-center">
@@ -15,21 +14,27 @@
                     </a>
                 </div>
                 <h4>Search for a patient</h4>
-                <form class="theme-form" method="post" asp-page-handler="Search">
+                <form method="get">
                     <div class="form-group">
-                        <label for="SearchTerm" class="control-label">Search Term</label>
-                        <input id="SearchTerm" name="SearchTerm" class="form-control" />
-                        <span class="text-danger"></span>
+                        <label for="SearchTerm">Search Term</label>
+                        <input id="SearchTerm" name="SearchTerm" class="form-control" value="@Model.SearchTerm" />
+                        <span asp-validation-for="SearchTerm" class="text-danger"></span>
                     </div>
                     <button type="submit" class="btn btn-primary">Search</button>
                 </form>
-                @if (TempData["ErrorMessage"] != null)
+                @if (Model.ErrorMessage != null)
                 {
                     <div class="alert alert-danger">
-                        @TempData["ErrorMessage"]
+                        @Model.ErrorMessage
                     </div>
                 }
-                @if (Model.FoundPatient != null)
+                @if (Model.CheckMessage != null)
+                {
+                    <div class="alert alert-success">
+                        @Model.CheckMessage
+                    </div>
+                }
+                @if(Model.FoundPatient != null)
                 {
                     <div>
                         <h4>Patient Details</h4>
@@ -40,6 +45,52 @@
                         <p>Phone: @Model.FoundPatient.Phone</p>
                         <p>Address: @Model.FoundPatient.Address</p>
                     </div>
+                    <div>
+                        <h4>Appointments</h4>
+                        <table class="table table-bordered">
+                            <thead>
+                                <tr>
+                                    <th>Date</th>
+                                    <th>Service</th>
+                                    <th>Dentist</th>
+                                    <th>Status</th>
+                                    <th>Actions </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var appointment in Model.PatientAppointments)
+                                {
+                                    <tr>
+                                        <td>@appointment.AppointDate</td>
+                                        <td>@appointment.Service.Name</td>
+                                        <td>@appointment.Dentist.Name</td>
+                                        <td>@Enum.GetName(typeof(AppointmentStatus), appointment.Status)</td>
+                                        <td>
+                                            <form method="post" asp-page-handler="CheckRefund">
+                                                <input type="hidden" name="SearchTerm" value="@Model.SearchTerm" />
+                                                <input type="hidden" name="appointmentId" value="@appointment.Id" />
+                                                <button type="submit" class="btn btn-secondary">Check Refund</button>
+                                            </form>
+                                            <form method="post" asp-page-handler="Refund">
+                                                <input type="hidden" name="SearchTerm" value="@Model.SearchTerm" />
+                                                <input type="hidden" name="appointmentId" value="@appointment.Id" />
+                                                <button type="submit" class="btn btn-danger">Refund</button>
+                                            </form>
+                                            @if (appointment.Status == (int)AppointmentStatus.Waiting)
+                                            {
+                                                <form method="post" asp-page-handler="CheckIn">
+                                                    <input type="hidden" name="SearchTerm" value="@Model.SearchTerm" />
+                                                    <input type="hidden" name="appointmentId" value="@appointment.Id" />
+                                                    <button type="submit" class="btn btn-success">Check-in</button>
+                                                </form>
+                                            }
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                    <button id="showCreateAppointmentForm" class="btn btn-primary">Create Appointment</button>
+                    <div id="createAppointmentForm" style="display:none;">
                     <div class="row">
                         <form id="combinedForm" method="post" asp-page-handler="Submit">
                             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
@@ -80,63 +131,28 @@
                             </div>
                         </form>
                     </div>
+                 </div>
                 }
                 else
                 {
-                    <div class="login-main">
-                        <h4>Create your patient account</h4>
-                        <p>Enter your personal details to create an account</p>
-                        <form class="theme-form" method="post" asp-page-handler="Register">
-                            <div class="form-group">
-                                <label asp-for="Username" class="control-label"></label>
-                                <input asp-for="Username" class="form-control" />
-                                <span asp-validation-for="Username" class="text-danger"></span>
-                            </div>
-                            <div class="form-group">
-                                <label asp-for="Password" class="control-label"></label>
-                                <input asp-for="Password" class="form-control" type="password" />
-                                <span asp-validation-for="Password" class="text-danger"></span>
-                            </div>
-                            <div class="form-group">
-                                <label asp-for="Name" class="control-label"></label>
-                                <input asp-for="Name" class="form-control" />
-                                <span asp-validation-for="Name" class="text-danger"></span>
-                            </div>
-                            <div class="form-group">
-                                <label asp-for="Email" class="control-label"></label>
-                                <input asp-for="Email" class="form-control" />
-                                <span asp-validation-for="Email" class="text-danger"></span>
-                            </div>
-                            <div class="form-group">
-                                <label asp-for="DateOfBirth" class="control-label"></label>
-                                <input asp-for="DateOfBirth" class="form-control" type="date" />
-                                <span asp-validation-for="DateOfBirth" class="text-danger"></span>
-                            </div>
-                            <div class="form-group">
-                                <label asp-for="Gender" class="control-label"></label>
-                                <select asp-for="Gender" class="form-control">
-                                    <option value="M">Male</option>
-                                    <option value="F">Female</option>
-                                </select>
-                                <span asp-validation-for="Gender" class="text-danger"></span>
-                            </div>
-                            <div class="form-group">
-                                <label asp-for="Phone" class="control-label"></label>
-                                <input asp-for="Phone" class="form-control" />
-                                <span asp-validation-for="Phone" class="text-danger"></span>
-                            </div>
-                            <div class="form-group">
-                                <label asp-for="Address" class="control-label"></label>
-                                <input asp-for="Address" class="form-control" />
-                                <span asp-validation-for="Address" class="text-danger"></span>
-                            </div>
-                            <button type="submit" class="btn btn-primary">Register</button>
-                        </form>
+                    <div class="alert alert-info">
+                        No patient found with the provided details. <a href="@Url.Page("./RegisterPatient")">Create a new patient account</a>.
                     </div>
                 }
+                </div>
         </div>
     </div>
 </body>
+<!-- Refund Modal -->
+<div id="refundModal" class="modal">
+    <div class="modal-content">
+        <h4>Refund Amount</h4>
+        <p id="refundAmount"></p>
+        <input type="hidden" id="appointmentId" />
+        <button id="btnRefund">Process Refund</button>
+        <button class="btn-close">Close</button>
+    </div>
+</div>
 <script>
     function updateAvailableSlots() {
         var appointmentDate = $('#Appointment_AppointDate').val();
@@ -187,6 +203,10 @@
         var today = new Date().toISOString().split('T')[0];
         document.getElementById('Appointment_AppointDate').setAttribute('min', today);
     });
+    document.getElementById('showCreateAppointmentForm').addEventListener('click', function () {
+        document.getElementById('createAppointmentForm').style.display = 'block';
+    });
+    
 </script>
 @section Scripts {
     @{

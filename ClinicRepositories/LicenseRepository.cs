@@ -1,4 +1,5 @@
-﻿using ClinicRepositories.Interfaces;
+﻿using BusinessObjects.Entities;
+using ClinicRepositories.Interfaces;
 
 namespace ClinicRepositories
 {
@@ -6,6 +7,17 @@ namespace ClinicRepositories
     {
         public LicenseRepository() : base()
         {
+        }
+        public void UpdateLicense(License license)
+        {
+            var tar = _context.Licenses.FirstOrDefault(item => item.Id == license.Id);
+            if (tar != null)
+            {
+                tar.LicenseNumber = license.LicenseNumber;
+                tar.IssueDate = license.IssueDate;
+                tar.ExpireDate = license.ExpireDate;
+            }
+            _context.SaveChanges();
         }
     }
 }

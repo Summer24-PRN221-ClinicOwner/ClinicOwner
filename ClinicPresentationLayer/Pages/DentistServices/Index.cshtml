@@ -1,0 +1,74 @@
+﻿@page
+@model ClinicPresentationLayer.Pages.DentistServices.IndexModel
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Index</h1>
+
+<form method="get">
+    <div class="form-group">
+        <label for="searchTerm">Search:</label>
+        <input type="hidden" name="id" value="@Model.Dentist.Id" />
+        <input type="text" class="form-control" id="searchTerm" name="SearchTerm">
+    </div>
+    <button type="submit" class="btn btn-primary">Search</button>
+</form>
+
+<form method="post">
+    <table class="table">
+        <thead>
+            <tr>
+                <th>
+                    <input type="checkbox" id="selectAll" onclick="checkAll(this)">
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Service[0].ServiceInfor.Name)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Service[0].ServiceInfor.Description)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Service[0].ServiceInfor.Cost)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Service[0].ServiceInfor.Duration)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Service[0].ServiceInfor.Status)
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model.Service)
+            {
+                @if (item.ServiceInfor.Name.ToLower().Contains(Model.SearchTermModel.ToLower()))
+                {
+                    <tr>
+                        <td>
+                            <input type="checkbox" class="serviceCheckbox" name="selectedServices" value="@item.ServiceInfor.Id" @(Model.SelectedServiceIds.Contains(item.ServiceInfor.Id) ? "checked" : "")>
+                        </td>
+                        <td>
+                            @item.ServiceInfor.Name
+                        </td>
+                        <td>
+                            @item.ServiceInfor.Description
+                        </td>
+                        <td>
+                            @item.ServiceInfor.Cost
+                        </td>
+                        <td>
+                            @item.ServiceInfor.Duration
+                        </td>
+                        <td>
+                            @(item.ServiceInfor.Status == 1 ? "Active" : "Disable")
+                        </td>
+                    </tr>
+                }
+            }
+        </tbody>
+    </table>
+
+    <button type="submit" class="btn btn-primary">Update Services</button>
+</form>
