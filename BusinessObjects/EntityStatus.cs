@@ -1,25 +1,19 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace BusinessObjects
+﻿namespace BusinessObjects
 {
     public static class EntityStatus
     {
-        
+
     }
     public enum AppointmentStatus
     {
-        Waiting,
+        Waiting = 0,
         Canceled,
         ReScheduled,
         Checkin,
         Absent,
         Reported,
         LateCanceled
-           
+
     }
     public enum RoomStatus
     {
@@ -38,9 +32,9 @@ namespace BusinessObjects
     }
     public static class PaymentStatus
     {
-        public const string PAID= "Paid";
-        public const string CHECKOUT= "Checkout";
-        public const string REFUNDED= "Refunded";
-        public const string CHECKOUT_REFUNDED= "Checkout_Refunded";
+        public const string PAID = "Paid";
+        public const string CHECKOUT = "Checkout";
+        public const string REFUNDED = "Refunded";
+        public const string CHECKOUT_REFUNDED = "Checkout_Refunded";
     }
 }
