@@ -49,13 +49,13 @@ namespace ClinicPresentationLayer.Pages
                 _logger.LogError("Payment not found.");
                 return RedirectToPage("/Error");
             }
-            string transactionType = "02";
+            string transactionType = "02"; // full refund
             decimal refundAmount = payment.Amount;
-            if ((appointment.AppointDate.Date - DateTime.Now.Date).TotalDays == 0)
+            var cancellationTimeSpan = DateTime.UtcNow.Date - appointment.CreateDate.Date;
+            if (cancellationTimeSpan.TotalDays >= 1)
             {
-                transactionType = "03";
+                transactionType = "03"; // half refund
                 refundAmount = refundAmount/2;
-
             }
             
             var refundResult = await _vnPayService.RefundPaymentAsync(payment.TransactionId, refundAmount, "Refund request", appointment.CreateDate, payment.TransactionNo, transactionType);

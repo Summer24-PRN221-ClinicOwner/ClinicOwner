@@ -203,7 +203,7 @@ namespace ClinicServices
                     try
                     {
                         await _appointmentRepository.UpdateAsync(appointment);
-                        if (newStatus == (int)AppointmentStatus.Canceled && newPaymentStatus != appointment.Payment.PaymentStatus)
+                        if ((newStatus == (int)AppointmentStatus.Canceled || newStatus == (int)AppointmentStatus.LateCanceled) && newPaymentStatus != appointment.Payment.PaymentStatus)
                         {
                             await _paymentService.UpdateStatus(appointment.Payment.Id, newPaymentStatus);
                         }
@@ -241,7 +241,6 @@ namespace ClinicServices
                 case AppointmentStatus.Waiting:
                     if (@new == AppointmentStatus.Canceled || @new == AppointmentStatus.LateCanceled)
                     {
-                        // ngay kham xa so voi now, tinh = date, cung ngay tao 
                         return true;
                     }
                     if (@new == AppointmentStatus.ReScheduled)

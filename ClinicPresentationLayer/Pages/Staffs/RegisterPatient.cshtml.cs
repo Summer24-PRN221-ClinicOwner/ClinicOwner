@@ -59,7 +59,7 @@ namespace ClinicPresentationLayer.Pages.Staffs
                 if (check != null)
                 {
                     TempData["SuccessMessage"] = "Patient account created successfully.";
-                    return RedirectToPage("/StaffRegister");
+                    return RedirectToPage("/Staffs/Main");
                 }
                 else
                 {
