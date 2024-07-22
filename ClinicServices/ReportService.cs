@@ -1,4 +1,5 @@
 ﻿using BusinessObjects.Entities;
+using ClinicRepositories;
 using ClinicRepositories.Interfaces;
 using ClinicServices.Interfaces;
 
@@ -35,10 +36,27 @@ namespace ClinicServices
 
         public async Task UpdateAsync(Report entity)
         {
-            // Corrected the return type to match the repository method
+
             await _repository.UpdateAsync(entity);
-            // UpdateAsync doesn't typically return anything, 
-            // so we don't need to return a value here.
+
+        }
+        public async Task<Report> AddOrUpdateAsync(Report report)
+        {
+            var existingReport = await _repository.GetByIdAsync(report.Id);
+
+            if (existingReport == null)
+            {
+                return await _repository.AddAsync(report);
+            }
+            else
+            {
+                existingReport.Name = report.Name;
+                existingReport.Data = report.Data;
+                existingReport.GeneratedDate = report.GeneratedDate;
+
+                 await _repository.UpdateAsync(existingReport);
+                return existingReport;
+            }
         }
     }
 }

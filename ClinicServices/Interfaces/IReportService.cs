@@ -13,6 +13,7 @@ namespace ClinicServices.Interfaces
         Task<List<Report>> GetAllAsync();
         Task<Report> GetByIdAsync(int id);
         Task<Report> AddAsync(Report entity);
+        Task<Report> AddOrUpdateAsync(Report report);
         Task UpdateAsync(Report entity);
         Task DeleteAsync(int id);
     }
