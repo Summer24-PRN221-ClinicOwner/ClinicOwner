@@ -50,7 +50,7 @@ namespace ClinicPresentationLayer.Pages.ProfileUser
             }
             var user = await _userService.GetByIdAsync(id.Value);
             var patient = await _patientService.GetByIdAsync(id.Value);
-            var dentist = _dentistService.GetDentistById(id.Value);
+            //var dentist = _dentistService.GetDentistById(id.Value);
             var owner = await _clinicalOwnerService.GetByIdAsync(id.Value);
             if (currentAcc.Id != id)
             {
@@ -70,8 +70,11 @@ namespace ClinicPresentationLayer.Pages.ProfileUser
             {
                 User = user;
                 Patient = patient;
-                Dentist = dentist;
                 ClinicOwner = owner;
+                if(currentAcc.Role == 1)
+                {
+                    Dentist = _dentistService.GetDentistById(id.Value);
+                }
             }
             return Page();
         }
