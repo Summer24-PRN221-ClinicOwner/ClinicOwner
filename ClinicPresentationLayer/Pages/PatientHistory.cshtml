@@ -67,7 +67,8 @@
                             <a class="btn btn-primary" href="/Appointment/Details?Id=@item.Id">View Details</a>
                         </td>
                         <td>
-                            @if (item.Status != (int)AppointmentStatus.Canceled && item.Status != (int)AppointmentStatus.Absent && item.Status != (int)AppointmentStatus.Reported)
+                            @if (item.Status != (int)AppointmentStatus.Canceled && item.Status != (int)AppointmentStatus.Absent
+                           && item.Status != (int)AppointmentStatus.Reported && item.Status != (int)AppointmentStatus.Checkin)
                             {
                                 <button class="btn btn-danger" onclick="confirmCancellation('@item.Id')">Cancel</button>
                             }

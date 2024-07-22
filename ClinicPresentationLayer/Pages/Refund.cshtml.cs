@@ -14,6 +14,7 @@ namespace ClinicPresentationLayer.Pages
         private readonly VnPayService _vnPayService;
         private readonly ILogger<RefundModel> _logger;
 
+
         public RefundModel(IAppointmentService appointmentService, IPaymentService paymentService, VnPayService vnPayService, ILogger<RefundModel> logger)
         {
             _appointmentService = appointmentService;
@@ -60,9 +61,18 @@ namespace ClinicPresentationLayer.Pages
             var refundResult = await _vnPayService.RefundPaymentAsync(payment.TransactionId, refundAmount, "Refund request", appointment.CreateDate, payment.TransactionNo, transactionType);
             if(refundResult == "00")
             {
+            bool isUpdated = false;
                 try
                 {
-                    var isUpdated = await _appointmentService.UpdateAppointmentStatus(appointment.Id, (int)AppointmentStatus.Canceled, null);
+                    if(transactionType == "03")
+                    {
+                         isUpdated = await _appointmentService.UpdateAppointmentStatus(appointment.Id, (int)AppointmentStatus.LateCanceled, null);
+                    }
+                    else
+                    {
+                         isUpdated = await _appointmentService.UpdateAppointmentStatus(appointment.Id, (int)AppointmentStatus.Canceled, null);
+                    }
+                    
                     if (!isUpdated)
                     {
                         TempData["ErrorMessage"] = "Failed to update appointment status.";
@@ -77,6 +87,11 @@ namespace ClinicPresentationLayer.Pages
                     _logger.LogError(ex, "Failed to update appointment status.");
                     return Page();
                 }
+            }
+            else
+            {
+                TempData["ErrorMessage"] = "Fail VNPay Refund";
+                return Page();
             }
             TempData["RefundMessage"] = refundResult;
             return RedirectToPage("/PatientHistory");

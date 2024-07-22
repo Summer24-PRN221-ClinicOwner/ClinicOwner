@@ -242,7 +242,7 @@ namespace ClinicServices
                     if (@new == AppointmentStatus.Canceled)
                     {
                         // ngay kham xa so voi now, tinh = date, cung ngay tao 
-                        return (createDate.Date - DateTime.Now.Date).TotalDays < 1;
+                        return true;
                     }
                     if (@new == AppointmentStatus.ReScheduled)
                     {

@@ -59,6 +59,7 @@ builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IRoomRepository, RoomRepository>();
 builder.Services.AddScoped<IRoomService, RoomService>();
 
+builder.Services.AddScoped<IVnPayService, VnPayService>();
 builder.Services.AddScoped<IEmailSender, EmailSender>();
 builder.Services.AddScoped<User>();
 builder.Services.AddScoped<IJobExecutionLogService, JobExecutionLogService>();
