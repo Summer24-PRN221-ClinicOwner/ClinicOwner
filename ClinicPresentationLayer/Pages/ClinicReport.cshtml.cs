@@ -46,8 +46,10 @@ namespace ClinicPresentationLayer.Pages
         {
             if (ModelState.IsValid)
             {
-                ReportData = _clinicOwnerService.MakeClinicReport(new DateTime(2024, 7, 1), new DateTime(2025, 7, 2));
-                ReportData.Add(_clinicOwnerService.MakeClinicReportTotal(new DateTime(2024, 7, 1), new DateTime(2025, 7, 2)));
+                //ReportData = _clinicOwnerService.MakeClinicReport(new DateTime(2024, 7, 1), new DateTime(2025, 7, 2));
+                //ReportData.Add(_clinicOwnerService.MakeClinicReportTotal(new DateTime(2024, 7, 1), new DateTime(2025, 7, 2)));
+                ReportData = _clinicOwnerService.MakeClinicReport(StartDate, EndDate);
+                ReportData.Add(_clinicOwnerService.MakeClinicReportTotal(StartDate, EndDate));
             }
 
             TotalAppointment = await _appointmentService.GetAppointmentCountAsync();
