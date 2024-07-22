@@ -44,14 +44,18 @@ namespace ClinicPresentationLayer.Pages.ProfileUser
             {
                 return RedirectToPage("/Privacy");
             }
-            else if (currentAcc.Id != id && currentAcc.Role == 1)
-            {
-                return RedirectToPage("/Privacy");
-            }
+            //else if (currentAcc.Id != id && currentAcc.Role == 1)
+            //{
+            //    return RedirectToPage("/Privacy");
+            //}
             var user = await _userService.GetByIdAsync(id.Value);
             var patient = await _patientService.GetByIdAsync(id.Value);
             //var dentist = _dentistService.GetDentistById(id.Value);
             var owner = await _clinicalOwnerService.GetByIdAsync(id.Value);
+            if(user == null)
+            {
+                return RedirectToPage("/Privacy");
+            }
             if (currentAcc.Id != id)
             {
                 if (currentAcc.Role == 1)
@@ -71,7 +75,7 @@ namespace ClinicPresentationLayer.Pages.ProfileUser
                 User = user;
                 Patient = patient;
                 ClinicOwner = owner;
-                if(currentAcc.Role == 1)
+                if (user.Role == 1)
                 {
                     Dentist = _dentistService.GetDentistById(id.Value);
                 }

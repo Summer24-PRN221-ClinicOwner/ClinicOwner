@@ -50,7 +50,11 @@ namespace ClinicPresentationLayer.Pages.ProfileUser
             User currentAcc = HttpContext.Session.GetObject<User>("UserAccount");
             var user = await _userService.GetByIdAsync(id.Value);
             var patient = await _patientService.GetByIdAsync(id.Value);
-            var dentist = await _dentistService.GetByIdAsync(id.Value);
+            if(user.Role == 1)
+            {
+                var dentist = await _dentistService.GetByIdAsync(id.Value);
+
+            }
             var owner = await _clinicalOwnerService.GetByIdAsync(id.Value);
             if (currentAcc == null)
             {
@@ -86,6 +90,7 @@ namespace ClinicPresentationLayer.Pages.ProfileUser
             }
             else if (currentAcc.Role == 1) 
             {
+                var dentist = await _dentistService.GetByIdAsync(id.Value);
                 if (dentist == null)
                 {
                     return NotFound();
@@ -107,10 +112,10 @@ namespace ClinicPresentationLayer.Pages.ProfileUser
         // For more details, see https://aka.ms/RazorPagesCRUD.
         public async Task<IActionResult> OnPostAsync()
         {
-            if (!ModelState.IsValid)
-            {
-                return Page();
-            }
+            //if (!ModelState.IsValid)
+            //{
+            //    return Page();
+            //}
             await _userService.UpdateAsync(User);
             User currentAcc = HttpContext.Session.GetObject<User>("UserAccount");
             if (currentAcc.Role == 2)

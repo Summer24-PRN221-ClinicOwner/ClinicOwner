@@ -121,7 +121,6 @@
         {
             <a href="/DentistServices/Index?id=@Model.Dentist.Id" class="btn btn-primary">Assign Services</a>
         }
-
     }
     @if (Model.User.Role == 1)
     {
@@ -160,7 +159,7 @@
 <div>
     @if (@Model.CurrentAccount.Id == @Model.User.Id)
     {
-        <a asp-page="./Edit" asp-route-id="@Model.User.Id">Edit</a>
+        <a style="margin-top: 5px" asp-page="./Edit" asp-route-id="@Model.User.Id">Edit</a>
     }
     @* <a asp-page="./Index">Back to List</a> *@
 </div>

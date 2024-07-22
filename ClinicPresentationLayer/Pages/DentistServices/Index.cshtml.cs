@@ -27,19 +27,24 @@ namespace ClinicPresentationLayer.Pages.DentistServices
         [BindProperty]
         public List<int> SelectedServiceIds { get; set; } = new List<int>();
 
-        public async Task OnGetAsync(int id, string? SearchTerm)
+        public async Task<IActionResult> OnGetAsync(int? id, string? SearchTerm)
         {
+            if (id == null)
+            {
+                return Redirect("/Dentists/Index");
+            }
             var user = HttpContext.Session.GetObject<User>("UserAccount");
             SearchTermModel = SearchTerm ?? "";
             var service = await _serviceService.GetAllAsync();
-            Dentist = _dentistService.GetDentistById(id);
-            var dentistService = _dentistService.GetDentistById(id).Services.ToList();
+            Dentist = _dentistService.GetDentistById(id.Value);
+            var dentistService = _dentistService.GetDentistById(id.Value).Services.ToList();
             if (Service == null)
                 Service = service.Select(item => new ServiceOfDentist { Status = dentistService.Any(ser => ser.Id == item.Id), ServiceInfor = item }).ToList();
             foreach (var item in dentistService)
             {
                 SelectedServiceIds.Add(item.Id);
             }
+            return Page();
         }
 
         public async Task<IActionResult> OnPostAsync()

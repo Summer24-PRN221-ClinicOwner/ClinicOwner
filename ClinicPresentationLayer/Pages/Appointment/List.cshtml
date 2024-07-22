@@ -83,8 +83,8 @@
             var appointment = appointments.FirstOrDefault(a => a.StartSlot <= slot + 1 && a.EndSlot >= slot + 1);
             if (appointment != null)
             {
-                var patientLink = $"<a href=\"/ProfileUser/Details/?id={appointment.PatientId}\">Mr. {appointment.Patient.Name}</a>";
-                var detailsLink = $"<a href=\"/Appointment/Details/?id={appointment.Id}\">Details</a>";
+                var patientLink = $"<a href=\"/ProfileUser/Details?id={appointment.PatientId}\">Mr. {appointment.Patient.Name}</a>";
+                var detailsLink = $"<a href=\"/Appointment/Details?id={appointment.Id}\">Details</a>";
                 return $"Patient: {patientLink}<br>Service: {appointment.Service.Name}<br>Room: {appointment.Room.RoomNumber}<br>{detailsLink}";
             }
             return "";
