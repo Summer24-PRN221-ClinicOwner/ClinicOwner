@@ -3,7 +3,6 @@
 @using BusinessObjects
 @{
     ViewData["Title"] = "Details";
-
 }
 <!-- CKEditor CDN -->
 <script src="https://cdn.ckeditor.com/ckeditor5/40.0.0/classic/ckeditor.js"></script>
@@ -18,12 +17,6 @@
         </dt>
         <dd class="col-sm-10">
             @Model.GetTimeFromSlot(Model.Appointment.StartSlot)
-        </dd>
-        @* <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Appointment.Status)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Appointment.Status) *@
         </dd>
         <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.Appointment.EndSlot)
@@ -63,28 +56,50 @@
         </dd>
     </dl>
 </div>
-@if(@Model.CurrentUser.Role == @BusinessObjects.UserRoles.Dentist){
-<h1>Create Report</h1>
-
-<form method="post">
-    <div>
-        <label asp-for="Report.Name"></label>
-        <input asp-for="Report.Name" />
+@if (TempData["ErrorMessage"] != null)
+{
+    <div class="alert alert-danger" role="alert">
+        @TempData["ErrorMessage"]
     </div>
-    <div>
-        <label asp-for="Report.Data"></label>
-        <textarea asp-for="Report.Data" id="editor"></textarea>
-    </div>
-
-    <button type="submit">Save</button>
-</form>
 }
 
-@if(@Model.CurrentUser.Role == @BusinessObjects.UserRoles.Patient && @Model.Report.Data != null){
-<h4>Report for Appointment:</h4>
-@Html.Raw(@Model.Report.Data) <!-- Replace with your report data property -->
+@if (TempData["SuccessMessage"] != null)
+{
+    <div class="alert alert-success" role="alert">
+        @TempData["SuccessMessage"]
+    </div>
 }
 
+@if (@Model.CurrentUser.Role == @BusinessObjects.UserRoles.Dentist)
+{
+    <h1>@(Model.Appointment.Report.Name == null ? "Create Report" : "Update Report")</h1>
+
+    <form method="post" asp-route-id="@Model.Appointment.Id">
+        <div>
+            <label asp-for="Appointment.Report.Name"></label>
+            <input asp-for="Appointment.Report.Name" />
+        </div>
+        <div>
+            <label asp-for="Appointment.Report.Data"></label>
+            <textarea asp-for="Appointment.Report.Data" id="editor"></textarea>
+        </div>
+
+        <button type="submit">Save</button>
+    </form>
+}
+else if (@Model.CurrentUser.Role == @BusinessObjects.UserRoles.Patient)
+{
+    @if (@Model.Appointment.Report == null)
+    {
+        <p>No report available</p>
+    }
+    else
+    {
+        <h4>Report for Appointment:</h4>
+        <p>@Model.Appointment.Report.Name</p>
+        @Html.Raw(@Model.Appointment.Report.Data)
+    }
+}
 
 <script>
     ClassicEditor
