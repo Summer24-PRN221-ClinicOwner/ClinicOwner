@@ -7,18 +7,19 @@ using ClinicServices.Interfaces;
 using MailKit.Search;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using System.Transactions;
 
-namespace ClinicPresentationLayer.Pages
+namespace ClinicPresentationLayer.Pages.Staffs
 {
     [CustomAuthorize(UserRoles.Staff)]
-    public class StaffRegisterModel : PageModel
+    public class MainModel : PageModel
     {
         private readonly IPatientService _patientService;
         private readonly IAppointmentService _appointmentService;
         private readonly IServiceService _serviceService;
         private readonly IDentistAvailabilityService _dentistAvailService;
         private readonly IPaymentService _paymentService;
-        public StaffRegisterModel(IPatientService patientService, IAppointmentService appointmentService, IServiceService serviceService, IDentistAvailabilityService dentistAvailabilityService, IPaymentService paymentService)
+        public MainModel(IPatientService patientService, IAppointmentService appointmentService, IServiceService serviceService, IDentistAvailabilityService dentistAvailabilityService, IPaymentService paymentService)
         {
             _patientService = patientService;
             _appointmentService = appointmentService;
@@ -26,54 +27,51 @@ namespace ClinicPresentationLayer.Pages
             _serviceService = serviceService;
             _paymentService = paymentService;
         }
-        [BindProperty]
-        public string Username { get; set; }
-
-        [BindProperty]
-        public string Password { get; set; }
-
-        [BindProperty]
-        public string Name { get; set; }
-
-        [BindProperty]
-        public string Email { get; set; }
-
-        [BindProperty]
-        public DateOnly DateOfBirth { get; set; }
-
-        [BindProperty]
-        public string Gender { get; set; }
-
-        [BindProperty]
-        public string Phone { get; set; }
-
-        [BindProperty]
-        public string Address { get; set; }
-
+        public List<BusinessObjects.Entities.Appointment> PatientAppointments { get; set; }
+        [BindProperty(SupportsGet = true)]
         public string SearchTerm { get; set; }
         public Patient FoundPatient { get; set; }
+        public decimal? RefundAmount { get; set; }
+        public string ErrorMessage { get; set; }
+        public string CheckMessage { get; set; }
         [BindProperty]
         public BusinessObjects.Entities.Appointment Appointment { get; set; } = default!;
         [BindProperty]
         public Service Service { get; set; } = default!;
         [BindProperty]
         public List<Service> Services { get; set; } = default!;
-        public async void OnGet()
-        {
-            Services =await _serviceService.GetAllAvailAsync();
-            Service = Services.First();
-        }
-        public async Task<IActionResult> OnPostSearchAsync(string searchTerm)
+
+        public async Task<IActionResult> OnGetAsync()
         {
             Services = await _serviceService.GetAllAvailAsync();
             Service = Services.First();
-            if (string.IsNullOrEmpty(searchTerm))
+            if (!string.IsNullOrEmpty(SearchTerm))
+            {
+                FoundPatient = await _patientService.FindPatientAsync(SearchTerm);
+                if (FoundPatient != null)
+                {
+                    PatientAppointments = await _appointmentService.GetAppoinmentHistoryAsync(FoundPatient.Id);
+                }
+            }
+            ErrorMessage = TempData["ErrorMessage"] as string;
+            CheckMessage = TempData["SuccessMessage"] as string;
+            return Page();
+        }
+        public async Task<IActionResult> OnPostSearchAsync()
+        {
+            Services = await _serviceService.GetAllAvailAsync();
+            Service = Services.First();
+            if (string.IsNullOrEmpty(SearchTerm))
             {
                 TempData["ErrorMessage"] = "Search term is required.";
                 return Page();
             }
 
-            FoundPatient = await _patientService.FindPatientAsync(searchTerm);
+            FoundPatient = await _patientService.FindPatientAsync(SearchTerm);
+            if(FoundPatient != null)
+            {
+                PatientAppointments = await _appointmentService.GetAppoinmentHistoryAsync(FoundPatient.Id);
+            }
             TempData["PatientId"] = FoundPatient.Id;
             if (FoundPatient == null)
             {
@@ -82,39 +80,75 @@ namespace ClinicPresentationLayer.Pages
 
             return Page();
         }
-        public async Task<IActionResult> OnPostRegister()
+        public async Task<IActionResult> OnPostCheckRefundAsync(int appointmentId)
         {
-            Services = await _serviceService.GetAllAvailAsync();
-            Service = Services.First();
-            try
+            ErrorMessage = TempData["ErrorMessage"] as string;
+            CheckMessage = TempData["SuccessMessage"] as string;
+            var appointment = await _appointmentService.GetAppointmentsByIdAsync(appointmentId);
+            if (appointment == null)
             {
-                User newUser = new() { Username = Username, Role = UserRoles.Patient, Password = Password };
-                Patient newPatient = new()
-                {
-                    Email = Email,
-                    Name = Name,
-                    Address = Address,
-                    DateOfBirth = DateOfBirth,
-                    Gender = Gender,
-                    Phone = Phone
-                };
-                var check = await _patientService.StaffAddAsync(newPatient, newUser);
-                if (check != null)
-                {
-                    FoundPatient = check;
-                    return Page();
-                }
-                else
-                {
-                    TempData["ErrorMessage"] = "An error occurred while creating the patient account.";
-                    return Page();
-                }
-            }catch(Exception ex)
-            {
-                TempData["ErrorMessage"] = ex.Message;
-                return Page();
+                TempData["ErrorMessage"] = "No appointment found with the provided ID.";
+                return RedirectToPage(new { SearchTerm });
             }
+            if(appointment.Payment == null)
+            {
+                TempData["ErrorMessage"] = "No payment found with the appointment.";
+                return RedirectToPage(new { SearchTerm });
+            }
+
+            if (appointment.Payment.PaymentStatus != PaymentStatus.CHECKOUT)
+            {
+                TempData["ErrorMessage"] = "The appointment is not eligible for a refund.";
+                return RedirectToPage(new { SearchTerm });
+            }
+
+            var cancellationTimeSpan = DateTime.UtcNow.AddHours(7) - appointment.CreateDate;
+            RefundAmount = cancellationTimeSpan.TotalDays < 1
+                ? appointment.Payment.Amount // Full refund
+                : appointment.Payment.Amount * 0.5M; // 50% refund
+            TempData["SuccessMessage"] = $"Refund valid for {RefundAmount}";
+            return RedirectToPage(new { SearchTerm });
         }
+
+        public async Task<IActionResult> OnPostRefundAsync(int appointmentId)
+        {
+            var appointment = await _appointmentService.GetAppointmentsByIdAsync(appointmentId);
+            if (appointment == null)
+            {
+                TempData["ErrorMessage"] = "No appointment found with the provided ID.";
+                return RedirectToPage(new { SearchTerm });
+            }
+
+            if (appointment.Payment.PaymentStatus != PaymentStatus.CHECKOUT)
+            {
+                TempData["ErrorMessage"] = "The appointment is not eligible for a refund.";
+                return RedirectToPage(new { SearchTerm });
+            }
+
+            var cancellationTimeSpan = DateTime.UtcNow.AddHours(7) - appointment.CreateDate;
+            var refundAmount = cancellationTimeSpan.TotalDays < 1
+                ? appointment.Payment.Amount // Full refund
+                : appointment.Payment.Amount * 0.5M; // 50% refund
+
+            using (var scope = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled))
+            {
+                try
+                {
+                    await _appointmentService.UpdateAppointmentStatus(appointmentId, (int)AppointmentStatus.Canceled, null);
+                    TempData["SuccessMessage"] = $"Refund of {refundAmount} processed successfully.";
+                    scope.Complete();
+                }
+                catch (Exception ex)
+                {
+                    TempData["ErrorMessage"] = $"Failed to process refund: {ex.Message}";
+                }
+            }
+
+            //PatientAppointments = await _appointmentService.GetAppoinmentHistoryAsync(FoundPatient.Id);
+            return RedirectToPage(new { SearchTerm });
+        }
+
+
         public async Task<IActionResult> OnPostSubmitAsync()
         {
             var currentAcc = HttpContext.Session.GetObject<User>("UserAccount");
@@ -142,7 +176,7 @@ namespace ClinicPresentationLayer.Pages
                 var payment = new Payment
                 {
                     Amount = Service.Cost.Value, // Assuming vnp_Amount is in the smallest currency unit (like cents)
-                    PaymentStatus = "Checkout",
+                    PaymentStatus = PaymentStatus.CHECKOUT,
                     PaymentDate = DateTime.UtcNow.AddHours(7),
                     TransactionId = Guid.NewGuid().ToString()
                 };

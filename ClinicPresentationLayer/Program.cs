@@ -71,26 +71,40 @@ builder.Services.AddDistributedMemoryCache();
 builder.Services.AddHttpClient();
 builder.Services.AddTransient<VnPayService>();
 
-//begin of set up Quartz background task scheduler
+// Begin of set up Quartz background task scheduler
 builder.Services.AddQuartz(q =>
 {
-    // Configure job with cron schedule
+    // Configure AppointmentNotificationJob with cron schedule
     q.AddJob<AppointmentNotificationJob>(new JobKey("AppointmentNotificationJob"), j => j
-    .WithDescription("Send appointment notifications daily."));
+        .WithDescription("Send appointment notifications daily."));
 
     q.AddTrigger(t => t
         .ForJob(new JobKey("AppointmentNotificationJob"))
         .WithIdentity("AppointmentNotificationJobTrigger")
-        .WithCronSchedule("0 0 7 * * ?")); // run every day at 7 AM 
+        .WithCronSchedule("0 0 7 * * ?")); // Run every day at 7 AM
+
+    // Configure AppointmentCleanupJob with cron schedule
+    q.AddJob<AppointmentStatusCleanupJob>(new JobKey("AppointmentCleanupJob"), j => j
+        .WithDescription("Clean up appointments and mark absent daily."));
+
+    q.AddTrigger(t => t
+        .ForJob(new JobKey("AppointmentCleanupJob"))
+        .WithIdentity("AppointmentCleanupJobTrigger")
+        .WithCronSchedule("0 30 23 * * ?")); // Run every day at 11:30 PM
 });
 
-builder.Services.AddTransient<AppointmentNotificationJob>(); // Register the job as transient
+// Register the jobs as transient
+builder.Services.AddTransient<AppointmentNotificationJob>();
+builder.Services.AddTransient<AppointmentStatusCleanupJob>();
+
+// Add Quartz hosted service to run the jobs
 builder.Services.AddQuartzHostedService(options =>
 {
-    // wait for the job to complete gracefully when app shutdown
+    // Wait for the jobs to complete gracefully when app shutdown
     options.WaitForJobsToComplete = true;
 });
-//end of set up Quartz background task scheduler
+// End of set up Quartz background task scheduler
+
 
 //set default page to MainPage
 builder.Services.Configure<RazorPagesOptions>(options =>

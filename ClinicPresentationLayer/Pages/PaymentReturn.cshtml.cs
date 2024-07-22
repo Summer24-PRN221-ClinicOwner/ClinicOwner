@@ -1,5 +1,7 @@
+using BusinessObjects;
 using BusinessObjects.Entities;
 using ClinicServices.Interfaces;
+using ClinicServices.VNPayService;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Newtonsoft.Json;
@@ -11,12 +13,13 @@ namespace ClinicPresentationLayer.Pages
         private readonly IAppointmentService _appointmentService;
         private readonly IPaymentService _paymentService;
         private readonly ILogger<PaymentReturnModel> _logger;
-
-        public PaymentReturnModel(IAppointmentService appointmentService, IPaymentService paymentService, ILogger<PaymentReturnModel> logger)
+        private readonly IVnPayService _vnPayService;
+        public PaymentReturnModel(IAppointmentService appointmentService, IPaymentService paymentService, ILogger<PaymentReturnModel> logger, IVnPayService vnPayService)
         {
             _appointmentService = appointmentService;
             _paymentService = paymentService;
             _logger = logger;
+            _vnPayService = vnPayService;
         }
 
         public async Task<IActionResult> OnGetAsync(
@@ -70,13 +73,29 @@ namespace ClinicPresentationLayer.Pages
                 var payment = new Payment
                 {
                     Amount = vnp_Amount / 100, // Assuming vnp_Amount is in the smallest currency unit (like cents)
-                    PaymentStatus = "Paid",
+                    PaymentStatus = PaymentStatus.PAID,
                     PaymentDate = DateTime.UtcNow.AddHours(7),
-                    TransactionId = vnp_TxnRef
+                    TransactionId = vnp_TxnRef,
+                    TransactionNo = vnp_TransactionNo,
                 };
                 //await _paymentService.AddAsync(payment);
                 //appointment.PaymentId = payment.Id;
-                await _appointmentService.AddAsync(appointment, payment);
+                try
+                {
+                    await _appointmentService.AddAsync(appointment, payment);
+                }
+                catch (Exception ex) {
+                    string transactionType = "02";
+                    decimal refundAmount = vnp_Amount;
+                    if((appointment.AppointDate.Date - DateTime.Now.Date).TotalDays ==0)
+                    {
+                        transactionType = "03";
+                        refundAmount = refundAmount / 2;
+                    }
+                     await _vnPayService.RefundPaymentAsync(vnp_TxnRef, refundAmount, "Create Appointment Failed!!", appointment.CreateDate, vnp_TransactionNo, transactionType);
+                    TempData["ErrorMessage"] = "Create appointment fail, the system will automatily refund for you";
+                }
+                
                 return Page();
                 //return RedirectToPage("/PatientHistory");
             }

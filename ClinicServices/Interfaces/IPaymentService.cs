@@ -14,5 +14,6 @@ namespace ClinicServices.Interfaces
         Task<Payment> AddAsync(Payment entity);
         Task UpdateAsync(Payment entity);
         Task DeleteAsync(int id);
+        Task<bool> UpdateStatus(int paymentId, string status);
     }
 }

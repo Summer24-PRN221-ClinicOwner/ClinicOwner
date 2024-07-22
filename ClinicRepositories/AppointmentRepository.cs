@@ -35,6 +35,7 @@ namespace ClinicRepositories
                  .Include(a => a.Patient)
                  .Include(a => a.Service)
                  .Include(a => a.Dentist)
+                 .OrderByDescending(a => a.CreateDate)
                  .ToListAsync();
             Console.WriteLine(a);
             return a;
@@ -49,6 +50,7 @@ namespace ClinicRepositories
                                 .Include(ap => ap.Patient)
                                 .Include(ap => ap.Report)
                                 .Where(ap => ap.PatientId == id)
+                                .OrderByDescending(a => a.CreateDate)
                                 .ToListAsync();
             return result;
         }
@@ -60,6 +62,7 @@ namespace ClinicRepositories
                                  .Include(a => a.Room)
                                  .Include(a => a.Service)
                                  .Include(a=> a.Report)
+                                 .Include(a=> a.Payment)
                                  .FirstOrDefaultAsync(ap => ap.Id == id);
             if(result == null)
             {
@@ -80,6 +83,36 @@ namespace ClinicRepositories
                 .Where(ap => ap.AppointDate.Date == targetDate.Date)
                 .ToListAsync();
         }
+
+        public async Task<int> GetAppointmentCountAsync()
+        {
+            return await _context.Appointments.CountAsync();
+        }
+
+        public async Task<int> GetTodayAppointmentCountAsync()
+        {
+            var today = DateTime.Today;
+            var todayDate = await _context.Appointments.CountAsync(a => a.AppointDate.Date == today.Date);
+            return todayDate;
+        }
+
+        public async Task<decimal> GetTodayTotalEarningsAsync()
+        {
+            var today = DateTime.Today;
+            var totalEarnings = await _context.Appointments
+                .Where(a => a.AppointDate.Date == today && a.Payment != null)
+                .SumAsync(a => a.Payment.Amount);
+
+            return totalEarnings;
+        }
+
+        public async Task<int> GetTomorrowAppointmentAsync()
+        {
+            var tomorrow = DateTime.Today.AddDays(1);
+            var todayDate = await _context.Appointments.CountAsync(a => a.AppointDate.Date == tomorrow.Date);
+            return todayDate;
+        }
+
         public void SaveChanges()
         {
             localContext.SaveChanges();
