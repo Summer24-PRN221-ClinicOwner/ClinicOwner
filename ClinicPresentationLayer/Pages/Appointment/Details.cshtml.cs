@@ -2,7 +2,6 @@
 using BusinessObjects.Entities;
 using ClinicPresentationLayer.Authorization;
 using ClinicPresentationLayer.Extension;
-using ClinicServices;
 using ClinicServices.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
@@ -105,8 +104,12 @@ namespace ClinicPresentationLayer.Pages.Appointment
             {
                 return NotFound();
             }
-            appointment.Report.Name = Appointment.Report.Name;
-            appointment.Report.Data = Appointment.Report.Data;
+            if (appointment.Report == null)
+            {
+                appointment.Report = new();
+            }
+            appointment.Report.Name = Appointment.Report?.Name ?? "";
+            appointment.Report.Data = Appointment.Report?.Data ?? "";
             appointment.Report.GeneratedDate = DateTime.UtcNow.AddHours(7);
             appointment.Report.AppointmentId = appointment.Id;
 
@@ -122,9 +125,9 @@ namespace ClinicPresentationLayer.Pages.Appointment
                 try
                 {
                     bool updated = false;
-                    if(appointment.Status != (int)AppointmentStatus.Reported)
+                    if (appointment.Status != (int)AppointmentStatus.Reported)
                     {
-                         updated = await _appointmentService.UpdateAppointmentStatus(appointment.Id, (int)AppointmentStatus.Reported, null);
+                        updated = await _appointmentService.UpdateAppointmentStatus(appointment.Id, (int)AppointmentStatus.Reported, null);
                     }
                     if (updated)
                     {
