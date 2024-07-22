@@ -44,6 +44,7 @@ namespace ClinicPresentationLayer.Pages.DentistLicense
         // For more details, see https://aka.ms/RazorPagesCRUD.
         public async Task<IActionResult> OnPostAsync()
         {
+            this.License.DentistId = DentistId;
             _licenseService.UpdateLicense(License);
             return Redirect("./Index?id=" + DentistId);
         }
