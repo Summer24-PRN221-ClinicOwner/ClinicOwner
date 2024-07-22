@@ -1,4 +1,6 @@
-﻿using BusinessObjects.Entities;
+﻿using BusinessObjects;
+using BusinessObjects.Entities;
+using ClinicPresentationLayer.Authorization;
 using ClinicPresentationLayer.Extension;
 using ClinicServices.Interfaces;
 using Microsoft.AspNetCore.Mvc;
@@ -6,6 +8,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace ClinicPresentationLayer.Pages.DentistServices
 {
+    [CustomAuthorize(UserRoles.ClinicOwner)]
     public class IndexModel : PageModel
     {
         public readonly IServiceService _serviceService;
@@ -27,9 +30,6 @@ namespace ClinicPresentationLayer.Pages.DentistServices
         public async Task OnGetAsync(int id, string? SearchTerm)
         {
             var user = HttpContext.Session.GetObject<User>("UserAccount");
-            if (user.Role == 1 && id != user.Id)
-            {
-            }
             SearchTermModel = SearchTerm ?? "";
             var service = await _serviceService.GetAllAsync();
             Dentist = _dentistService.GetDentistById(id);

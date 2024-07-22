@@ -1,10 +1,13 @@
-﻿using BusinessObjects.Entities;
+﻿using BusinessObjects;
+using BusinessObjects.Entities;
+using ClinicPresentationLayer.Authorization;
 using ClinicServices.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace ClinicPresentationLayer.Pages.DentistLicense
 {
+    [CustomAuthorize(UserRoles.Dentist)]
     public class EditModel : PageModel
     {
         private readonly IDentistService _dentistService;
@@ -18,9 +21,11 @@ namespace ClinicPresentationLayer.Pages.DentistLicense
 
         [BindProperty]
         public License License { get; set; } = default!;
-
+        [BindProperty]
+        public int DentistId { get; set; } = default;
         public async Task<IActionResult> OnGetAsync(int? id)
         {
+            DentistId = License.DentistId;
             if (id == null)
             {
                 return NotFound();
@@ -40,7 +45,7 @@ namespace ClinicPresentationLayer.Pages.DentistLicense
         public async Task<IActionResult> OnPostAsync()
         {
             _licenseService.UpdateLicense(License);
-            return RedirectToPage("./Index");
+            return RedirectToPage("./Index?id="+DentistId);
         }
 
     }
