@@ -23,9 +23,9 @@ namespace ClinicPresentationLayer.Pages.DentistLicense
         public License License { get; set; } = default!;
         [BindProperty]
         public int DentistId { get; set; } = default;
-        public async Task<IActionResult> OnGetAsync(int? id)
+        public async Task<IActionResult> OnGetAsync(int? id, int DentistId)
         {
-            DentistId = License.DentistId;
+            this.DentistId = DentistId;
             if (id == null)
             {
                 return NotFound();
@@ -45,7 +45,7 @@ namespace ClinicPresentationLayer.Pages.DentistLicense
         public async Task<IActionResult> OnPostAsync()
         {
             _licenseService.UpdateLicense(License);
-            return RedirectToPage("./Index?id="+DentistId);
+            return Redirect("./Index?id=" + DentistId);
         }
 
     }

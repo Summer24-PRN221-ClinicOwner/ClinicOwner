@@ -119,7 +119,7 @@
         </table>
         @if (Model.CurrentAccount.Role == 0)
         {
-            <a href="/DentistServices/Index?id=@Model.Dentist.Id" class="btn btn-primary">Manage Licenses</a>
+            <a href="/DentistServices/Index?id=@Model.Dentist.Id" class="btn btn-primary">Assign Services</a>
         }
 
     }
@@ -133,7 +133,6 @@
                     <th>License Number</th>
                     <th>Issue Date</th>
                     <th>Expire Date</th>
-                    <th>Actions</th>
                 </tr>
             </thead>
             <tbody>
@@ -148,13 +147,20 @@
                 }
             </tbody>
         </table>
-        <a href ="/DentistLicense/Index?id=@Model.Dentist.Id" class="btn btn-primary">Manage Licenses</a>
+        if (@Model.CurrentAccount.Id == @Model.User.Id)
+        {
+            <a href="/DentistLicense/Index?id=@Model.Dentist.Id" class="btn btn-primary">Manage Licenses</a>
+
+        }
     }
 
 
 </div>
 
 <div>
-    <a asp-page="./Edit" asp-route-id="@Model.User.Id">Edit</a>
+    @if (@Model.CurrentAccount.Id == @Model.User.Id)
+    {
+        <a asp-page="./Edit" asp-route-id="@Model.User.Id">Edit</a>
+    }
     @* <a asp-page="./Index">Back to List</a> *@
 </div>

@@ -28,13 +28,13 @@ namespace ClinicRepositories
             while (startDate.Date <= endDate.Date)
             {
                 // Pre-load appointments with dentist and service information (eager loading)
-                var dailyAppointments = _context.Appointments.Include(item => item.Service).Include(item => item.Dentist).Where(item => item.AppointDate.Date == startDate.Date && (item.Status == (int)AppointmentStatus.Reported || item.Status == (int)AppointmentStatus.Absent || item.Status == (int)AppointmentStatus.LateCanceled)).ToList();
+                var dailyAppointments = _context.Appointments.Include(item => item.Service).Include(item => item.Dentist).Where(item => item.AppointDate.Date == startDate.Date && (item.Status == 5 || item.Status == 4 || item.Status == 6)).ToList();
 
                 // Check if there are any appointments for this date
                 if (dailyAppointments.Count != 0)
                 {
-                    var dentistAppointmentGroups = _context.Dentists.Include(item => item.Appointments).Select(item => new { Key = item, Value = item.Appointments.Where(item => item.AppointDate.Date == startDate.Date && (item.Status == (int)AppointmentStatus.Reported || item.Status == (int)AppointmentStatus.Absent) || item.Status == (int)AppointmentStatus.LateCanceled).Count() });
-                    var serviceAppointmentGroups = _context.Services.Include(item => item.Appointments).Select(item => new { Key = item, Value = item.Appointments.Where(item => item.AppointDate.Date == startDate.Date && (item.Status == (int)AppointmentStatus.Reported || item.Status == (int)AppointmentStatus.Absent) || item.Status == (int)AppointmentStatus.LateCanceled).Count() });
+                    var dentistAppointmentGroups = _context.Dentists.Include(item => item.Appointments).Select(item => new { Key = item, Value = item.Appointments.Where(item => item.AppointDate.Date == startDate.Date && (item.Status == 3 || item.Status == 5 || item.Status == 4 || item.Status == 6)).Count() });
+                    var serviceAppointmentGroups = _context.Services.Include(item => item.Appointments).Select(item => new { Key = item, Value = item.Appointments.Where(item => item.AppointDate.Date == startDate.Date && (item.Status == 3 || item.Status == 5 || item.Status == 4 || item.Status == 6)).Count() });
 
 
                     // **Dentist Metrics**
@@ -98,7 +98,7 @@ namespace ClinicRepositories
         private decimal CalculateTotalRevenue(List<Appointment> dailyAppointments)
         {
 
-            decimal totalRevenue = dailyAppointments.Sum(appointment => appointment.Status == (int)AppointmentStatus.LateCanceled? appointment.Service.Cost/2 ?? 0 : appointment.Service.Cost??0);
+            decimal totalRevenue = dailyAppointments.Sum(appointment => appointment.Status == (int)AppointmentStatus.LateCanceled ? appointment.Service.Cost / 2 ?? 0 : appointment.Service.Cost ?? 0);
             return totalRevenue;
         }
 
@@ -129,11 +129,11 @@ namespace ClinicRepositories
         }
         public ClinicReportDataObject GetClinicReportTotal(DateTime startDate, DateTime endDate)
         {
-            var dailyAppointments = _context.Appointments.Include(item => item.Service).Include(item => item.Dentist).Where(item => item.AppointDate.Date >= startDate.Date && item.AppointDate.Date <= endDate.Date && (item.Status == (int)AppointmentStatus.Reported || item.Status == (int)AppointmentStatus.Absent || item.Status == (int)AppointmentStatus.LateCanceled)).ToList();
+            var dailyAppointments = _context.Appointments.Include(item => item.Service).Include(item => item.Dentist).Where(item => item.AppointDate.Date >= startDate.Date && item.AppointDate.Date <= endDate.Date && (item.Status == 5 || item.Status == 4 || item.Status == 6)).ToList();
 
             // Check if there are any appointments for this date
-            var dentistAppointmentGroups = _context.Dentists.Include(item => item.Appointments).Select(item => new { Key = item, Value = item.Appointments.Where(item => item.AppointDate.Date >= startDate.Date && item.AppointDate.Date <= endDate.Date && (item.Status == (int)AppointmentStatus.Reported || item.Status == (int)AppointmentStatus.Absent) || item.Status == (int)AppointmentStatus.LateCanceled).Count() });
-            var serviceAppointmentGroups = _context.Services.Include(item => item.Appointments).Select(item => new { Key = item, Value = item.Appointments.Where(item => item.AppointDate.Date >= startDate.Date && item.AppointDate.Date <= endDate.Date && (item.Status == (int)AppointmentStatus.Reported || item.Status == (int)AppointmentStatus.Absent) || item.Status == (int)AppointmentStatus.LateCanceled).Count() });
+            var dentistAppointmentGroups = _context.Dentists.Include(item => item.Appointments).Select(item => new { Key = item, Value = item.Appointments.Where(item => item.AppointDate.Date >= startDate.Date && item.AppointDate.Date <= endDate.Date && (item.Status == 3 || item.Status == 5 || item.Status == 4 || item.Status == 6)).Count() });
+            var serviceAppointmentGroups = _context.Services.Include(item => item.Appointments).Select(item => new { Key = item, Value = item.Appointments.Where(item => item.AppointDate.Date >= startDate.Date && item.AppointDate.Date <= endDate.Date && (item.Status == 3 || item.Status == 5 || item.Status == 4 || item.Status == 6)).Count() });
 
 
             // **Dentist Metrics**

@@ -42,7 +42,7 @@ namespace ClinicPresentationLayer.Pages.DentistServices
             }
         }
 
-        public async Task OnPostAsync()
+        public async Task<IActionResult> OnPostAsync()
         {
             var selectedServiceIds = Request.Form["selectedServices"].Select(int.Parse).ToList();
             Dentist.Services.Clear();
@@ -52,7 +52,7 @@ namespace ClinicPresentationLayer.Pages.DentistServices
                 if (service != null) Dentist.Services.Add(item);
             }
             _dentistService.UpdateDentistServices(Dentist);
-            //Redirect ve profile
+            return Redirect("../ProfileUser/Details?id=" + Dentist.Id);
         }
     }
     public class ServiceOfDentist

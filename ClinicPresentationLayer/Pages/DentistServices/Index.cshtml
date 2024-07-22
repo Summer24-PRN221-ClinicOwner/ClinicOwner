@@ -43,7 +43,7 @@
         <tbody>
             @foreach (var item in Model.Service)
             {
-                @if (item.ServiceInfor.Name.ToLower().Contains(Model.SearchTermModel.ToLower()))
+                @if (item.ServiceInfor.Name.ToLower().Contains(Model.SearchTermModel??"".ToLower()))
                 {
                     <tr>
                         <td>
