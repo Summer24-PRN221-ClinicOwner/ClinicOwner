@@ -17,7 +17,9 @@ namespace BusinessObjects
         ReScheduled,
         Checkin,
         Absent,
-        Reported
+        Reported,
+        LateCanceled
+           
     }
     public enum RoomStatus
     {

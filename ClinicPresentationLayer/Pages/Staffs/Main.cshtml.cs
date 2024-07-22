@@ -134,7 +134,15 @@ namespace ClinicPresentationLayer.Pages.Staffs
             {
                 try
                 {
-                    await _appointmentService.UpdateAppointmentStatus(appointmentId, (int)AppointmentStatus.Canceled, null);
+                    if(cancellationTimeSpan.TotalDays < 1)
+                    {
+                        await _appointmentService.UpdateAppointmentStatus(appointmentId, (int)AppointmentStatus.Canceled, null);
+                    }
+                    else
+                    {
+                        await _appointmentService.UpdateAppointmentStatus(appointmentId, (int)AppointmentStatus.LateCanceled, null);
+                    }
+                    
                     TempData["SuccessMessage"] = $"Refund of {refundAmount} processed successfully.";
                     scope.Complete();
                 }
@@ -165,7 +173,7 @@ namespace ClinicPresentationLayer.Pages.Staffs
             try
             {
                 await _appointmentService.UpdateAppointmentStatus(appointmentId, (int)AppointmentStatus.Checkin, null);
-                TempData["SuccessMessage"] = "Patient checked in successfully.";
+                TempData["SuccessMessage"] = "Checked in Patient successfully.";
             }
             catch (Exception ex)
             {
