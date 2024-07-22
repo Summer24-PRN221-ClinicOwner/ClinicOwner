@@ -79,7 +79,6 @@ namespace ClinicPresentationLayer.Pages
                 }
             }
             TempData["RefundMessage"] = refundResult;
-
             return RedirectToPage("/PatientHistory");
         }
     }

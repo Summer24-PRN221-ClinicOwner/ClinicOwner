@@ -99,9 +99,57 @@
             </dd>
         }
     </dl>
+    @if (Model.User.Role == 1)
+    {
+        <h3>Services Offered</h3>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Service Name</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var service in Model.Dentist.Services)
+                {
+                    <tr>
+                        <td>@service.Name</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+    @if (Model.User.Role == 1)
+    {
+        <h3>Licenses</h3>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>License Type</th>
+                    <th>License Number</th>
+                    <th>Issue Date</th>
+                    <th>Expire Date</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var license in Model.Dentist.Licenses)
+                {
+                    <tr>
+                        <td>@license.LicenceType</td>
+                        <td>@license.LicenseNumber</td>
+                        <td>@license.IssueDate?.ToString("yyyy-MM-dd")</td>
+                        <td>@license.ExpireDate?.ToString("yyyy-MM-dd")</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+        <a asp-page="DentistLicense/Index?id=@Model.Dentist.Id" class="btn btn-primary">Manage Licenses</a>
+    }
+
+
 </div>
+
 <div>
-    <a asp-page="./Edit" asp-route-id="@Model.User.Id">Edit</a> 
-    @* |
-    <a asp-page="./Index">Back to List</a> *@
+    <a asp-page="./Edit" asp-route-id="@Model.User.Id">Edit</a>
+    @* <a asp-page="./Index">Back to List</a> *@
 </div>
