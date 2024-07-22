@@ -26,6 +26,7 @@
             <th>Phone</th>
             <th>Email</th>
             <th>Clinic</th>
+            <th>Status</th>
 
             <th>Action</th>
         </tr>
@@ -41,10 +42,10 @@
                 <td>@item.Phone</td>
                 <td>@item.Email</td>
                 <td>@item.Clinic.Name</td>
-
+                <td>@item.IdNavigation.Status</td>
                 <td>
-                    <a href="../ProfileUser/Details?id=@item.Id">Details</a> |
-                    <a asp-page="./Delete" asp-route-id="@item.Id">Delete</a>
+                    <a href="ProfileUser/Details?id=@item.Id">Details</a> |
+                   @*  <a asp-page="./Delete" asp-route-id="@item.Id">Delete</a> *@
                 </td>
             </tr>
         }

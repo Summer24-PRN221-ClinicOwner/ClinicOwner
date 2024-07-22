@@ -35,14 +35,26 @@ namespace ClinicPresentationLayer.Pages.Room
             {
                 return Page();
             }
-
-            bool result = await _roomService.AddAsync(Room);
-            if (result)
+            try
             {
-                return RedirectToPage("./Index");
+                Rooms = await _roomService.GetAllAsync();
+                var clinicList = await _clinicService.GetAllAsync();
+                ViewData["ClinicId"] = new SelectList(clinicList, "Id", "Name");
+                bool result = await _roomService.AddAsync(Room);
+                if (result)
+                {
+                    
+                    return RedirectToPage("./Index");
+                }
+                else
+                {
+                    TempData["ErrorMessage"] = "fail to add new room";
+                    return Page();
+                }
             }
-            else
+            catch(Exception ex)
             {
+                TempData["ErrorMessage"] = $"fail to add new room: {ex.Message}";
                 return Page();
             }
         }

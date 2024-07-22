@@ -20,7 +20,12 @@ namespace ClinicRepositories
 
         public Dentist GetDentistById(int id)
         {
-            return _context.Dentists.Include(item => item.Licenses).Include(item => item.Services).FirstOrDefault(item => item.Id == id) ?? throw new Exception("404 Dentist Not Found");
+            return _context.Dentists
+                .Include(item => item.Licenses)
+                .Include(item => item.Services)
+                .Include(item => item.Clinic)
+                .Include (item => item.IdNavigation)
+                .FirstOrDefault(item => item.Id == id) ?? throw new Exception("404 Dentist Not Found");
         }
         public bool InformationIsUnique(string phone, string email)
         {
@@ -57,5 +62,17 @@ namespace ClinicRepositories
             return false;
         }
 
+        public async Task<bool> InactiveDentist(int id)
+        {
+            var dentistAcc = await _context.Users.FindAsync(id);
+            if (dentistAcc == null)
+            {
+                return false;
+            }
+            dentistAcc.Status = 0;
+            _context.Users.Update(dentistAcc);
+            await _context.SaveChangesAsync();
+            return true;
+        }
     }
 }

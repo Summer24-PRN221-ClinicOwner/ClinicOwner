@@ -1,22 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.EntityFrameworkCore;
+using ClinicServices.Interfaces;
 using BusinessObjects.Entities;
-using ClinicRepositories;
 
 namespace ClinicPresentationLayer.Pages.Dentists
 {
     public class DeleteModel : PageModel
     {
-        private readonly ClinicRepositories.ClinicScheduleContext _context;
+        private readonly IDentistService _dentistService;
 
-        public DeleteModel(ClinicRepositories.ClinicScheduleContext context)
+        public DeleteModel(IDentistService dentistService)
         {
-            _context = context;
+            _dentistService = dentistService;
         }
 
         [BindProperty]
@@ -29,16 +24,13 @@ namespace ClinicPresentationLayer.Pages.Dentists
                 return NotFound();
             }
 
-            var dentist = await _context.Dentists.FirstOrDefaultAsync(m => m.Id == id);
+            Dentist = await _dentistService.GetByIdAsync(id.Value);
 
-            if (dentist == null)
+            if (Dentist == null)
             {
                 return NotFound();
             }
-            else
-            {
-                Dentist = dentist;
-            }
+
             return Page();
         }
 
@@ -49,12 +41,21 @@ namespace ClinicPresentationLayer.Pages.Dentists
                 return NotFound();
             }
 
-            var dentist = await _context.Dentists.FindAsync(id);
-            if (dentist != null)
+            var dentist = await _dentistService.GetByIdAsync(id.Value);
+            if (dentist == null)
             {
-                Dentist = dentist;
-                _context.Dentists.Remove(Dentist);
-                await _context.SaveChangesAsync();
+                TempData["ErrorMessage"] = "Dentist not found.";
+                return RedirectToPage("./Index");
+            }
+
+            try
+            {
+                await _dentistService.DeleteAsync(id.Value);
+                TempData["SuccessMessage"] = "Dentist deleted successfully.";
+            }
+            catch (Exception ex)
+            {
+                TempData["ErrorMessage"] = "Error when deleting the dentist: " + ex.Message;
             }
 
             return RedirectToPage("./Index");
