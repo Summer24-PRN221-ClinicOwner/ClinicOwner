@@ -99,47 +99,57 @@ namespace ClinicPresentationLayer.Pages.Appointment
             //{
             //    return Page();
             //}
-            CurrentUser = HttpContext.Session.GetObject<User>("UserAccount");
-            var appointment = await _appointmentService.GetAppointmentsByIdAsync(id);
-            if (appointment == null)
+            try
             {
-                return NotFound();
-            }
-            appointment.Report.Name = Appointment.Report.Name;
-            appointment.Report.Data = Appointment.Report.Data;
-            appointment.Report.GeneratedDate = DateTime.UtcNow.AddHours(7);
-            appointment.Report.AppointmentId = appointment.Id;
-
-            var result = await _reportService.AddOrUpdateAsync(appointment.Report);
-            if (result == null)
-            {
-                TempData["ErrorMessage"] = "Error when creating or updating the report";
-
-                return Page();
-            }
-            else
-            {
-                try
+                CurrentUser = HttpContext.Session.GetObject<User>("UserAccount");
+                var appointment = await _appointmentService.GetAppointmentsByIdAsync(id);
+                if (appointment == null)
                 {
-                    bool updated = false;
-                    if(appointment.Status != (int)AppointmentStatus.Reported)
-                    {
-                         updated = await _appointmentService.UpdateAppointmentStatus(appointment.Id, (int)AppointmentStatus.Reported, null);
-                    }
-                    if (updated)
-                    {
-                        TempData["SuccessMessage"] = " Update appointment status successfully.";
-                        return Page();
-                    }
+                    return NotFound();
                 }
-                catch (Exception ex)
+                bool statusUpdated = false;
+                // Update the appointment status if it's not already 'Reported'
+                if (appointment.Status != (int)AppointmentStatus.Reported)
                 {
-                    TempData["ErrorMessage"] = "Update appointment status failed.";
+                    statusUpdated = await _appointmentService.UpdateAppointmentStatus(appointment.Id, (int)AppointmentStatus.Reported, null);
+                }
+
+                if (statusUpdated)
+                {
+                    TempData["SuccessMessage"] = "Updated appointment status successfully.";
+                }
+                else
+                {
+                    TempData["ErrorMessage"] = "Failed to update appointment status.";
                     return Page();
                 }
+
+                // Create or update the report
+                if (appointment.Report == null)
+                {
+                    appointment.Report = new Report();
+                }
+
+                appointment.Report.Name = Appointment.Report.Name;
+                appointment.Report.Data = Appointment.Report.Data;
+                appointment.Report.GeneratedDate = DateTime.UtcNow.AddHours(7);
+                appointment.Report.AppointmentId = appointment.Id;
+
+                var reportResult = await _reportService.AddOrUpdateAsync(appointment.Report);
+                if (reportResult == null)
+                {
+                    TempData["ErrorMessage"] = "Error when creating or updating the report";
+                    return Page();
+                }
+
+                TempData["SuccessMessage"] = "Create/Update report successfully";
+                return RedirectToPage("/Appointment/List");
             }
-            TempData["SuccessMessage"] = " Create/Update report successfully";
-            return Page();
+            catch (Exception ex)
+            {
+                TempData["ErrorMessage"] = $"An error occurred while processing your request {ex.Message}";
+                return Page();
+            }
         }
     }
 }
