@@ -50,7 +50,8 @@
                 @Html.DisplayFor(modelItem => item.Dentist.Id)
             </td>
             <td>
-                <a asp-page="./Edit" asp-route-id="@item.Id">Edit</a> |
+                    <input type="hidden" value="@Model.DentistId" name="DentistId" class="btn btn-primary" />
+                    <a href="/DentistLicense/Edit?id=@item.Id&DentistId=@Model.DentistId">Edit</a> |
             </td>
         </tr>
 }

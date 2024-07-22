@@ -32,13 +32,8 @@ namespace ClinicPresentationLayer.Pages.DentistLicense
         {
             License.DentistId = DentistId;
             var temp = await _licenseService.GetAllAsync();
-            License.Id = temp.Count();
-            if (!ModelState.IsValid)
-            {
-                return Page();
-            }
             await _licenseService.AddAsync(License);
-            return RedirectToPage("./Index?id=" + DentistId);
+            return Redirect("./Index?id=" + DentistId);
         }
     }
 }

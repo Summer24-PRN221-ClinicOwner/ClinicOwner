@@ -2,6 +2,7 @@
 using BusinessObjects.Entities;
 using ClinicPresentationLayer.Authorization;
 using ClinicServices.Interfaces;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace ClinicPresentationLayer.Pages.DentistLicense
@@ -17,6 +18,7 @@ namespace ClinicPresentationLayer.Pages.DentistLicense
         }
 
         public IList<License> License { get; set; } = default!;
+        [BindProperty]
         public int DentistId { get; set; } = default!;
 
         public async Task OnGetAsync(int id)
