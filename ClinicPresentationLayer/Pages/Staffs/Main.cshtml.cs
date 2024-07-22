@@ -147,7 +147,33 @@ namespace ClinicPresentationLayer.Pages.Staffs
             //PatientAppointments = await _appointmentService.GetAppoinmentHistoryAsync(FoundPatient.Id);
             return RedirectToPage(new { SearchTerm });
         }
+        public async Task<IActionResult> OnPostCheckInAsync(int appointmentId)
+        {
+            var appointment = await _appointmentService.GetAppointmentsByIdAsync(appointmentId);
+            if (appointment == null)
+            {
+                TempData["ErrorMessage"] = "No appointment found with the provided ID.";
+                return RedirectToPage(new { SearchTerm });
+            }
 
+            if (appointment.Status != (int)AppointmentStatus.Waiting)
+            {
+                TempData["ErrorMessage"] = "The appointment is not eligible for check-in.";
+                return RedirectToPage(new { SearchTerm });
+            }
+
+            try
+            {
+                await _appointmentService.UpdateAppointmentStatus(appointmentId, (int)AppointmentStatus.Checkin, null);
+                TempData["SuccessMessage"] = "Patient checked in successfully.";
+            }
+            catch (Exception ex)
+            {
+                TempData["ErrorMessage"] = $"Failed to check in patient: {ex.Message}";
+            }
+
+            return RedirectToPage(new { SearchTerm });
+        }
 
         public async Task<IActionResult> OnPostSubmitAsync()
         {
@@ -188,9 +214,9 @@ namespace ClinicPresentationLayer.Pages.Staffs
                 TempData["ErrorMessage"] = $"error when create appointment: {ex.Message}";
                 return Page();
             }
-            
         }
-            public async Task<IActionResult> OnGetAvailableSlotsPartial(DateTime appointmentDate, int serviceDuration)
+
+        public async Task<IActionResult> OnGetAvailableSlotsPartial(DateTime appointmentDate, int serviceDuration)
         {
             List<Slot> availableSlots = await _appointmentService.GetAvailableSlotAsync(appointmentDate, serviceDuration);
             availableSlots = availableSlots.Where(item => item.IsAvailable).ToList();
