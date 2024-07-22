@@ -36,6 +36,8 @@ builder.Services.AddScoped<IPaymentRepository, PaymentRepository>();
 
 builder.Services.AddScoped<IMomoService, MomoService>();
 
+builder.Services.AddScoped<IVnPayService, VnPayService>();
+
 builder.Services.AddScoped<ILicenseService, LicenseService>();
 builder.Services.AddScoped<ILicenseRepository, LicenseRepository>();
 
