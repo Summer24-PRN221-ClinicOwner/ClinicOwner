@@ -70,7 +70,7 @@ namespace ClinicRepositories
                     reports.Add(new()
                     {
                         Date = startDate,
-                        //TotalAppointment = dailyAppointments.Count,
+                        TotalAppointment = dailyAppointments.Count,
                         ReportDentistAppointment = dentistAppointmentGroups.ToDictionary(g => g.Key.Id, g => g.Value),
                         ReportServicesAppointment = serviceAppointmentGroups.ToDictionary(g => g.Key.Id, g => g.Value),
 
