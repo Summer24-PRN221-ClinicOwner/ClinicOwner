@@ -51,8 +51,10 @@ namespace ClinicPresentationLayer.Pages.Staffs
                 if (FoundPatient != null)
                 {
                     PatientAppointments = await _appointmentService.GetAppoinmentHistoryAsync(FoundPatient.Id);
+                    TempData["PatientId"] = FoundPatient.Id;
                 }
             }
+            
             ErrorMessage = TempData["ErrorMessage"] as string;
             CheckMessage = TempData["SuccessMessage"] as string;
             return Page();
@@ -125,7 +127,7 @@ namespace ClinicPresentationLayer.Pages.Staffs
                 return RedirectToPage(new { SearchTerm });
             }
 
-            var cancellationTimeSpan = DateTime.UtcNow.AddHours(7) - appointment.CreateDate;
+            var cancellationTimeSpan = DateTime.UtcNow.Date - appointment.CreateDate.Date;
             var refundAmount = cancellationTimeSpan.TotalDays < 1
                 ? appointment.Payment.Amount // Full refund
                 : appointment.Payment.Amount * 0.5M; // 50% refund
@@ -209,18 +211,18 @@ namespace ClinicPresentationLayer.Pages.Staffs
                 Appointment.EndSlot = Appointment.StartSlot + Service.Duration - 1;
                 var payment = new Payment
                 {
-                    Amount = Service.Cost.Value, // Assuming vnp_Amount is in the smallest currency unit (like cents)
+                    Amount = Service.Cost.Value,
                     PaymentStatus = PaymentStatus.CHECKOUT,
                     PaymentDate = DateTime.UtcNow.AddHours(7),
                     TransactionId = Guid.NewGuid().ToString()
                 };
                 await _appointmentService.AddAsync(Appointment, payment);
-                return Page();
+                return RedirectToPage(new { SearchTerm });
             }
             catch(Exception ex) 
             {
                 TempData["ErrorMessage"] = $"error when create appointment: {ex.Message}";
-                return Page();
+                return RedirectToPage(new { SearchTerm });
             }
         }
 

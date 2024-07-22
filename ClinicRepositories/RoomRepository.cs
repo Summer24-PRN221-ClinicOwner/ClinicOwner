@@ -21,5 +21,16 @@ namespace ClinicRepositories
                 .Include(r => r.RoomAvailabilities)
                 .ToListAsync();
         }
+
+        public async Task<bool> UpdateRoom(Room room)
+        {
+            var existedRoom = await _context.Rooms.FindAsync(room.Id);
+            if (existedRoom != null)
+            {
+                existedRoom.RoomNumber = room.RoomNumber;
+                existedRoom.Status = room.Status; 
+            }
+            return await _context.SaveChangesAsync() > 0;
+        }
     }
 }

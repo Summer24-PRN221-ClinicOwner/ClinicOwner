@@ -62,19 +62,23 @@ namespace ClinicServices
             try
             {
                 var roomList = await _roomRepository.GetAllAsync();
-                Room check = roomList.FirstOrDefault(r => r.RoomNumber == entity.RoomNumber);
-                if (check != null)
+
+
+                bool check = roomList.Any(r => r.RoomNumber == entity.RoomNumber && r.Id != entity.Id);
+
+                if (check)
                 {
                     throw new Exception("Room Number duplicated");
                 }
-                {
-                    await _roomRepository.UpdateAsync(entity);
-                }
+
+
+                await _roomRepository.UpdateRoom(entity);
             }
             catch (Exception ex)
             {
-                throw ex;
+                throw new Exception($"An error occurred while updating the room. {ex.Message}");
             }
+
             return true;
         }
     }

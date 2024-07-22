@@ -83,7 +83,23 @@ namespace ClinicRepositories
                     availableSlot = SlotDefiner.CheckSlotRequired(standard, slotRequired);
                 }
             }
-
+            foreach (Slot slot in slots)
+            {
+                if (slot.Key <= 5)
+                {
+                    if (slot.Key + 5 < DateTime.Now.Hour)
+                    {
+                        slot.IsAvailable = false;
+                    }
+                }
+                else
+                {
+                    if (slot.Key + 6 < DateTime.Now.Hour)
+                    {
+                        slot.IsAvailable = false;
+                    }
+                }
+            }
             return slots;
         }
 
