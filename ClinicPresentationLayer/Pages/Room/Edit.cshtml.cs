@@ -52,6 +52,7 @@ namespace ClinicPresentationLayer.Pages.Room
             try
             {
                 await _roomService.UpdateAsync(Room);
+                TempData["SuccessMessage"] = "Update Room success";
             }
             catch (DbUpdateConcurrencyException)
             {
@@ -63,8 +64,11 @@ namespace ClinicPresentationLayer.Pages.Room
                 {
                     throw;
                 }
+            } catch (Exception ex)
+            {
+                TempData["ErrorMessage"] = $"Update Room failed : {ex.Message}";
             }
-
+            
             return RedirectToPage("./Index");
         }
     }

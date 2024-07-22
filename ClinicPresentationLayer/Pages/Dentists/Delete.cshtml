@@ -12,41 +12,28 @@
     <h4>Dentist</h4>
     <hr />
     <dl class="row">
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Dentist.Name)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Dentist.Name)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Dentist.Phone)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Dentist.Phone)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Dentist.Email)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Dentist.Email)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Dentist.Clinic)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Dentist.Clinic.Id)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Dentist.IdNavigation)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Dentist.IdNavigation.Id)
-        </dd>
+        <dt class="col-sm-2">Name</dt>
+        <dd class="col-sm-10">@Model.Dentist.Name</dd>
+
+        <dt class="col-sm-2">Phone</dt>
+        <dd class="col-sm-10">@Model.Dentist.Phone</dd>
+
+        <dt class="col-sm-2">Email</dt>
+        <dd class="col-sm-10">@Model.Dentist.Email</dd>
+
+        <dt class="col-sm-2">Clinic</dt>
+        <dd class="col-sm-10">@Model.Dentist.Clinic?.Name</dd>
+
+        <dt class="col-sm-2">Username</dt>
+        <dd class="col-sm-10">@Model.Dentist.IdNavigation?.Username</dd>
+
+        <dt class="col-sm-2">Status</dt>
+        <dd class="col-sm-10">@Model.Dentist.IdNavigation?.Status</dd>
     </dl>
-    
+
     <form method="post">
-        <input type="hidden" asp-for="Dentist.Id" />
+        <input type="hidden" name="Id" value="@Model.Dentist.Id" />
         <input type="submit" value="Delete" class="btn btn-danger" /> |
-        <a asp-page="./Index">Back to List</a>
+        <a href="./Index">Back to List</a>
     </form>
 </div>

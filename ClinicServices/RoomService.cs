@@ -20,6 +20,12 @@ namespace ClinicServices
 
         public async Task<bool> AddAsync(Room entity)
         {
+            var roomList = await _roomRepository.GetAllAsync();
+            Room check =  roomList.FirstOrDefault(r => r.RoomNumber == entity.RoomNumber);
+            if (check != null)
+            {
+                throw new Exception("Room Number duplicated");
+            }
             var result = await _roomRepository.AddAsync(entity);
             if(result == null)
             {
@@ -55,7 +61,15 @@ namespace ClinicServices
         {
             try
             {
-                await _roomRepository.UpdateAsync(entity);
+                var roomList = await _roomRepository.GetAllAsync();
+                Room check = roomList.FirstOrDefault(r => r.RoomNumber == entity.RoomNumber);
+                if (check != null)
+                {
+                    throw new Exception("Room Number duplicated");
+                }
+                {
+                    await _roomRepository.UpdateAsync(entity);
+                }
             }
             catch (Exception ex)
             {

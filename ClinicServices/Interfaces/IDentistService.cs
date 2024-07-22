@@ -8,7 +8,7 @@ namespace ClinicServices.Interfaces
         Task<Dentist> GetByIdAsync(int id);
         Task<Dentist> AddAsync(Dentist entity, User newUser);
         Task UpdateAsync(Dentist entity);
-        Task DeleteAsync(int id);
+        Task<bool> DeleteAsync(int id);
         Dentist GetDentistById(int id);
         public void UpdateDentistServices(Dentist dentist);
     }

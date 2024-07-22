@@ -31,9 +31,9 @@ namespace ClinicServices
 
         }
 
-        public async Task DeleteAsync(int id)
+        public async Task<bool> DeleteAsync(int id)
         {
-            await _repository.DeleteAsync(id);
+           return await _repository.InactiveDentist(id);
         }
 
         public async Task<List<Dentist>> GetAllAsync()
@@ -43,7 +43,7 @@ namespace ClinicServices
 
         public async Task<Dentist> GetByIdAsync(int id)
         {
-            return await _repository.GetByIdAsync(id);
+            return  _repository.GetDentistById(id);
         }
 
         public async Task UpdateAsync(Dentist entity)

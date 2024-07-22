@@ -9,6 +9,19 @@
 
 <h4>Room</h4>
 <hr />
+@if (TempData["SuccessMessage"] != null)
+{
+    <div class="alert alert-success">
+        @TempData["SuccessMessage"]
+    </div>
+}
+
+@if (TempData["ErrorMessage"] != null)
+{
+    <div class="alert alert-danger">
+        @TempData["ErrorMessage"]
+    </div>
+}
 <div class="row">
     <div class="col-md-4">
         <form method="post">
@@ -28,8 +41,8 @@
             <div class="form-group">
                 <label asp-for="Room.Status" class="control-label"></label>
                 <select asp-for="Room.Status" class="form-control">
-                    <option value="1">Closed</option>
-                    <option value="0">Open</option>
+                    <option value="0">Closed</option>
+                    <option value="1">Open</option>
                 </select>
                 <span asp-validation-for="Room.Status" class="text-danger"></span>
             </div>

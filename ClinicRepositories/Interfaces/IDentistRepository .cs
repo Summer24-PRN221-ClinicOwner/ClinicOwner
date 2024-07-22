@@ -8,6 +8,7 @@ namespace ClinicRepositories.Interfaces
         public bool InformationIsUnique(string phone, string email);
         public Dentist GetDentistById(int id);
         public bool UpdateDentistServices(Dentist dentist);
+        public Task<bool> InactiveDentist(int id);
 
     }
 }
