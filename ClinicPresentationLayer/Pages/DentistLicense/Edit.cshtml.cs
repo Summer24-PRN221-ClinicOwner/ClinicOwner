@@ -1,10 +1,13 @@
-﻿using BusinessObjects.Entities;
+﻿using BusinessObjects;
+using BusinessObjects.Entities;
+using ClinicPresentationLayer.Authorization;
 using ClinicServices.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace ClinicPresentationLayer.Pages.DentistLicense
 {
+    [CustomAuthorize(UserRoles.Dentist)]
     public class EditModel : PageModel
     {
         private readonly IDentistService _dentistService;

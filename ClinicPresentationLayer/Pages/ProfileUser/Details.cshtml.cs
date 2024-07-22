@@ -27,7 +27,8 @@ namespace ClinicPresentationLayer.Pages.ProfileUser
         [BindProperty]
         public Dentist Dentist { get; set; } = default!;
         public License NewLicense { get; set; } = new License(); // Initialize
-
+        [BindProperty]
+        public User CurrentAccount { get; set; } = default!;
         public async Task<IActionResult> OnGetAsync(int? id)
         {
             if (id == null)
@@ -35,7 +36,7 @@ namespace ClinicPresentationLayer.Pages.ProfileUser
                 return NotFound();
             }
             User currentAcc = HttpContext.Session.GetObject<User>("UserAccount");
-
+            CurrentAccount = currentAcc;
             if (currentAcc == null)
             {
                 return RedirectToPage("/Login");
