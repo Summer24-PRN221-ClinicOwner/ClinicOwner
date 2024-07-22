@@ -19,6 +19,8 @@ namespace ClinicServices
         {
             if (!await _userService.IsUsernameExisted(userAccount.Username))
             {
+                if (!_repository.InformationIsUnique(entity.Phone, entity.Email))
+                    throw new Exception("Email or Phone is duplicated!");
                 userAccount.Status = 1;
                 var newAccount = await _userService.AddAsync(userAccount);
                 entity.Id = newAccount.Id;
@@ -33,7 +35,7 @@ namespace ClinicServices
 
         public async Task<bool> DeleteAsync(int id)
         {
-           return await _repository.InactiveDentist(id);
+            return await _repository.InactiveDentist(id);
         }
 
         public async Task<List<Dentist>> GetAllAsync()
@@ -43,7 +45,7 @@ namespace ClinicServices
 
         public async Task<Dentist> GetByIdAsync(int id)
         {
-            return  _repository.GetDentistById(id);
+            return _repository.GetDentistById(id);
         }
 
         public async Task UpdateAsync(Dentist entity)

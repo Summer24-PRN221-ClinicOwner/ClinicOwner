@@ -14,11 +14,14 @@ namespace ClinicPresentationLayer.Pages.Dentists
     {
         private readonly IDentistService _dentistService;
         private readonly IClinicService _clinicService;
+        private readonly IUserService _userService;
 
-        public IndexModel(IDentistService dentistService, IClinicService clinicService)
+
+        public IndexModel(IDentistService dentistService, IClinicService clinicService, IUserService userService)
         {
             _dentistService = dentistService;
             _clinicService = clinicService;
+            _userService = userService;
         }
         [BindProperty]
         [Required]
@@ -46,10 +49,10 @@ namespace ClinicPresentationLayer.Pages.Dentists
             //{
             //    return Page();
             //}
+            User newUser = new() { Username = Username, Role = UserRoles.Dentist, Password = Password };
             try
             {
                 Dentists = await _dentistService.GetAllAsync();
-                User newUser = new() { Username = Username, Role = UserRoles.Dentist, Password = Password };
 
                 var result = await _dentistService.AddAsync(Dentist, newUser);
                 if (result != null)
@@ -63,6 +66,16 @@ namespace ClinicPresentationLayer.Pages.Dentists
             }
             catch (Exception ex)
             {
+                var listDentist = await _dentistService.GetAllAsync();
+                if (listDentist.FirstOrDefault(item => item.Id == newUser.Id) != null)
+                {
+                    await _dentistService.DeleteAsync(newUser.Id);
+                }
+                var listUser = await _userService.GetAllAsync();
+                if (listUser.FirstOrDefault(item => item.Id == newUser.Id) != null)
+                {
+                    await _userService.DeleteAsync(newUser.Id);
+                }
                 TempData["ErrorMessage"] = ex.Message;
                 return Page();
             }
