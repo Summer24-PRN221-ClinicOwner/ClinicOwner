@@ -40,6 +40,7 @@ namespace ClinicPresentationLayer.Pages.Appointment
         }
         [BindProperty]
         public Report Report { get; set; } = new Report();
+        [BindProperty]
         public User CurrentUser { get; set; }
         [BindProperty]
         public BusinessObjects.Entities.Appointment Appointment { get; set; } = default!;

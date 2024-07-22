@@ -59,7 +59,7 @@ namespace ClinicPresentationLayer.Pages
             }
             
             var refundResult = await _vnPayService.RefundPaymentAsync(payment.TransactionId, refundAmount, "Refund request", appointment.CreateDate, payment.TransactionNo, transactionType);
-            if(refundResult == "00")
+            if(refundResult == "00" || refundResult == "94")
             {
             bool isUpdated = false;
                 try

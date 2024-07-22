@@ -26,7 +26,6 @@ namespace ClinicPresentationLayer.Pages.ProfileUser
         public ClinicOwner ClinicOwner { get; set; } = default!;
         [BindProperty]
         public Dentist Dentist { get; set; } = default!;
-        public License NewLicense { get; set; } = new License(); // Initialize
         [BindProperty]
         public User CurrentAccount { get; set; } = default!;
         public async Task<IActionResult> OnGetAsync(int? id)
