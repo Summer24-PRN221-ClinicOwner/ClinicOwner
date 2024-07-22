@@ -68,7 +68,8 @@
                         </td>
                         <td>
                             @if (item.Status != (int)AppointmentStatus.Canceled && item.Status != (int)AppointmentStatus.Absent
-                           && item.Status != (int)AppointmentStatus.Reported && item.Status != (int)AppointmentStatus.Checkin)
+                           && item.Status != (int)AppointmentStatus.Reported && item.Status != (int)AppointmentStatus.Checkin &&
+                           item.Status != (int)AppointmentStatus.LateCanceled)
                             {
                                 <button class="btn btn-danger" onclick="confirmCancellation('@item.Id')">Cancel</button>
                             }

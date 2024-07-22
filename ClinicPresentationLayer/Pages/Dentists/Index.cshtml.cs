@@ -30,6 +30,7 @@ namespace ClinicPresentationLayer.Pages.Dentists
         public string Password { get; set; }
         [BindProperty]
         public Dentist Dentist { get; set; } = default!;
+        [BindProperty]
         public IList<Dentist> Dentists { get; set; } = default!;
 
         public async Task OnGetAsync()

@@ -239,7 +239,7 @@ namespace ClinicServices
             switch (current)
             {
                 case AppointmentStatus.Waiting:
-                    if (@new == AppointmentStatus.Canceled)
+                    if (@new == AppointmentStatus.Canceled || @new == AppointmentStatus.LateCanceled)
                     {
                         // ngay kham xa so voi now, tinh = date, cung ngay tao 
                         return true;
