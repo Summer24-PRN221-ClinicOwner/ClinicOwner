@@ -10,5 +10,6 @@ namespace ClinicServices.Interfaces
         Task UpdateAsync(Dentist entity);
         Task DeleteAsync(int id);
         Dentist GetDentistById(int id);
+        public void UpdateDentistServices(Dentist dentist);
     }
 }

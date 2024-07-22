@@ -55,5 +55,9 @@ namespace ClinicServices
         {
             return _repository.GetDentistById(id);
         }
+        public void UpdateDentistServices(Dentist dentist)
+        {
+            _repository.UpdateDentistServices(dentist);
+        }
     }
 }

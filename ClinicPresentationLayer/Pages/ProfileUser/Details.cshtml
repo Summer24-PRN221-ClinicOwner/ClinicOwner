@@ -139,14 +139,11 @@
                         <td>@license.LicenseNumber</td>
                         <td>@license.IssueDate?.ToString("yyyy-MM-dd")</td>
                         <td>@license.ExpireDate?.ToString("yyyy-MM-dd")</td>
-                        <td>
-                            <a asp-page="./EditLicense" asp-route-id="@license.Id">Update</a>
-                        </td>
                     </tr>
                 }
             </tbody>
         </table>
-        <a asp-page="./LicenseManagement" class="btn btn-primary">Manage Licenses</a>
+        <a asp-page="DentistLicense/Index?id=@Model.Dentist.Id" class="btn btn-primary">Manage Licenses</a>
     }
 
 

@@ -37,5 +37,9 @@ namespace ClinicServices
         {
             await _repository.UpdateAsync(entity);
         }
+        public void UpdateLicense(License license)
+        {
+            _repository.UpdateLicense(license);
+        }
     }
 }

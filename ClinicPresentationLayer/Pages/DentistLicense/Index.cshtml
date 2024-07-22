@@ -1,0 +1,58 @@
+﻿@page
+@model ClinicPresentationLayer.Pages.DentistLicense.IndexModel
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Index</h1>
+
+<p>
+    <a asp-page="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.License[0].LicenceType)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.License[0].LicenseNumber)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.License[0].IssueDate)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.License[0].ExpireDate)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.License[0].Dentist)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model.License) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.LicenceType)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.LicenseNumber)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.IssueDate)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ExpireDate)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Dentist.Id)
+            </td>
+            <td>
+                <a asp-page="./Edit" asp-route-id="@item.Id">Edit</a> |
+            </td>
+        </tr>
+}
+    </tbody>
+</table>
