@@ -3,7 +3,6 @@ using BusinessObjects.Entities;
 using ClinicRepositories.Interfaces;
 using ClinicServices.EmailService;
 using ClinicServices.Interfaces;
-using System.Net.NetworkInformation;
 using System.Transactions;
 
 namespace ClinicServices
@@ -90,7 +89,7 @@ namespace ClinicServices
         }
         public async Task SendEmailToPatient(Appointment appointmentId)
         {
-           var appointment = await _appointmentRepository.GetAppointmentsByIdAsync(appointmentId.Id);
+            var appointment = await _appointmentRepository.GetAppointmentsByIdAsync(appointmentId.Id);
             if (appointment == null)
             {
                 throw new Exception("Can not find appointment to send email");
@@ -155,7 +154,7 @@ namespace ClinicServices
             }
 
         }
-            public async Task<List<Appointment>> GetAppointmentsBeforeDaysAsync(int days)
+        public async Task<List<Appointment>> GetAppointmentsBeforeDaysAsync(int days)
         {
             var result = await _appointmentRepository.GetAppointmentsBeforeDaysAsync(days);
             if (result == null)
@@ -180,6 +179,19 @@ namespace ClinicServices
             switch ((AppointmentStatus)newStatus)
             {
                 case AppointmentStatus.Canceled:
+                    if (!_roomAvailabilityRepository.CancelAppointment(appointment) ||
+                        !_dentistAvailabilityRepository.CancelAppointment(appointment))
+                        throw new Exception("Update Available Slot Fail");
+                    if (appointment.Payment.PaymentStatus == PaymentStatus.PAID)
+                    {
+                        newPaymentStatus = PaymentStatus.REFUNDED;
+                    }
+                    else if (appointment.Payment.PaymentStatus == PaymentStatus.CHECKOUT)
+                    {
+                        newPaymentStatus = PaymentStatus.CHECKOUT_REFUNDED;
+                    }
+                    break;
+                case AppointmentStatus.LateCanceled:
                     if (appointment.Payment.PaymentStatus == PaymentStatus.PAID)
                     {
                         newPaymentStatus = PaymentStatus.REFUNDED;
@@ -190,7 +202,7 @@ namespace ClinicServices
                     }
                     break;
             }
-            if (await IsValidStatusTransition(appointment.Status, newStatus, appointment.CreateDate,appointment.Payment.PaymentStatus, newDate))
+            if (await IsValidStatusTransition(appointment.Status, newStatus, appointment.CreateDate, appointment.Payment.PaymentStatus, newDate))
             {
                 if (newStatus == (int)AppointmentStatus.ReScheduled)
                 {
@@ -287,7 +299,7 @@ namespace ClinicServices
         {
             return await _appointmentRepository.GetTodayTotalEarningsAsync();
         }
- 
+
         public async Task<Appointment> GetAppointmentsByIdAsync(int id)
         {
             var result = await _appointmentRepository.GetAppointmentsByIdAsync(id);

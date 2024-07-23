@@ -8,5 +8,8 @@ namespace ClinicRepositories.Interfaces
         public Task<bool> UpdateAvaialeString(int dentistId, DateTime date, int startSlot, int slotRequired);
         public void SaveChanges();
         public void Dispose();
+        public bool CancelAppointment(Appointment appointment);
+
+
     }
 }

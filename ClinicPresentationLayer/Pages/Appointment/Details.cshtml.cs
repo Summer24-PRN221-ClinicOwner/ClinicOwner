@@ -2,7 +2,6 @@
 using BusinessObjects.Entities;
 using ClinicPresentationLayer.Authorization;
 using ClinicPresentationLayer.Extension;
-using ClinicServices;
 using ClinicServices.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
