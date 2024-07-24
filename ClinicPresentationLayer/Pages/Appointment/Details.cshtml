@@ -73,7 +73,8 @@
     </div>
 }
 
-@if (@Model.CurrentUser.Role == @BusinessObjects.UserRoles.Dentist)
+@if (@Model.CurrentUser.Role == @BusinessObjects.UserRoles.Dentist && (Model.Appointment.Status == (int)AppointmentStatus.Checkin || 
+                                                                        Model.Appointment.Status == (int)AppointmentStatus.Reported))
 {
     <h1>@(Model.Appointment.Report.Name == null ? "Create Report" : "Update Report")</h1>
 

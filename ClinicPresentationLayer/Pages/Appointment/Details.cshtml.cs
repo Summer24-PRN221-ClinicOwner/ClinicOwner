@@ -5,6 +5,7 @@ using ClinicPresentationLayer.Extension;
 using ClinicServices.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using System.Composition;
 
 namespace ClinicPresentationLayer.Pages.Appointment
 {
@@ -108,19 +109,31 @@ namespace ClinicPresentationLayer.Pages.Appointment
                 }
                 bool statusUpdated = false;
                 // Update the appointment status if it's not already 'Reported'
-                if (appointment.Status != (int)AppointmentStatus.Reported)
+                if (appointment.Report == null)
                 {
-                    statusUpdated = await _appointmentService.UpdateAppointmentStatus(appointment.Id, (int)AppointmentStatus.Reported, null);
-                }
+                    // Creating a new report, update the appointment status if it's not already 'Reported'
+                    if (appointment.Status != (int)AppointmentStatus.Reported)
+                    {
+                        statusUpdated = await _appointmentService.UpdateAppointmentStatus(appointment.Id, (int)AppointmentStatus.Reported, null);
+                    }
 
-                if (statusUpdated)
-                {
-                    TempData["SuccessMessage"] = "Updated appointment status successfully.";
+                    if (statusUpdated)
+                    {
+                        TempData["SuccessMessage"] = "Updated appointment status successfully.";
+                    }
+                    else
+                    {
+                        TempData["ErrorMessage"] = "Failed to update appointment status.";
+                        return Page();
+                    }
                 }
                 else
                 {
-                    TempData["ErrorMessage"] = "Failed to update appointment status.";
-                    return Page();
+                    // Updating an existing report, no need to update the appointment status
+                    if (appointment.Status == (int)AppointmentStatus.Reported)
+                    {
+                        TempData["Success"] = "Appointment status is already 'Reported'.";
+                    }
                 }
 
                 // Create or update the report
