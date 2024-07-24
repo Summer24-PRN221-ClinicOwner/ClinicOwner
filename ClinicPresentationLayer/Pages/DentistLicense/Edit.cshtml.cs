@@ -44,6 +44,12 @@ namespace ClinicPresentationLayer.Pages.DentistLicense
         // For more details, see https://aka.ms/RazorPagesCRUD.
         public async Task<IActionResult> OnPostAsync()
         {
+            var list = await _licenseService.GetAllAsync();
+            if (list.FirstOrDefault(item => item.LicenseNumber == License.LicenseNumber) != null)
+            {
+                TempData["ErrorMessage"] = "Seem like License Number has been already added into system! Please check and try again!";
+                return Page();
+            }
             this.License.DentistId = DentistId;
             _licenseService.UpdateLicense(License);
             return Redirect("./Index?id=" + DentistId);

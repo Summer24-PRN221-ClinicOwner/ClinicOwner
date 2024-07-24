@@ -1,4 +1,3 @@
-using System.Threading.Tasks;
 using BusinessObjects;
 using ClinicServices.Interfaces;
 using ClinicServices.VNPayService;
@@ -34,13 +33,13 @@ namespace ClinicPresentationLayer.Pages
                 _logger.LogError("Appointment not found.");
                 return Page();
             }
-            else if(!await _appointmentService.IsValidStatusTransition(appointment.Status, (int)AppointmentStatus.Canceled, appointment.CreateDate, appointment.Payment.PaymentStatus, null))
+            else if (!await _appointmentService.IsValidStatusTransition(appointment.Status, (int)AppointmentStatus.Canceled, appointment.CreateDate, appointment.Payment.PaymentStatus, null))
             {
                 TempData["ErrorMessage"] = "Appointment status and payment status is invalid.";
                 _logger.LogError("Appointment status and payment status is invalid.");
                 return Page();
             }
-            
+
 
             var payment = await _paymentService.GetByIdAsync(appointment.PaymentId ?? throw new Exception("Invalid Payment Id"));
             if (payment == null)
@@ -55,24 +54,23 @@ namespace ClinicPresentationLayer.Pages
             if (cancellationTimeSpan.TotalDays >= 1)
             {
                 transactionType = "03"; // half refund
-                refundAmount = refundAmount/2;
+                refundAmount = refundAmount / 2;
             }
-            
+
             var refundResult = await _vnPayService.RefundPaymentAsync(payment.TransactionId, refundAmount, "Refund request", appointment.CreateDate, payment.TransactionNo, transactionType);
-            if(refundResult == "00" || refundResult == "94")
+            if (refundResult == "00" || refundResult == "94")
             {
-            bool isUpdated = false;
+                bool isUpdated = false;
                 try
                 {
-                    if(transactionType == "03")
+                    if (transactionType == "03")
                     {
-                         isUpdated = await _appointmentService.UpdateAppointmentStatus(appointment.Id, (int)AppointmentStatus.LateCanceled, null);
+                        isUpdated = await _appointmentService.UpdateAppointmentStatus(appointment.Id, (int)AppointmentStatus.LateCanceled, null);
                     }
                     else
                     {
-                         isUpdated = await _appointmentService.UpdateAppointmentStatus(appointment.Id, (int)AppointmentStatus.Canceled, null);
+                        isUpdated = await _appointmentService.UpdateAppointmentStatus(appointment.Id, (int)AppointmentStatus.Canceled, null);
                     }
-                    
                     if (!isUpdated)
                     {
                         TempData["ErrorMessage"] = "Failed to update appointment status.";

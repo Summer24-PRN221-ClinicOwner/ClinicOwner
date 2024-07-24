@@ -68,6 +68,27 @@ namespace ClinicRepositories
             }
             return true;
         }
+        public bool CancelAppointment(Appointment appointment)
+        {
+            if (appointment.Status == (int)AppointmentStatus.LateCanceled) return true;
+            try
+            {
+                var tar = _context.DentistAvailabilities.FirstOrDefault(item => item.Day.Date == appointment.AppointDate.Date && item.DentistId == appointment.DentistId);
+                var temp = SlotDefiner.ConvertFromString(tar.AvailableSlots);
+                for (int i = appointment.StartSlot; i <= appointment.EndSlot; i++)
+                {
+                    if (temp.ElementAt(i - 1).IsAvailable = true) throw new Exception("Invalid Update");
+                    temp.ElementAt(i - 1).IsAvailable = true;
+                }
+                tar.AvailableSlots = SlotDefiner.ConvertToString(temp);
+                _context.SaveChanges();
+                return true;
+            }
+            catch (Exception e)
+            {
+                return false;
+            }
+        }
         public void SaveChanges()
         {
             localContext.SaveChanges();
