@@ -161,7 +161,7 @@ namespace ClinicRepositories
                 var temp = SlotDefiner.ConvertFromString(tar.AvailableSlots);
                 for (int i = appointment.StartSlot; i <= appointment.EndSlot; i++)
                 {
-                    if (temp.ElementAt(i - 1).IsAvailable = true) throw new Exception("Invalid Update");
+                    if (temp.ElementAt(i - 1).IsAvailable == true) throw new Exception("Invalid Update");
                     temp.ElementAt(i - 1).IsAvailable = true;
                 }
                 tar.AvailableSlots = SlotDefiner.ConvertToString(temp);
