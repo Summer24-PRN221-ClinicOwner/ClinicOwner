@@ -11,6 +11,19 @@
         <a asp-page="./List" asp-route-PageWeek="0" class="btn btn-primary">Current Week</a>
         <a asp-page="./List" asp-route-PageWeek="@(Model.PageWeek + 1)" class="btn btn-primary">Next Week</a>
     </div>
+    @if (TempData["ErrorMessage"] != null)
+    {
+        <div class="alert alert-danger" role="alert">
+            @TempData["ErrorMessage"]
+        </div>
+    }
+
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success" role="alert">
+            @TempData["SuccessMessage"]
+        </div>
+    }
     <h1>Schedule of Dentist : <span style="color: red;">@Model.DentistName.Name</h1>
     <table class="table table-bordered">
         <thead>
