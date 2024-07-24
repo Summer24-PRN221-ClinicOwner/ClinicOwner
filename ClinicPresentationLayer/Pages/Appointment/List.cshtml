@@ -1,4 +1,5 @@
 ﻿@page
+@using BusinessObjects
 @model ClinicPresentationLayer.Pages.Appointment.ListModel
 @{
     var schedule = Model.AppointmentSchedule;
@@ -11,6 +12,19 @@
         <a asp-page="./List" asp-route-PageWeek="0" class="btn btn-primary">Current Week</a>
         <a asp-page="./List" asp-route-PageWeek="@(Model.PageWeek + 1)" class="btn btn-primary">Next Week</a>
     </div>
+    @if (TempData["ErrorMessage"] != null)
+    {
+        <div class="alert alert-danger" role="alert">
+            @TempData["ErrorMessage"]
+        </div>
+    }
+
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success" role="alert">
+            @TempData["SuccessMessage"]
+        </div>
+    }
     <h1>Schedule of Dentist : <span style="color: red;">@Model.DentistName.Name</h1>
     <table class="table table-bordered">
         <thead>
@@ -85,7 +99,7 @@
             {
                 var patientLink = $"<a href=\"/ProfileUser/Details?id={appointment.PatientId}\">Mr. {appointment.Patient.Name}</a>";
                 var detailsLink = $"<a href=\"/Appointment/Details?id={appointment.Id}\">Details</a>";
-                return $"Patient: {patientLink}<br>Service: {appointment.Service.Name}<br>Room: {appointment.Room.RoomNumber}<br>{detailsLink}";
+                return $"Patient: {patientLink}<br>Service: {appointment.Service.Name}<br>Room: {appointment.Room.RoomNumber}<br>Status: {@Enum.GetName(typeof(AppointmentStatus), appointment.Status)}<br>{detailsLink}";
             }
             return "";
         }

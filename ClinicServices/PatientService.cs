@@ -1,5 +1,6 @@
 ﻿using BusinessObjects.Entities;
 using ClinicRepositories.Interfaces;
+using ClinicServices.EmailService;
 using ClinicServices.Interfaces;
 
 namespace ClinicServices
@@ -8,11 +9,13 @@ namespace ClinicServices
     {
         private readonly IPatientRepository _repository;
         public readonly IUserService _userService;
+        private readonly IEmailSender _emailSender;
 
-        public PatientService(IPatientRepository repository, IUserService userService)
+        public PatientService(IPatientRepository repository, IUserService userService, IEmailSender emailSender)
         {
             _repository = repository;
             _userService = userService;
+            _emailSender = emailSender;
         }
 
         public async Task<Patient> AddAsync(Patient entity, User userAccount)
@@ -39,8 +42,9 @@ namespace ClinicServices
             userAccount.Status = 1;
             var newAccount = await _userService.AddAsync(userAccount);
             entity.Id = newAccount.Id;
-            return await _repository.AddAsync(entity);
-
+            var addedPatient = await _repository.AddAsync(entity);
+            await SendEmailToPatientAsync(addedPatient, newAccount);
+            return addedPatient;
         }
         public async Task DeleteAsync(int id)
         {
@@ -69,6 +73,21 @@ namespace ClinicServices
             var patient = PatientList.FirstOrDefault(p => p.Email.Contains(searchTerm) || p.Phone.Contains(searchTerm));
             return patient;
         }
+        private async Task SendEmailToPatientAsync(Patient patient, User userAccount)
+        {
+            var subject = "Welcome to Our Clinic!";
+            var content = $"Dear {patient.Name},<br/><br/>" +
+                          $"Thank you for registering with our clinic. Here are your account details:<br/>" +
+                          $"<b>Email:</b> {patient.Email}<br/>" +
+                          $"<b>Phone:</b> {patient.Phone}<br/>" +
+                          $"<b>Username:</b> {userAccount.Username}<br/>" +
+                          $"<b>Password:</b> {userAccount.Password}<br/><br/>";
+                          
 
+            EmailAddress emailAddress = new() { Email = patient.Email, DisplayName = patient.Name };
+            EmailService.Message message = new(new List<EmailAddress> { emailAddress }, subject, content);
+
+            await _emailSender.SendEmailAsync(message);
+        }
     }
 }

@@ -73,6 +73,10 @@
                         <a class="nav-link" href="/Dentists/Index">Dentist</a>
                         <a class="nav-link" href="/Staffs/Index">Staff</a>
                     }
+                    @if (@user.Role == 3)
+                    {
+                        <a class="nav-link" href="/Staffs/Main">Search Patient</a>
+                    }
                 }
                 <a class="nav-link" href="#">Dropdown</a>
                 <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">Disabled</a>

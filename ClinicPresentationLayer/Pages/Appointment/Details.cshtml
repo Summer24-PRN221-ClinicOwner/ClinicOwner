@@ -1,8 +1,11 @@
 ﻿@page
 @model ClinicPresentationLayer.Pages.Appointment.DetailsModel
 @using BusinessObjects
+@using BusinessObjects.Entities
+@using ClinicPresentationLayer.Extension
 @{
     ViewData["Title"] = "Details";
+    var CurrentUser = HttpContext.Session.GetObject<User>("UserAccount");
 }
 <!-- CKEditor CDN -->
 <script src="https://cdn.ckeditor.com/ckeditor5/40.0.0/classic/ckeditor.js"></script>
@@ -70,7 +73,8 @@
     </div>
 }
 
-@if (@Model.CurrentUser.Role == @BusinessObjects.UserRoles.Dentist)
+@if (@Model.CurrentUser.Role == @BusinessObjects.UserRoles.Dentist && (Model.Appointment.Status == (int)AppointmentStatus.Checkin || 
+                                                                        Model.Appointment.Status == (int)AppointmentStatus.Reported))
 {
     <h1>@(Model.Appointment.Report.Name == null ? "Create Report" : "Update Report")</h1>
 
@@ -108,6 +112,15 @@ else if (@Model.CurrentUser.Role == @BusinessObjects.UserRoles.Patient)
             console.error(error);
         });
 </script>
-<div>
-    <a asp-page="./List">Back to List</a>
-</div>
+@if (CurrentUser.Role != 2)
+{
+    <div>
+        <a asp-page="./List">Back to List</a>
+    </div>
+}
+@if (CurrentUser.Role == 2)
+{
+    <div>
+        <a asp-page="/PatientHistory">Back to List</a>
+    </div>
+}
