@@ -1,4 +1,5 @@
 ﻿@page
+@using BusinessObjects
 @model ClinicPresentationLayer.Pages.Appointment.ListModel
 @{
     var schedule = Model.AppointmentSchedule;
@@ -85,7 +86,7 @@
             {
                 var patientLink = $"<a href=\"/ProfileUser/Details?id={appointment.PatientId}\">Mr. {appointment.Patient.Name}</a>";
                 var detailsLink = $"<a href=\"/Appointment/Details?id={appointment.Id}\">Details</a>";
-                return $"Patient: {patientLink}<br>Service: {appointment.Service.Name}<br>Room: {appointment.Room.RoomNumber}<br>{detailsLink}";
+                return $"Patient: {patientLink}<br>Service: {appointment.Service.Name}<br>Room: {appointment.Room.RoomNumber}<br>{detailsLink}<br>Status: {@Enum.GetName(typeof(AppointmentStatus), appointment.Status)}";
             }
             return "";
         }
