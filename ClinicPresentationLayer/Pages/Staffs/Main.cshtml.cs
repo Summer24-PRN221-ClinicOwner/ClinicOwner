@@ -229,6 +229,24 @@ namespace ClinicPresentationLayer.Pages.Staffs
         public async Task<IActionResult> OnGetAvailableSlotsPartial(DateTime appointmentDate, int serviceDuration)
         {
             List<Slot> availableSlots = await _appointmentService.GetAvailableSlotAsync(appointmentDate, serviceDuration);
+            if (appointmentDate.Date == DateTime.Today)
+            {
+                DateTime now = DateTime.Now;
+
+                availableSlots = availableSlots.Where(slot =>
+                {
+                    string displayTime = slot.DisplayTime.Split(':')[1].Trim(); // Extract the time part
+                    string startTimeStr = displayTime.Split('-')[0].Trim(); // Extract the start time part
+
+                    // Parse the start time part assuming it's in "H'h'mm" format, e.g., "7h00"
+                    int startHour = int.Parse(startTimeStr.Substring(0, startTimeStr.IndexOf('h')));
+                    int startMinute = int.Parse(startTimeStr.Substring(startTimeStr.IndexOf('h') + 1));
+
+                    DateTime slotStartTime = new DateTime(appointmentDate.Year, appointmentDate.Month, appointmentDate.Day, startHour, startMinute, 0);
+
+                    return slotStartTime > now;
+                }).ToList();
+            }
             availableSlots = availableSlots.Where(item => item.IsAvailable).ToList();
             availableSlots = SlotDefiner.DurationDiplayTimeOnSlot(availableSlots, serviceDuration);
             return Partial("_SlotPartial", availableSlots);
